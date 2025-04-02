@@ -2026,7 +2026,7 @@
             }
 
             // 指定介紹音樂的URL
-            const introMusicUrl = 'https://cdn.jsdelivr.net/gh/jasonpang1030/srw.github.io@main/SRWCBGM_Intro.mp3';
+            const introMusicUrl = './audio/SRWCBGM_Intro.mp3';
 
             // 創建新的音頻播放器
             introMusicPlayer = new Audio(introMusicUrl);
@@ -2089,15 +2089,15 @@
         // 预加载战斗音效
         function preloadCombatSounds() {
             // 加载激光枪音效
-            beamGunSound = new Audio('https://cdn.jsdelivr.net/gh/jasonpang1030/srw.github.io@main/SRWCSE_BeamGun.mp3');
+            beamGunSound = new Audio('./soundeffects/SRWCSE_BeamGun.mp3');
             beamGunSound.load();
 
             // 加载爆炸音效
-            explosionSound = new Audio('https://cdn.jsdelivr.net/gh/jasonpang1030/srw.github.io@main/SRWCSE_Explosion.mp3');
+            explosionSound = new Audio('./soundeffects/SRWCSE_Explosion.mp3');
             explosionSound.load();
 
             // 加载光束剑音效
-            beamSaberSound = new Audio('https://cdn.jsdelivr.net/gh/jasonpang1030/srw.github.io@main/SRWCSE_BeamSaber.mp3');
+            beamSaberSound = new Audio('./soundeffects/SRWCSE_BeamSaber.mp3');
             beamSaberSound.load();
 
             // 设置加载完成标志
