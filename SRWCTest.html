@@ -4004,9 +4004,12 @@
 
                 // Check if captured piece is a king (game over)
                 if (capturedPiece.moveType === KING) {
-                    gameState.gameOver = true;
-                    gameState.winner = piece.team;
-                  }
+                    // 只有在没有自定义胜利条件或胜利条件是'captureKing'时才立即结束游戏
+                    if (!gameState.victoryCondition || gameState.victoryCondition.type === 'captureKing') {
+                        gameState.gameOver = true;
+                        gameState.winner = piece.team;
+                    }
+                }
 
                 // 在这里触发 pieceCaptured 事件
                 if (typeof eventSystem !== 'undefined') {
