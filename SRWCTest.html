@@ -17,6 +17,9 @@
             return false;
         };
 
+        // 隱藏要素系統
+        window.Get_fa_gundam = 0;
+
         // 安全的innerHTML設置函數
         function safeSetInnerHTML(element, html) {
             if (!element) {
@@ -6183,6 +6186,24 @@
 
                     const levelPieceDefinitions = currentLevelData.pieceDefinitions;
 
+                    // Filter initialState based on Get_fa_gundam value
+                    const filteredInitialState = initialState.filter(piece => {
+                        // Skip gundam if FA Gundam is obtained
+                        if (piece.id === "gundam" && window.Get_fa_gundam === 1) {
+                            console.log("Skipping regular Gundam because FA Gundam is obtained");
+                            return false;
+                        }
+                    
+                        // Skip fa_gundam if not yet obtained
+                        if (piece.id === "fa_gundam" && window.Get_fa_gundam === 0) {
+                            console.log("Skipping FA Gundam because it's not yet obtained");
+                            return false;
+                        }
+                        return true;
+                    });
+
+                    console.log(`筛选后的棋子数量: ${filteredInitialState.length}`);
+                    
                     // 根據提供的初始狀態設置棋子
                     initialState.forEach(piece => {
                         if (!piece || !piece.id || !piece.position || !Array.isArray(piece.position) || piece.position.length !== 2) {
@@ -6236,6 +6257,33 @@
                     console.error(`設置初始棋盤狀態發生異常，時間: ${Date.now() - window.gameLoadStartTime}ms`, error);
                 }
             },
+
+            // Make sure Get_fa_gundam is preserved when loading the second level
+            const originalNextLevel = levelManager.nextLevel;
+                levelManager.nextLevel = function() {
+                // Save the FA Gundam state before loading new level
+                const faGundamState = window.Get_fa_gundam;
+            
+                // Call the original nextLevel function
+                originalNextLevel.call(this);
+            
+                // Restore the FA Gundam state after loading completes
+                setTimeout(() => {
+                    window.Get_fa_gundam = faGundamState;
+                    console.log("FA Gundam state preserved:", window.Get_fa_gundam);
+                }, 500);
+            };
+
+            // Add initialization in single player button click handler
+            const originalSingleplayerBtnClick = singleplayerBtn.onclick;
+            singleplayerBtn.onclick = async function(e) {
+                // Reset the FA Gundam state when starting a new game
+                window.Get_fa_gundam = 0;
+                console.log("Reset FA Gundam state to:", window.Get_fa_gundam);
+            
+                // Call the original click handler
+                return originalSingleplayerBtnClick.call(this, e);
+            };
 
             // 設置勝利條件
             setVictoryCondition: function(condition) {
@@ -6935,6 +6983,12 @@
                 console.log("执行替换棋子动作:", action);
                 const { position, pieceId, row, col, targetPieceId, special } = action;
 
+                // 檢查隱藏機ID
+                if (pieceId === "fa_gundam") {
+                    console.log("FA Gundam obtained!");
+                    window.Get_fa_gundam = 1;
+                }
+                
                 // 确定要替换的棋子位置
                 let targetRow, targetCol;
 
