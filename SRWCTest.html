@@ -6423,16 +6423,81 @@
             // 進入下一關
             nextLevel: function() {
                 console.log("進入下一關");
-                const nextLevelId = this.currentLevel + 1;
-
-                // 檢查是否有下一關的數據
-                const nextLevelInfo = window.levelData.find(level => level.id === nextLevelId);
-                if (nextLevelInfo) {
-                    this.loadLevel(nextLevelId);
-                } else {
-                    // 沒有下一關的數據，顯示"敬請期待"的消息
-                    this.showComingSoonMessage();
+    
+                // 隱藏勝利畫面
+                if (victoryOverlay) {
+                    victoryOverlay.classList.remove('show');
                 }
+    
+                // 顯示加載界面
+                const loadingOverlay = document.getElementById('csv-loading-overlay');
+                if (loadingOverlay) {
+                    loadingOverlay.style.display = 'flex';
+                    const loadingMessage = document.getElementById('csv-loading-message');
+                    if (loadingMessage) {
+                        loadingMessage.textContent = "正在載入第二關數據...";
+                    }
+                }
+    
+                // 根據當前關卡ID決定載入哪個CSV文件
+                let nextCsvUrl = "";
+                if (this.currentLevel === 1) {
+                    // 從第一關到第二關
+                    nextCsvUrl = "./stages/SRWCStage02v3T.csv";
+                } else {
+                    // 其他情況（未來可能的第三關等）
+                    this.showComingSoonMessage();
+                    return;
+                }
+    
+                // 載入下一關的CSV
+                loadLevelsFromURL(nextCsvUrl).then(success => {
+                    if (success) {
+                        // 更新加載消息
+                        const loadingMessage = document.getElementById('csv-loading-message');
+                        if (loadingMessage) {
+                            loadingMessage.textContent = "正在預載圖片資源...";
+                        }
+            
+                        // 預載圖片
+                        console.log("開始預載圖片...");
+                        const imagesToLoad = getAllImageURLsFromLevelData();
+                        preloadImages(imagesToLoad).then(() => {
+                            // 隱藏加載界面
+                            if (loadingOverlay) {
+                                loadingOverlay.style.display = 'none';
+                            }
+                
+                            // 清理當前遊戲狀態
+                            gameState.board = Array(BOARD_SIZE).fill().map(() => Array(BOARD_SIZE).fill(null));
+                            gameState.blueCaptured = [];
+                            gameState.redCaptured = [];
+                            gameState.currentTurn = BLUE;
+                            gameState.selectedPiece = null;
+                            gameState.validMoves = [];
+                            gameState.gameOver = false;
+                            gameState.winner = null;
+                            gameState.turnCount = 0;
+                
+                            // 更新UI
+                            updateBoardDisplay();
+                            updateCapturedPieces();
+                            updateTurnIndicator();
+                            updateTurnCountDisplay();
+                
+                            // 載入第二關
+                            const nextLevelId = window.levelData.length > 0 ? window.levelData[0].id : 1;
+                            this.loadLevel(nextLevelId);
+                        });
+                    } else {
+                        // 載入失敗
+                        console.error("無法載入下一關數據");
+                        this.showComingSoonMessage();
+                    }
+                }).catch(error => {
+                    console.error("載入下一關時出錯:", error);
+                    this.showComingSoonMessage();
+                });
             },
 
             // 顯示"敬請期待"的消息
