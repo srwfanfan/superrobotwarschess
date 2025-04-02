@@ -1,0 +1,3671 @@
+<!DOCTYPE html><html lang="zh-TW"><head><meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://code.jquery.com https://unpkg.com https://d3js.org https://threejs.org https://cdn.plot.ly https://stackpath.bootstrapcdn.com https://maps.googleapis.com https://cdn.tailwindcss.com https://ajax.googleapis.com https://kit.fontawesome.com https://cdn.datatables.net https://maxcdn.bootstrapcdn.com https://code.highcharts.com https://tako-static-assets-production.s3.amazonaws.com https://www.youtube.com https://fonts.googleapis.com https://fonts.gstatic.com https://pfst.cf2.poecdn.net https://puc.poecdn.net https://i.imgur.com https://wikimedia.org https://*.icons8.com https://*.giphy.com https://picsum.photos https://images.unsplash.com; frame-src 'self' https://www.youtube.com https://trytako.com; child-src 'self'; manifest-src 'self'; worker-src 'self'; upgrade-insecure-requests; block-all-mixed-content;"><meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://code.jquery.com https://unpkg.com https://d3js.org https://threejs.org https://cdn.plot.ly https://stackpath.bootstrapcdn.com https://maps.googleapis.com https://cdn.tailwindcss.com https://ajax.googleapis.com https://kit.fontawesome.com https://cdn.datatables.net https://maxcdn.bootstrapcdn.com https://code.highcharts.com https://tako-static-assets-production.s3.amazonaws.com https://www.youtube.com https://fonts.googleapis.com https://fonts.gstatic.com https://pfst.cf2.poecdn.net https://puc.poecdn.net https://i.imgur.com https://wikimedia.org https://*.icons8.com https://*.giphy.com https://picsum.photos https://images.unsplash.com; frame-src 'self' https://www.youtube.com https://trytako.com; child-src 'self'; manifest-src 'self'; worker-src 'self'; upgrade-insecure-requests; block-all-mixed-content;"><meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://code.jquery.com https://unpkg.com https://d3js.org https://threejs.org https://cdn.plot.ly https://stackpath.bootstrapcdn.com https://maps.googleapis.com https://cdn.tailwindcss.com https://ajax.googleapis.com https://kit.fontawesome.com https://cdn.datatables.net https://maxcdn.bootstrapcdn.com https://code.highcharts.com https://tako-static-assets-production.s3.amazonaws.com https://www.youtube.com https://fonts.googleapis.com https://fonts.gstatic.com https://pfst.cf2.poecdn.net https://puc.poecdn.net https://i.imgur.com https://wikimedia.org https://*.icons8.com https://*.giphy.com https://picsum.photos https://images.unsplash.com; frame-src 'self' https://www.youtube.com https://trytako.com; child-src 'self'; manifest-src 'self'; worker-src 'self'; upgrade-insecure-requests; block-all-mixed-content;">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>超級機械人大戰Chess關卡編輯器</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Exo:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --srw-blue: #0066cc;
+            --srw-red: #cc0000;
+            --srw-gold: #ffcc00;
+            --srw-dark: #1a1a1a;
+            --srw-light: #f0f0f0;
+            --srw-accent: #5D5CDE;
+        }
+
+        body {
+            background-color: #050520;
+            background-attachment: fixed;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background-image:
+                radial-gradient(1px 1px at 10px 10px, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0)),
+                radial-gradient(1px 1px at 15px 30px, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0)),
+                radial-gradient(1px 1px at 30px 50px, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0)),
+                radial-gradient(1px 1px at 50px 70px, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0)),
+                radial-gradient(1px 1px at 70px 100px, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0)),
+                radial-gradient(1px 1px at 90px 120px, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0)),
+                radial-gradient(1px 1px at 110px 150px, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0)),
+                radial-gradient(1.5px 1.5px at 140px 180px, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0)),
+                radial-gradient(1.5px 1.5px at 170px 220px, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0)),
+                radial-gradient(2px 2px at 200px 260px, rgba(93, 92, 222, 0.7), rgba(255, 255, 255, 0)),
+                radial-gradient(2px 2px at 230px 300px, rgba(93, 92, 222, 0.8), rgba(255, 255, 255, 0));
+            background-size: 300px 300px;
+            animation: starryNight 120s linear infinite;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at 30% 30%, rgba(93, 92, 222, 0.15), transparent 30%),
+                      radial-gradient(circle at 70% 60%, rgba(93, 92, 222, 0.1), transparent 40%),
+                      radial-gradient(circle at 50% 50%, rgba(0, 0, 40, 0.4), transparent 80%);
+        }
+
+        @keyframes starryNight {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-300px); }
+        }
+
+        .shooting-star {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100px;
+            height: 2px;
+            background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,1) 50%, rgba(255,255,255,0));
+            transform-origin: left center;
+            animation: shootingStar 6s linear infinite;
+            z-index: -1;
+            opacity: 0;
+        }
+
+        @keyframes shootingStar {
+            0% {
+                transform: translateX(-100px) translateY(100px) rotate(20deg) scale(0.4);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            20% {
+                transform: translateX(400px) translateY(300px) rotate(20deg) scale(0.4);
+                opacity: 0;
+            }
+            100% {
+                opacity: 0;
+            }
+        }
+
+        .srw-title {
+            font-family: 'Orbitron', sans-serif;
+            text-shadow: 0 0 10px rgba(93, 92, 222, 0.7);
+        }
+
+        .srw-font {
+            font-family: 'Exo', sans-serif;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .chess-board {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            grid-template-rows: repeat(8, 1fr);
+            width: 100%;
+            max-width: 600px;
+            aspect-ratio: 1 / 1;
+            background-color: rgba(0, 0, 0, 0.5);
+            background-size: cover;
+            background-position: center;
+            border: 3px solid var(--srw-accent);
+            box-shadow: 0 0 15px rgba(93, 92, 222, 0.5);
+        }
+
+        .chess-cell {
+            border: 1px solid rgba(93, 92, 222, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        .chess-cell:hover {
+            background-color: rgba(93, 92, 222, 0.2);
+            box-shadow: inset 0 0 5px rgba(93, 92, 222, 0.7);
+        }
+
+        .chess-cell-coords {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.7);
+            opacity: 0.8;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .piece-img {
+            width: 90%;
+            height: 90%;
+            object-fit: contain;
+            position: relative;
+            z-index: 10;
+            transition: all 0.2s ease;
+        }
+
+        .piece-img:hover {
+            transform: scale(1.1);
+        }
+
+        .blue-piece {
+            filter: drop-shadow(0 0 5px rgba(0, 102, 204, 0.8));
+        }
+
+        .red-piece {
+            filter: drop-shadow(0 0 5px rgba(204, 0, 0, 0.8));
+            transform: scaleX(-1);
+        }
+
+        .srw-panel {
+            background-color: rgba(26, 26, 26, 0.85);
+            border: 1px solid var(--srw-accent);
+            box-shadow: 0 0 10px rgba(93, 92, 222, 0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .srw-button {
+            background: linear-gradient(to bottom, #5D5CDE, #484891);
+            border: 1px solid #333;
+            transition: all 0.2s ease;
+            box-shadow: 0 0 5px rgba(93, 92, 222, 0.5);
+            text-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+        }
+
+        .srw-button:hover {
+            background: linear-gradient(to bottom, #6E6DF0, #5D5CDE);
+            box-shadow: 0 0 10px rgba(93, 92, 222, 0.8);
+            transform: translateY(-2px);
+        }
+
+        .srw-button-red {
+            background: linear-gradient(to bottom, #cc0000, #990000);
+        }
+
+        .srw-button-red:hover {
+            background: linear-gradient(to bottom, #ff0000, #cc0000);
+            box-shadow: 0 0 10px rgba(204, 0, 0, 0.8);
+        }
+
+        .srw-button-green {
+            background: linear-gradient(to bottom, #009900, #006600);
+        }
+
+        .srw-button-green:hover {
+            background: linear-gradient(to bottom, #00cc00, #009900);
+            box-shadow: 0 0 10px rgba(0, 153, 0, 0.8);
+        }
+
+        .srw-button-blue {
+            background: linear-gradient(to bottom, #0066cc, #004499);
+        }
+
+        .srw-button-blue:hover {
+            background: linear-gradient(to bottom, #0088ff, #0066cc);
+            box-shadow: 0 0 10px rgba(0, 102, 204, 0.8);
+        }
+
+        .srw-button-gold {
+            background: linear-gradient(to bottom, #ffcc00, #cc9900);
+            color: #333;
+            text-shadow: none;
+        }
+
+        .srw-button-gold:hover {
+            background: linear-gradient(to bottom, #ffdd44, #ffcc00);
+            box-shadow: 0 0 10px rgba(255, 204, 0, 0.8);
+        }
+
+        .srw-input {
+            background-color: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--srw-accent);
+            color: white;
+            box-shadow: inset 0 0 5px rgba(93, 92, 222, 0.5);
+            transition: all 0.2s ease;
+        }
+
+        .srw-input:focus {
+            box-shadow: inset 0 0 10px rgba(93, 92, 222, 0.8);
+            outline: none;
+            border-color: #6E6DF0;
+        }
+
+        .srw-select {
+            background-color: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--srw-accent);
+            color: white;
+            box-shadow: inset 0 0 5px rgba(93, 92, 222, 0.5);
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%235D5CDE' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.5rem center;
+            padding-right: 2.5rem;
+        }
+
+        .srw-select:focus {
+            box-shadow: inset 0 0 10px rgba(93, 92, 222, 0.8);
+            outline: none;
+            border-color: #6E6DF0;
+        }
+
+        .srw-table th {
+            background: linear-gradient(to bottom, #333, #222);
+            color: var(--srw-gold);
+            text-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .srw-table tr:nth-child(even) {
+            background-color: rgba(50, 50, 50, 0.5);
+        }
+
+        .srw-table tr:nth-child(odd) {
+            background-color: rgba(30, 30, 30, 0.5);
+        }
+
+        .srw-table td {
+            border-bottom: 1px solid rgba(93, 92, 222, 0.3);
+        }
+
+        .srw-scrollbar::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        .srw-scrollbar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 4px;
+        }
+
+        .srw-scrollbar::-webkit-scrollbar-thumb {
+            background: var(--srw-accent);
+            border-radius: 4px;
+        }
+
+        .srw-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #6E6DF0;
+        }
+
+        .piece-card {
+            background: rgba(20, 20, 20, 0.7);
+            border: 1px solid var(--srw-accent);
+            transition: all 0.2s ease;
+            overflow: hidden;
+        }
+
+        .piece-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 15px rgba(93, 92, 222, 0.7);
+        }
+
+        .piece-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(to bottom right,
+                                  rgba(255, 255, 255, 0) 0%,
+                                  rgba(255, 255, 255, 0) 40%,
+                                  rgba(255, 255, 255, 0.4) 50%,
+                                  rgba(255, 255, 255, 0) 60%,
+                                  rgba(255, 255, 255, 0) 100%);
+            transform: rotate(45deg);
+            transition: all 0.6s ease;
+            z-index: 1;
+            opacity: 0;
+        }
+
+        .piece-card:hover::before {
+            left: 100%;
+            opacity: 1;
+        }
+
+        .event-card {
+            background: rgba(20, 20, 20, 0.8);
+            border: 1px solid var(--srw-accent);
+            transition: all 0.3s ease;
+        }
+
+        .event-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 15px rgba(93, 92, 222, 0.7);
+        }
+
+        .blue-team-header {
+            background: linear-gradient(to right, var(--srw-blue), transparent);
+            border-left: 3px solid var(--srw-blue);
+        }
+
+        .red-team-header {
+            background: linear-gradient(to right, var(--srw-red), transparent);
+            border-left: 3px solid var(--srw-red);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(to bottom, rgba(93, 92, 222, 0.5), rgba(93, 92, 222, 0.2));
+            border-color: var(--srw-gold) !important;
+            color: var(--srw-gold) !important;
+            box-shadow: 0 -5px 10px rgba(93, 92, 222, 0.3);
+        }
+
+        .toastify {
+            background: rgba(26, 26, 26, 0.9);
+            border: 1px solid var(--srw-accent);
+            box-shadow: 0 0 10px rgba(93, 92, 222, 0.7);
+            font-family: 'Exo', sans-serif;
+            color: white;
+            border-radius: 4px;
+            padding: 12px 20px;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 9999;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        /* Animation keyframes */
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(93, 92, 222, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(93, 92, 222, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(93, 92, 222, 0); }
+        }
+
+        .srw-pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes scanline {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+
+        .srw-panel::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 10px;
+            background: linear-gradient(to bottom, rgba(93, 92, 222, 0.3), rgba(93, 92, 222, 0));
+            z-index: 1;
+            animation: scanline 8s linear infinite;
+            pointer-events: none;
+        }
+
+        /* 新增的事件系統相關樣式 */
+        .event-tip-card {
+            background: rgba(10, 10, 40, 0.7);
+            border-left: 4px solid var(--srw-accent);
+        }
+
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: help;
+        }
+
+        .tooltip .tooltip-text {
+            visibility: hidden;
+            width: 280px;
+            background-color: rgba(10, 10, 40, 0.95);
+            color: #fff;
+            text-align: left;
+            border-radius: 6px;
+            padding: 8px 10px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -140px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            box-shadow: 0 0 8px rgba(93, 92, 222, 0.5);
+            border: 1px solid var(--srw-accent);
+            font-size: 0.875rem;
+        }
+
+        .tooltip .tooltip-text::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: var(--srw-accent) transparent transparent transparent;
+        }
+
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .field-group {
+            border: 1px solid rgba(93, 92, 222, 0.3);
+            border-radius: 0.375rem;
+            padding: 1rem;
+            background: rgba(10, 10, 40, 0.2);
+        }
+
+        .field-group-title {
+            margin: -1.5rem 0 0.5rem 0.5rem;
+            background: #1a1a1a;
+            padding: 0.2rem 0.8rem;
+            border-radius: 0.25rem;
+            display: inline-block;
+            font-weight: bold;
+            color: var(--srw-gold);
+            border: 1px solid var(--srw-accent);
+        }
+
+        /* 事件類型相關樣式 */
+        .event-type-section {
+            display: none;
+        }
+
+        .event-type-section.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .event-type-badge {
+            background-color: rgba(93, 92, 222, 0.2);
+            border: 1px solid var(--srw-accent);
+            border-radius: 0.25rem;
+            padding: 0.5rem 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .event-type-badge i {
+            color: var(--srw-gold);
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'srw-blue': '#0066cc',
+                        'srw-red': '#cc0000',
+                        'srw-gold': '#ffcc00',
+                        'srw-dark': '#1a1a1a',
+                        'srw-accent': '#5D5CDE'
+                    },
+                    fontFamily: {
+                        'orbitron': ['Orbitron', 'sans-serif'],
+                        'exo': ['Exo', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="min-h-screen text-white font-exo">
+    <div class="max-w-7xl mx-auto p-4">
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row justify-between items-center mb-6 srw-panel rounded-lg p-4 relative overflow-hidden">
+            <div class="flex items-center">
+                <div class="mr-4">
+                    <img src="https://i.imgur.com/uUhvX3b.png" alt="Nu高達" class="w-14 h-14 object-contain">
+                </div>
+                <div class="flex flex-col items-center">
+                    <img src="https://i.imgur.com/ve99gPQ.png" alt="超級機械人大戰Chess" class="max-w-full h-auto" style="max-height: 60px; object-fit: contain;">
+                    <span class="block text-lg font-normal text-white mt-1">關卡編輯器 v1.2</span>
+                </div>
+            </div>
+            <div class="flex space-x-3 mt-4 md:mt-0">
+                <button id="new-level-btn" class="px-4 py-2 rounded srw-button srw-button-green text-white flex items-center">
+                    <i class="fas fa-file-plus mr-2"></i>新關卡
+                </button>
+                <button id="export-csv-btn" class="px-4 py-2 rounded srw-button srw-button-blue text-white flex items-center">
+                    <i class="fas fa-file-export mr-2"></i>導出CSV
+                </button>
+                <button id="import-csv-btn" class="px-4 py-2 rounded srw-button srw-button-gold text-dark flex items-center">
+                    <i class="fas fa-file-import mr-2"></i>導入CSV
+                </button>
+            </div>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="border-b border-srw-accent mb-6">
+            <ul class="flex flex-wrap -mb-px" id="tab-nav">
+                <li class="mr-1" role="presentation">
+                    <button class="tab-btn inline-block p-4 border-b-2 border-transparent rounded-t-lg text-srw-gold hover:text-srw-gold hover:border-srw-gold font-orbitron font-bold active" data-tab="level-info">
+                        <img src="https://i.imgur.com/C0LV56B.png" alt="關卡信息" class="w-6 h-6 inline-block mr-2">關卡信息
+                    </button>
+                </li>
+                <li class="mr-1" role="presentation">
+                    <button class="tab-btn inline-block p-4 border-b-2 border-transparent rounded-t-lg text-white hover:text-srw-gold hover:border-srw-gold font-orbitron font-bold" data-tab="pieces">
+                        <img src="https://i.imgur.com/ma9ZzPs.png" alt="棋子定義" class="w-6 h-6 inline-block mr-2">棋子定義
+                    </button>
+                </li>
+                <li class="mr-1" role="presentation">
+                    <button class="tab-btn inline-block p-4 border-b-2 border-transparent rounded-t-lg text-white hover:text-srw-gold hover:border-srw-gold font-orbitron font-bold" data-tab="board">
+                        <img src="https://i.imgur.com/lMflnaQ.png" alt="棋盤布局" class="w-6 h-6 inline-block mr-2">棋盤布局
+                    </button>
+                </li>
+                <li class="mr-1" role="presentation">
+                    <button class="tab-btn inline-block p-4 border-b-2 border-transparent rounded-t-lg text-white hover:text-srw-gold hover:border-srw-gold font-orbitron font-bold" data-tab="conditions">
+                        <img src="https://i.imgur.com/90O9E1o.png" alt="勝負條件" class="w-6 h-6 inline-block mr-2">勝負條件
+                    </button>
+                </li>
+                <li class="mr-1" role="presentation">
+                    <button class="tab-btn inline-block p-4 border-b-2 border-transparent rounded-t-lg text-white hover:text-srw-gold hover:border-srw-gold font-orbitron font-bold" data-tab="events">
+                        <img src="https://i.imgur.com/T5zshZu.png" alt="事件系統" class="w-6 h-6 inline-block mr-2">事件系統
+                    </button>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Tab Contents -->
+        <div class="tab-contents">
+            <!-- Level Info Tab -->
+            <div id="level-info" class="tab-content active">
+                <div class="srw-panel rounded-lg p-6 mb-6 relative">
+                    <h2 class="text-2xl font-bold mb-6 text-srw-gold flex items-center font-orbitron">
+                        <img src="https://i.imgur.com/C0LV56B.png" alt="關卡信息" class="w-6 h-6 inline-block mr-2">關卡基本信息
+                        <div class="h-px flex-grow bg-gradient-to-r from-srw-accent to-transparent ml-4"></div>
+                    </h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <div class="mb-4">
+                                <label class="block font-bold mb-2" for="level-id">
+                                    關卡ID (數字):
+                                </label>
+                                <input type="number" id="level-id" class="srw-input appearance-none rounded w-full py-2 px-3 leading-tight focus:outline-none" min="1" value="1">
+                            </div>
+                            <div class="mb-4">
+                                <label class="block font-bold mb-2" for="level-title">
+                                    關卡標題:
+                                </label>
+                                <input type="text" id="level-title" class="srw-input appearance-none rounded w-full py-2 px-3 leading-tight focus:outline-none" placeholder="例如: 第一話">
+                            </div>
+                            <div class="mb-4">
+                                <label class="block font-bold mb-2" for="level-subtitle">
+                                    關卡副標題:
+                                </label>
+                                <input type="text" id="level-subtitle" class="srw-input appearance-none rounded w-full py-2 px-3 leading-tight focus:outline-none" placeholder="例如: 宇宙聯合軍">
+                            </div>
+                            <div class="mb-4">
+                                <label class="block font-bold mb-2" for="story-image">
+                                    故事插圖URL:
+                                </label>
+                                <input type="text" id="story-image" class="srw-input appearance-none rounded w-full py-2 px-3 leading-tight focus:outline-none" placeholder="例如: https://i.imgur.com/AxsQhC8.png">
+                                <div class="mt-2">
+                                    <button id="preview-story-img" class="text-srw-accent hover:text-srw-gold text-sm transition-colors"><i class="fas fa-eye mr-1"></i>預覽圖片</button>
+                                    <div id="story-img-preview" class="mt-2 hidden">
+                                        <img id="story-img-preview-img" src="" alt="故事插圖預覽" class="max-h-56 object-contain border-2 border-srw-accent rounded">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="mb-4">
+                                <label class="block font-bold mb-2" for="board-image">
+                                    棋盤背景URL:
+                                </label>
+                                <input type="text" id="board-image" class="srw-input appearance-none rounded w-full py-2 px-3 leading-tight focus:outline-none" placeholder="例如: https://i.imgur.com/po1uZL5.png">
+                                <div class="mt-2">
+                                    <button id="preview-board-img" class="text-srw-accent hover:text-srw-gold text-sm transition-colors"><i class="fas fa-eye mr-1"></i>預覽圖片</button>
+                                    <div id="board-img-preview" class="mt-2 hidden">
+                                        <img id="board-img-preview-img" src="" alt="棋盤背景預覽" class="max-h-56 object-contain border-2 border-srw-accent rounded">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <label class="block font-bold mb-2" for="board-bgm">
+                                    關卡背景音樂URL:
+                                </label>
+                                <input type="text" id="board-bgm" class="srw-input appearance-none rounded w-full py-2 px-3 leading-tight focus:outline-none" placeholder="例如: https://cdn.jsdelivr.net/gh/username/repo@main/file.mp3">
+                            </div>
+                            <div class="mb-4">
+                                <label class="block font-bold mb-2" for="story-desc">
+                                    故事描述:
+                                </label>
+                                <textarea id="story-desc" class="srw-input appearance-none rounded w-full py-2 px-3 leading-tight focus:outline-none h-32 srw-scrollbar" placeholder="描述這個關卡的背景故事..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pieces Definition Tab -->
+            <div id="pieces" class="tab-content">
+                <div class="srw-panel rounded-lg p-6 mb-6 relative">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-bold text-srw-gold flex items-center font-orbitron">
+                            <img src="https://i.imgur.com/ma9ZzPs.png" alt="棋子定義" class="w-6 h-6 inline-block mr-2">棋子定義
+                            <div class="h-px flex-grow bg-gradient-to-r from-srw-accent to-transparent ml-4"></div>
+                        </h2>
+                        <button id="add-piece-btn" class="px-4 py-2 rounded srw-button srw-button-green text-white flex items-center">
+                            <i class="fas fa-plus mr-2"></i>添加棋子
+                        </button>
+                    </div>
+
+                    <!-- Piece Definition Form -->
+                    <div id="piece-form" class="border border-srw-accent rounded-lg p-4 mb-6 hidden bg-srw-dark bg-opacity-50">
+                        <h3 class="text-xl font-bold mb-4 text-srw-gold font-orbitron">新增/編輯棋子</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <label class="block font-bold mb-2" for="piece-id">
+                                    棋子ID:
+                                </label>
+                                <input type="text" id="piece-id" class="srw-input appearance-none rounded w-full py-2 px-3 leading-tight focus:outline-none" placeholder="例如: gundam">
+                            </div>
+                            <div>
+                                <label class="block font-bold mb-2" for="piece-type">
+                                    棋子名稱:
+                                </label>
+                                <input type="text" id="piece-type" class="srw-input appearance-none rounded w-full py-2 px-3 leading-tight focus:outline-none" placeholder="例如: 高達">
+                            </div>
+                            <div>
+                                <label class="block font-bold mb-2" for="piece-team">
+                                    陣營:
+                                </label>
+                                <select id="piece-team" class="srw-select appearance-none rounded w-full py-2 px-3 leading-tight focus:outline-none">
+                                    <option value="blue">藍方</option>
+                                    <option value="red">紅方</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block font-bold mb-2" for="piece-move-type">
+                                    移動類型:
+                                </label>
+                                <select id="piece-move-type" class="srw-select appearance-none rounded w-full py-2 px-3 leading-tight focus:outline-none">
+                                    <option value="pawn">步兵 (Pawn)</option>
+                                    <option value="rook">城堡 (Rook)</option>
+                                    <option value="knight">騎士 (Knight)</option>
+                                    <option value="bishop">主教 (Bishop)</option>
+                                    <option value="queen">皇后 (Queen)</option>
+                                    <option value="king">國王 (King)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block font-bold mb-2" for="piece-hit">
+                                    命中值 (1-5):
+                                </label>
+                                <input type="number" id="piece-hit" class="srw-input appearance-none rounded w-full py-2 px-3 leading-tight focus:outline-none" min="1" max="5" value="3">
+                            </div>
+                            <div>
+                                <label class="block font-bold mb-2" for="piece-dodge">
+                                    迴避值 (1-5):
+                                </label>
+                                <input type="number" id="piece-dodge" class="srw-input appearance-none rounded w-full py-2 px-3 leading-tight focus:outline-none" min="1" max="5" value="3">
+                            </div>
+                            <div>
+                                <label class="block font-bold mb-2" for="piece-bgmtype">
+                                    音樂類別:
+                                </label>
+                                <select id="piece-atktype" class="srw-select appearance-none rounded w-full py-2 px-3 leading-tight focus:outline-none">
+                                    <option value="">請選擇音樂類別</option>
+                                    <option value="Gundam">Gundam</option>
+                                    <option value="Winggundam">Winggundam</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block font-bold mb-2" for="piece-weapon-colour">
+                                    武器顏色:
+                                </label>
+                                <select id="piece-weapon-colour" class="srw-select appearance-none rounded w-full py-2 px-3 leading-tight focus:outline-none">
+                                    <option value="">請選擇武器顏色</option>
+                                    <option value="#FF1493">粉紅色</option>
+                                    <option value="#FFD700">黃金色</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block font-bold mb-2" for="piece-crosshair-type">
+                                    準星類型:
+                                </label>
+                                <select id="piece-crosshair-type" class="srw-select appearance-none rounded w-full py-2 px-3 leading-tight focus:outline-none">
+                                    <option value="">請選擇準星類型</option>
+                                    <option value="Beam_Rifie">Beam_Rifie</option>
+                                    <option value="Beam_Saber">Beam_Saber</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block font-bold mb-2" for="piece-img-url">
+                                    棋子圖片URL:
+                                </label>
+                                <input type="text" id="piece-img-url" class="srw-input appearance-none rounded w-full py-2 px-3 leading-tight focus:outline-none" placeholder="例如: https://i.imgur.com/uUhvX3b.png">
+                            </div>
+                        </div>
+                        <div class="mt-2 mb-4">
+                            <button id="preview-piece-img" class="text-srw-accent hover:text-srw-gold text-sm transition-colors"><i class="fas fa-eye mr-1"></i>預覽棋子圖片</button>
+                            <div id="piece-img-preview" class="mt-2 hidden flex justify-center">
+                                <img id="piece-img-preview-img" src="" alt="棋子圖片預覽" class="h-24 object-contain border-2 border-srw-accent rounded">
+                            </div>
+                        </div>
+                        <div class="flex justify-end space-x-3">
+                            <button id="cancel-piece-btn" class="px-4 py-2 rounded srw-button text-white">取消</button>
+                            <button id="save-piece-btn" class="px-4 py-2 rounded srw-button srw-button-blue text-white">保存棋子</button>
+                        </div>
+                    </div>
+
+                    <!-- Pieces List -->
+                    <div id="pieces-container" class="overflow-x-auto srw-scrollbar">
+                        <table class="min-w-full border border-srw-accent srw-table">
+                            <thead>
+                                <tr>
+                                    <th class="py-2 px-4 border-b border-srw-accent text-left">ID</th>
+                                    <th class="py-2 px-4 border-b border-srw-accent text-left">預覽</th>
+                                    <th class="py-2 px-4 border-b border-srw-accent text-left">名稱</th>
+                                    <th class="py-2 px-4 border-b border-srw-accent text-left">陣營</th>
+                                    <th class="py-2 px-4 border-b border-srw-accent text-left">移動類型</th>
+                                    <th class="py-2 px-4 border-b border-srw-accent text-center">命中</th>
+                                    <th class="py-2 px-4 border-b border-srw-accent text-center">迴避</th>
+                                    <th class="py-2 px-4 border-b border-srw-accent text-center">音樂類別</th>
+                                    <th class="py-2 px-4 border-b border-srw-accent text-center">武器顏色</th>
+                                    <th class="py-2 px-4 border-b border-srw-accent text-center">準星類型</th>
+                                    <th class="py-2 px-4 border-b border-srw-accent text-center">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="pieces-list">
+                                <!-- Pieces will be added here dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Board Layout Tab -->
+            <div id="board" class="tab-content">
+                <div class="srw-panel rounded-lg p-6 mb-6 relative">
+                    <h2 class="text-2xl font-bold mb-6 text-srw-gold flex items-center font-orbitron">
+                        <img src="https://i.imgur.com/lMflnaQ.png" alt="棋盤布局" class="w-6 h-6 inline-block mr-2">棋盤布局
+                        <div class="h-px flex-grow bg-gradient-to-r from-srw-accent to-transparent ml-4"></div>
+                    </h2>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <!-- Board and Pieces Panel -->
+                        <div class="lg:col-span-2">
+                            <div class="mb-4">
+                                <h3 class="text-xl font-bold mb-2 text-srw-gold font-orbitron">棋盤預覽</h3>
+                                <p class="text-sm text-gray-300 mb-4">點擊棋盤格子放置棋子，創造你的戰場布局。</p>
+                                <div class="flex justify-center">
+                                    <div id="game-board" class="chess-board">
+                                        <!-- Chess cells will be added here dynamically -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pieces Selection Panel -->
+                        <div class="srw-panel rounded-lg p-4">
+                            <h3 class="text-xl font-bold mb-2 text-srw-gold font-orbitron">選擇棋子</h3>
+
+                            <div class="mb-4">
+                                <label class="block font-bold mb-2">
+                                    陣營過濾:
+                                </label>
+                                <div class="flex space-x-4">
+                                    <button id="filter-blue" class="px-3 py-1 rounded srw-button srw-button-blue text-white">藍方</button>
+                                    <button id="filter-red" class="px-3 py-1 rounded srw-button srw-button-red text-white">紅方</button>
+                                    <button id="filter-all" class="px-3 py-1 rounded srw-button text-white">全部</button>
+                                </div>
+                            </div>
+
+                            <div id="pieces-selection" class="grid grid-cols-2 gap-2 mt-4 overflow-y-auto max-h-[300px] srw-scrollbar">
+                                <!-- Available pieces will be added here dynamically -->
+                            </div>
+
+                            <div class="mt-6">
+                                <h3 class="text-xl font-bold mb-2 text-srw-gold font-orbitron">已放置棋子</h3>
+                                <div id="placed-pieces-list" class="mt-2 overflow-y-auto max-h-[200px] srw-scrollbar">
+                                    <!-- Placed pieces info will be added here dynamically -->
+                                </div>
+                                <div class="mt-4">
+                                    <button id="clear-board-btn" class="px-3 py-1 rounded srw-button srw-button-red text-white flex items-center">
+                                        <i class="fas fa-trash mr-1"></i>清空棋盤
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Conditions Tab -->
+            <div id="conditions" class="tab-content">
+                <div class="srw-panel rounded-lg p-6 mb-6 relative">
+                    <h2 class="text-2xl font-bold mb-6 text-srw-gold flex items-center font-orbitron">
+                        <img src="https://i.imgur.com/90O9E1o.png" alt="勝負條件" class="w-6 h-6 inline-block mr-2">勝負條件
+                        <div class="h-px flex-grow bg-gradient-to-r from-srw-accent to-transparent ml-4"></div>
+                    </h2>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Victory Condition -->
+                        <div class="border border-green-500 rounded-lg p-4 bg-gradient-to-b from-green-900 to-srw-dark bg-opacity-20">
+                            <h3 class="text-xl font-bold mb-4 text-green-400 flex items-center font-orbitron">
+                                <img src="https://i.imgur.com/i3ntMDy.png" alt="勝利條件" class="w-5 h-5 inline-block mr-2">勝利條件
+                            </h3>
+
+                            <div class="mb-4">
+                                <label class="block font-bold mb-2" for="victory-condition-type">
+                                    條件類型:
+                                </label>
+                                <select id="victory-condition-type" class="srw-select appearance-none rounded w-full py-2 px-3 leading-tight focus:outline-none">
+                                    <option value="captureKing">吃掉敵方國王</option>
+                                    <option value="captureAllPieces">吃掉所有敵方棋子</option>
+                                    <option value="reachPosition">特定棋子到達指定位置</option>
+                                    <option value="surviveNTurns">存活特定回合數</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="block font-bold mb-2" for="victory-description">
+                                    勝利條件描述:
+                                </label>
+                                <input type="text" id="victory-description" class="srw-input appearance-none rounded w-full py-2 px-3 leading-tight focus:outline-none" placeholder="例如: 消滅敵方旗艦「沙達拉恩號」">
+                            </div>
+                        </div>
+
+                        <!-- Defeat Condition -->
+                        <div class="border border-red-500 rounded-lg p-4 bg-gradient-to-b from-red-900 to-srw-dark bg-opacity-20">
+                            <h3 class="text-xl font-bold mb-4 text-red-400 flex items-center font-orbitron">
+                                <img src="https://i.imgur.com/rX541xg.png" alt="戰敗條件" class="w-5 h-5 inline-block mr-2">戰敗條件
+                            </h3>
+
+                            <div class="mb-4">
+                                <label class="block font-bold mb-2" for="defeat-condition-type">
+                                    條件類型:
+                                </label>
+                                <select id="defeat-condition-type" class="srw-select appearance-none rounded w-full py-2 px-3 leading-tight focus:outline-none">
+                                    <option value="kingCaptured">我方國王被吃掉</option>
+                                    <option value="turnLimit">回合數超過限制</option>
+                                    <option value="pieceDestroyed">特定棋子被破壞</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="block font-bold mb-2" for="defeat-description">
+                                    戰敗條件描述:
+                                </label>
+                                <input type="text" id="defeat-description" class="srw-input appearance-none rounded w-full py-2 px-3 leading-tight focus:outline-none" placeholder="例如: 我方旗艦「勞·卡拉姆號」被摧毀">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Events Tab -->
+            <div id="events" class="tab-content">
+                <div class="srw-panel rounded-lg p-6 mb-6 relative">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-bold text-srw-gold flex items-center font-orbitron">
+                            <img src="https://i.imgur.com/T5zshZu.png" alt="事件系統" class="w-6 h-6 inline-block mr-2">事件系統
+                            <div class="h-px flex-grow bg-gradient-to-r from-srw-accent to-transparent ml-4"></div>
+                        </h2>
+                        <button id="add-event-btn" class="px-4 py-2 rounded srw-button srw-button-green text-white flex items-center">
+                            <i class="fas fa-plus mr-2"></i>添加事件
+                        </button>
+                    </div>
+
+                    <!-- 事件系統説明區塊 -->
+                    <div class="mb-6 event-tip-card p-4 rounded-lg">
+                        <h3 class="text-lg font-bold mb-2 text-srw-gold flex items-center">
+                            <i class="fas fa-info-circle mr-2"></i>事件系統說明
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <h4 class="font-bold text-srw-gold mb-1">事件類型：</h4>
+                                <ul class="list-disc pl-5 space-y-2 text-sm">
+                                    <li><span class="text-srw-gold">回合開始 (turnStart)</span>：在每個新回合開始時觸發，可指定回合數和隊伍。</li>
+                                    <li><span class="text-srw-gold">棋子移動 (pieceMove)</span>：當棋子移動到新位置後觸發，可指定棋子ID、目標位置和隊伍。</li>
+                                    <li><span class="text-srw-gold">棋子被吃掉 (pieceCaptured)</span>：當一個棋子被對方吃掉時觸發，可指定被吃棋子ID和捕獲者棋子ID。</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-srw-gold mb-1">動作類型：</h4>
+                                <ul class="list-disc pl-5 space-y-2 text-sm">
+                                    <li><span class="text-srw-gold">顯示任務 (showMission)</span>：顯示任務提示，可指定角色名稱和任務內容。</li>
+                                    <li><span class="text-srw-gold">生成棋子 (spawnPiece)</span>：在棋盤上生成新棋子，可指定棋子ID和目標位置。</li>
+                                    <li><span class="text-srw-gold">替換棋子 (replacePiece)</span>：將一個棋子替換為另一個棋子，需指定目標棋子ID和新棋子ID。</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Event Form -->
+                    <div id="event-form" class="border border-srw-accent rounded-lg p-4 mb-6 hidden bg-srw-dark bg-opacity-50">
+                        <h3 class="text-xl font-bold mb-4 text-srw-gold font-orbitron">新增/編輯事件</h3>
+
+                        <!-- 事件類型選擇器 -->
+                        <div class="mb-6">
+                            <label class="block font-bold mb-2" for="event-type">
+                                選擇事件類型:
+                            </label>
+                            <select id="event-type" class="srw-select appearance-none rounded w-full py-2 px-3 leading-tight focus:outline-none">
+                                <option value="turnStart">回合開始 (turnStart)</option>
+                                <option value="pieceMove">棋子移動 (pieceMove)</option>
+                                <option value="pieceCaptured">棋子被吃掉 (pieceCaptured)</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block font-bold mb-1 flex items-center">
+                                只觸發一次:
+                                <div class="tooltip ml-2">
+                                    <i class="fas fa-question-circle text-srw-accent"></i>
+                                    <span class="tooltip-text">若勾選此項，此事件只會在第一次符合條件時觸發。若不勾選，每次條件滿足都會觸發。</span>
+                                </div>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" id="event-once" class="form-checkbox">
+                                <span class="ml-2">是</span>
+                            </label>
+                        </div>
+
+                        <!-- 回合開始事件 -->
+                        <div id="turnStart-section" class="event-type-section active">
+                            <div class="event-type-badge flex items-center">
+                                <i class="fas fa-hourglass-start mr-2"></i>
+                                <span class="font-bold">回合開始事件設定</span>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block font-bold mb-2" for="turnStart-turn">
+                                        指定回合數 (condition_turn):
+                                    </label>
+                                    <input type="number" id="turnStart-turn" class="srw-input appearance-none rounded w-full py-2 px-3 leading-tight focus:outline-none" min="1" placeholder="請輸入回合數">
+                                    <p class="text-xs text-gray-400 mt-1">留空表示任意回合</p>
+                                </div>
+
+                                <div>
+                                    <label class="block font-bold mb-2" for="turnStart-team">
+                                        指定隊伍 (condition_team):
+                                    </label>
+                                    <select id="turnStart-team" class="srw-select appearance-none rounded w-full py-2 px-3 leading-tight focus:outline-none">
+                                        <option value="">不指定</option>
+                                        <option value="blue">藍方</option>
+                                        <option value="red">紅方</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 棋子移動事件 -->
+                        <div id="pieceMove-section" class="event-type-section">
+                            <div class="event-type-badge flex items-center">
+                                <i class="fas fa-chess mr-2"></i>
+                                <span class="font-bold">棋子移動事件設定</span>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                <div>
+                                    <label class="block font-bold mb-2" for="pieceMove-pieceId">
+                                        指定棋子ID (condition_pieceId):
+                                    </label>
+                                    <select id="pieceMove-pieceId" class="srw-select appearance-none rounded w-full py-2 px-3 leading-tight focus:outline-none">
+                                        <option value="">請選擇棋子</option>
+                                        <!-- 棋子選項會動態填充 -->
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label class="block font-bold mb-2" for="pieceMove-team">
+                                        指定隊伍 (condition_team):
+                                    </label>
+                                    <select id="pieceMove-team" class="srw-select appearance-none rounded w-full py-2 px-3 leading-tight focus:outline-none">
+                                        <option value="">不指定</option>
+                                        <option value="blue">藍方</option>
+                                        <option value="red">紅方</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block font-bold mb-2" for="pieceMove-row">
+                                        目標位置行 (condition_row):
+                                    </label>
+                                    <input type="number" id="pieceMove-row" class="srw-input appearance-none rounded w-full py-2 px-3 leading-tight focus:outline-none" min="0" max="7" placeholder="0-7">
+                                </div>
+                                <div>
+                                    <label class="block font-bold mb-2" for="pieceMove-col">
+                                        目標位置列 (condition_col):
+                                    </label>
+                                    <input type="number" id="pieceMove-col" class="srw-input appearance-none rounded w-full py-2 px-3 leading-tight focus:outline-none" min="0" max="7" placeholder="0-7">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 棋子被吃掉事件 -->
+                        <div id="pieceCaptured-section" class="event-type-section">
+                            <div class="event-type-badge flex items-center">
+                                <i class="fas fa-skull mr-2"></i>
+                                <span class="font-bold">棋子被吃掉事件設定</span>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block font-bold mb-2" for="pieceCaptured-pieceId">
+                                        被吃掉棋子ID (condition_pieceId):
+                                    </label>
+                                    <select id="pieceCaptured-pieceId" class="srw-select appearance-none rounded w-full py-2 px-3 leading-tight focus:outline-none">
+                                        <option value="">請選擇棋子</option>
+                                        <!-- 棋子選項會動態填充 -->
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label class="block font-bold mb-2" for="pieceCaptured-capturerId">
+                                        捕獲者棋子ID (action_pieceId):
+                                    </label>
+                                    <select id="pieceCaptured-capturerId" class="srw-select appearance-none rounded w-full py-2 px-3 leading-tight focus:outline-none">
+                                        <option value="">不指定</option>
+                                        <!-- 棋子選項會動態填充 -->
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Event Action -->
+                        <div class="field-group mb-6 mt-6">
+                            <div class="field-group-title">事件動作設定</div>
+                            <h4 class="font-bold mb-2 text-srw-gold">
+                                <i class="fas fa-play mr-2"></i>事件動作
+                            </h4>
+
+                            <div class="mb-4">
+                                <label class="block font-bold mb-2" for="event-action-type">
+                                    動作類型 (action_type):
+                                </label>
+                                <select id="event-action-type" class="srw-select appearance-none rounded w-full py-2 px-3 leading-tight focus:outline-none">
+                                    <option value="showMission">顯示任務 (showMission)</option>
+                                    <option value="spawnPiece">生成棋子 (spawnPiece)</option>
+                                    <option value="replacePiece">替換棋子 (replacePiece)</option>
+                                </select>
+                            </div>
+
+                            <!-- 顯示任務選項 -->
+                            <div id="action-dialog-options" class="mb-4">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block font-bold mb-2" for="event-action-character">
+                                            角色名稱 (action_character):
+                                        </label>
+                                        <input type="text" id="event-action-character" class="srw-input appearance-none rounded w-full py-2 px-3 leading-tight focus:outline-none" placeholder="例如: 阿姆羅">
+                                    </div>
+                                    <div class="col-span-1 md:col-span-2">
+                                        <label class="block font-bold mb-2" for="event-action-text">
+                                            任務內容 (action_text):
+                                        </label>
+                                        <textarea id="event-action-text" class="srw-input appearance-none rounded w-full py-2 px-3 leading-tight focus:outline-none h-20" placeholder="輸入任務提示內容..."></textarea>
+                                    </div>
+                                    <div>
+                                        <label class="block font-bold mb-2" for="event-action-buttonText">
+                                            按鈕文字 (action_buttonText):
+                                        </label>
+                                        <input type="text" id="event-action-buttonText" class="srw-input appearance-none rounded w-full py-2 px-3 leading-tight focus:outline-none" placeholder="例如：確定" value="確定">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 移動/生成/移除棋子動作選項 -->
+                            <div id="action-movePiece-options" class="mb-4 hidden">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block font-bold mb-2" for="event-action-pieceId">
+                                            棋子ID (action_pieceId):
+                                        </label>
+                                        <select id="event-action-pieceId" class="srw-select appearance-none rounded w-full py-2 px-3 leading-tight focus:outline-none">
+                                            <option value="">請選擇棋子</option>
+                                            <!-- 選項會動態填充 -->
+                                        </select>
+                                    </div>
+
+                                    <!-- 替換棋子目標ID (只在替換棋子時顯示) -->
+                                    <div id="replace-piece-target" class="hidden">
+                                        <label class="block font-bold mb-2" for="event-action-targetPieceId">
+                                            目標棋子ID (action_targetPieceId):
+                                        </label>
+                                        <select id="event-action-targetPieceId" class="srw-select appearance-none rounded w-full py-2 px-3 leading-tight focus:outline-none">
+                                            <option value="">請選擇目標棋子</option>
+                                            <!-- 選項會動態填充 -->
+                                        </select>
+                                    </div>
+
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <div>
+                                            <label class="block font-bold mb-2" for="event-action-to-row">
+                                                目標位置行 (aim_row):
+                                            </label>
+                                            <input type="number" id="event-action-to-row" class="srw-input appearance-none rounded w-full py-2 px-3 leading-tight focus:outline-none" min="0" max="7" placeholder="0-7">
+                                        </div>
+                                        <div>
+                                            <label class="block font-bold mb-2" for="event-action-to-col">
+                                                目標位置列 (aim_col):
+                                            </label>
+                                            <input type="number" id="event-action-to-col" class="srw-input appearance-none rounded w-full py-2 px-3 leading-tight focus:outline-none" min="0" max="7" placeholder="0-7">
+                                        </div>
+                                    </div>
+
+                                    <!-- 移動棋子起始位置 (只在移動棋子時顯示) -->
+                                    <div id="move-piece-from-pos" class="hidden grid grid-cols-2 gap-2">
+                                        <div>
+                                            <label class="block font-bold mb-2" for="event-action-from-row">
+                                                起始位置行 (action_from_row):
+                                            </label>
+                                            <input type="number" id="event-action-from-row" class="srw-input appearance-none rounded w-full py-2 px-3 leading-tight focus:outline-none" min="0" max="7" placeholder="0-7">
+                                        </div>
+                                        <div>
+                                            <label class="block font-bold mb-2" for="event-action-from-col">
+                                                起始位置列 (action_from_col):
+                                            </label>
+                                            <input type="number" id="event-action-from-col" class="srw-input appearance-none rounded w-full py-2 px-3 leading-tight focus:outline-none" min="0" max="7" placeholder="0-7">
+                                        </div>
+                                    </div>
+
+                                    <!-- 生成棋子額外選項 -->
+                                    <div id="spawn-piece-options" class="col-span-1 md:col-span-2 hidden">
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
+                                            <div>
+                                                <label class="block font-bold mb-1">
+                                                    自動查找最佳位置 (action_findBestPosition):
+                                                </label>
+                                                <label class="inline-flex items-center">
+                                                    <input type="checkbox" id="event-action-findBestPosition" class="form-checkbox" checked="">
+                                                    <span class="ml-2">是</span>
+                                                </label>
+                                            </div>
+                                            <div>
+                                                <label class="block font-bold mb-1">
+                                                    使用特殊效果 (action_special):
+                                                </label>
+                                                <label class="inline-flex items-center">
+                                                    <input type="checkbox" id="event-action-special" class="form-checkbox" checked="">
+                                                    <span class="ml-2">是</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 生成/替換棋子時的標題和描述欄位 -->
+                                    <div id="spawn-piece-description" class="col-span-1 md:col-span-2 hidden">
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
+                                            <div>
+                                                <label class="block font-bold mb-2" for="event-action-title">
+                                                    標題 (action_title):
+                                                </label>
+                                                <input type="text" id="event-action-title" class="srw-input appearance-none rounded w-full py-2 px-3 leading-tight focus:outline-none" placeholder="例如：援軍抵達">
+                                            </div>
+                                            <div>
+                                                <label class="block font-bold mb-2" for="event-action-description">
+                                                    描述 (action_description):
+                                                </label>
+                                                <input type="text" id="event-action-description" class="srw-input appearance-none rounded w-full py-2 px-3 leading-tight focus:outline-none" placeholder="例如：援軍從北方趕到戰場">
+                                            </div>
+                                            <div>
+                                                <label class="block font-bold mb-2" for="event-action-buttonText">
+                                                    按鈕文字 (action_buttonText):
+                                                </label>
+                                                <input type="text" id="event-action-buttonText" class="srw-input appearance-none rounded w-full py-2 px-3 leading-tight focus:outline-none" placeholder="例如：確定" value="確定">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-end space-x-3">
+                            <button id="cancel-event-btn" class="px-4 py-2 rounded srw-button text-white">取消</button>
+                            <button id="save-event-btn" class="px-4 py-2 rounded srw-button srw-button-blue text-white">保存事件</button>
+                        </div>
+                    </div>
+
+                    <div id="event-list-container" class="border border-srw-accent p-4 rounded-lg bg-srw-dark bg-opacity-50">
+                        <h3 class="text-xl font-bold mb-4 text-srw-gold font-orbitron">事件列表</h3>
+                        <div id="events-list" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- 事件將在這裡動態顯示 -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cell Selection Modal -->
+    <div id="cell-selection-modal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 hidden">
+        <div class="bg-srw-dark p-6 rounded-lg shadow-lg max-w-md w-full border border-srw-accent">
+            <h3 class="text-xl font-bold mb-4 text-srw-gold font-orbitron">選擇棋子</h3>
+            <p class="mb-4">為棋盤位置 <span id="selected-cell-coords" class="font-bold text-srw-accent"></span> 選擇一個棋子：</p>
+
+            <div id="cell-piece-selection" class="max-h-80 overflow-y-auto mb-4 grid grid-cols-2 gap-2 srw-scrollbar">
+                <!-- Pieces will be added here dynamically -->
+            </div>
+
+            <div class="flex justify-between">
+                <button id="clear-cell-btn" class="px-4 py-2 rounded srw-button srw-button-red text-white">清除此格</button>
+                <button id="cancel-cell-selection-btn" class="px-4 py-2 rounded srw-button text-white">取消</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CSV Export Modal -->
+    <div id="export-modal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 hidden">
+        <div class="bg-srw-dark p-6 rounded-lg shadow-lg max-w-4xl w-full border border-srw-accent">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-srw-gold font-orbitron">CSV 導出</h3>
+                <button id="close-export-modal" class="text-gray-400 hover:text-white transition-colors">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="mb-4">
+                <textarea id="csv-output" class="w-full h-96 p-2 font-mono text-sm border rounded srw-input srw-scrollbar"></textarea>
+            </div>
+
+            <div class="flex justify-between">
+                <button id="copy-csv-btn" class="px-4 py-2 rounded srw-button srw-button-blue text-white flex items-center">
+                    <i class="fas fa-copy mr-2"></i>複製到剪貼板
+                </button>
+                <button id="download-csv-btn" class="px-4 py-2 rounded srw-button srw-button-green text-white flex items-center">
+                    <i class="fas fa-download mr-2"></i>下載CSV文件
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filename Input Modal -->
+    <div id="filename-modal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 hidden">
+        <div class="bg-srw-dark p-6 rounded-lg shadow-lg max-w-md w-full border border-srw-accent">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-srw-gold font-orbitron">設定檔案名稱</h3>
+                <button id="close-filename-modal" class="text-gray-400 hover:text-white transition-colors">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="mb-4">
+                <label class="block font-bold mb-2" for="custom-filename">
+                    檔案名稱:
+                </label>
+                <input type="text" id="custom-filename" class="srw-input appearance-none rounded w-full py-2 px-3 leading-tight focus:outline-none" placeholder="輸入檔案名稱">
+                <p class="text-xs text-gray-400 mt-1">檔案將自動添加 .csv 副檔名</p>
+            </div>
+
+            <div class="flex justify-end space-x-3">
+                <button id="cancel-filename-btn" class="px-4 py-2 rounded srw-button text-white">取消</button>
+                <button id="confirm-filename-btn" class="px-4 py-2 rounded srw-button srw-button-green text-white">下載</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toastify">
+        Toast message here
+    </div>
+
+    <!-- Create shooting stars dynamically -->
+    <script>
+        // Generate shooting stars
+        document.addEventListener('DOMContentLoaded', function() {
+            createShootingStars();
+        });
+
+        function createShootingStars() {
+            // Create 5 shooting stars with random positions and delays
+            for(let i = 0; i < 5; i++) {
+                const shootingStar = document.createElement('div');
+                shootingStar.className = 'shooting-star';
+
+                // Random position
+                const top = Math.random() * 70; // % from top
+                const left = Math.random() * 70; // % from left
+
+                // Random angle
+                const angle = Math.random() * 45 - 10; // -10 to 35 degrees
+
+                // Random delay
+                const delay = Math.random() * 15;
+                const duration = 3 + Math.random() * 3; // 3-6 seconds
+
+                shootingStar.style.top = `${top}%`;
+                shootingStar.style.left = `${left}%`;
+                shootingStar.style.transform = `rotate(${angle}deg)`;
+                shootingStar.style.animationDelay = `${delay}s`;
+                shootingStar.style.animationDuration = `${duration}s`;
+
+                document.body.appendChild(shootingStar);
+
+                // Remove and recreate shooting star after animation completes
+                setTimeout(() => {
+                    if(shootingStar.parentNode) {
+                        shootingStar.parentNode.removeChild(shootingStar);
+                        createSingleShootingStar();
+                    }
+                }, (delay + duration) * 1000);
+            }
+        }
+
+        function createSingleShootingStar() {
+            const shootingStar = document.createElement('div');
+            shootingStar.className = 'shooting-star';
+
+            // Random position
+            const top = Math.random() * 70; // % from top
+            const left = Math.random() * 70; // % from left
+
+            // Random angle
+            const angle = Math.random() * 45 - 10; // -10 to 35 degrees
+
+            // Random delay
+            const delay = Math.random() * 5;
+            const duration = 3 + Math.random() * 3; // 3-6 seconds
+
+            shootingStar.style.top = `${top}%`;
+            shootingStar.style.left = `${left}%`;
+            shootingStar.style.transform = `rotate(${angle}deg)`;
+            shootingStar.style.animationDelay = `${delay}s`;
+            shootingStar.style.animationDuration = `${duration}s`;
+
+            document.body.appendChild(shootingStar);
+
+            // Remove and recreate shooting star after animation completes
+            setTimeout(() => {
+                if(shootingStar.parentNode) {
+                    shootingStar.parentNode.removeChild(shootingStar);
+                    createSingleShootingStar();
+                }
+            }, (delay + duration) * 1000);
+        }
+    </script>
+
+    <script>
+        // Application state
+        const appState = {
+            levelInfo: {
+                id: 1,
+                title: '',
+                subtitle: '',
+                storyImage: '',
+                storyDesc: '',
+                boardImage: '',
+                boardbgm: ''
+            },
+            pieces: [],
+            initialPositions: [],
+            conditions: {
+                victory: { type: 'captureKing', description: '' },
+                defeat: { type: 'kingCaptured', description: '' }
+            },
+            events: [],
+            editingPieceIndex: -1,
+            currentTeamFilter: 'all'
+        };
+
+        // DOM Elements
+        const tabButtons = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+        const pieceForm = document.getElementById('piece-form');
+        const piecesList = document.getElementById('pieces-list');
+        const piecesSelection = document.getElementById('pieces-selection');
+        const placedPiecesList = document.getElementById('placed-pieces-list');
+        const gameBoard = document.getElementById('game-board');
+        const toast = document.getElementById('toast');
+
+        // Initialize App
+        document.addEventListener('DOMContentLoaded', function() {
+            // Setup tabs
+            tabButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const tabId = this.dataset.tab;
+
+                    // Remove active class from all tabs
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+
+                    // Add active class to clicked tab
+                    this.classList.add('active');
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+
+            // Create chessboard
+            createChessboard();
+
+            // Set up basic event listeners
+            setupEventListeners();
+
+            // Initialize with empty data instead of sample data
+            initializeEmptyData();
+
+            // Add sound effects for buttons
+            document.querySelectorAll('button').forEach(button => {
+                button.addEventListener('mouseenter', () => {
+                    playSound('hover');
+                });
+
+                button.addEventListener('click', () => {
+                    playSound('click');
+                });
+            });
+
+            // Add new level button functionality
+            document.getElementById('new-level-btn').addEventListener('click', createNewLevel);
+        });
+
+        // Sound effects
+        function playSound(type) {
+            // This function is a placeholder for sound effects
+            // In a real implementation, you would play audio files
+        }
+
+        // Create chessboard
+        function createChessboard() {
+            gameBoard.innerHTML = '';
+
+            for (let row = 0; row < 8; row++) {
+                for (let col = 0; col < 8; col++) {
+                    const cell = document.createElement('div');
+                    cell.className = `chess-cell ${(row + col) % 2 === 0 ? 'bg-opacity-30 bg-srw-accent' : 'bg-opacity-10 bg-srw-dark'}`;
+                    cell.dataset.row = row;
+                    cell.dataset.col = col;
+
+                    // Add coordinates display
+                    const coords = document.createElement('div');
+                    coords.className = 'chess-cell-coords';
+                    coords.textContent = `${row},${col}`;
+                    cell.appendChild(coords);
+
+                    // Add click event for cell selection
+                    cell.addEventListener('click', handleCellClick);
+
+                    gameBoard.appendChild(cell);
+                }
+            }
+
+            // Set board background if available
+            if (appState.levelInfo.boardImage) {
+                gameBoard.style.backgroundImage = `url('${appState.levelInfo.boardImage}')`;
+            }
+        }
+
+        // Event form management variables
+        let editingEventIndex = -1;
+
+        // Setup basic event listeners
+        function setupEventListeners() {
+            // Event management
+            document.getElementById('add-event-btn').addEventListener('click', function() {
+                resetEventForm();
+                updateEventFormPieceOptions();
+                document.getElementById('event-form').classList.remove('hidden');
+                // 默認顯示回合開始事件區塊
+                showEventTypeSection('turnStart');
+            });
+
+            document.getElementById('cancel-event-btn').addEventListener('click', function() {
+                document.getElementById('event-form').classList.add('hidden');
+            });
+
+            document.getElementById('save-event-btn').addEventListener('click', saveEvent);
+
+            // Event type change handler
+            document.getElementById('event-type').addEventListener('change', function() {
+                const eventType = this.value;
+                showEventTypeSection(eventType);
+            });
+
+            // Action type change handler
+            document.getElementById('event-action-type').addEventListener('change', function() {
+                const actionType = this.value;
+
+                // Hide all action option divs
+                document.querySelectorAll('[id^="action-"]').forEach(div => {
+                    div.classList.add('hidden');
+                });
+
+                // 隱藏所有條件相關的欄位
+                document.getElementById('spawn-piece-description').classList.add('hidden');
+                document.getElementById('spawn-piece-options').classList.add('hidden');
+                document.getElementById('replace-piece-target').classList.add('hidden');
+                document.getElementById('move-piece-from-pos').classList.add('hidden');
+
+                // Show corresponding action options
+                if (actionType === 'showMission') {
+                    document.getElementById('action-dialog-options').classList.remove('hidden');
+                } else if (actionType === 'spawnPiece' || actionType === 'replacePiece') {
+                    document.getElementById('action-movePiece-options').classList.remove('hidden');
+
+                    // 根據動作類型顯示相應欄位
+                    if (actionType === 'spawnPiece') {
+                        document.getElementById('spawn-piece-description').classList.remove('hidden');
+                        document.getElementById('spawn-piece-options').classList.remove('hidden');
+                    } else if (actionType === 'replacePiece') {
+                        document.getElementById('replace-piece-target').classList.remove('hidden');
+                        document.getElementById('spawn-piece-description').classList.remove('hidden');
+                    }
+
+                    updateEventFormPieceOptions();
+                }
+            });
+
+            // Image previews
+            document.getElementById('preview-story-img').addEventListener('click', function() {
+                const url = document.getElementById('story-image').value.trim();
+                if (url) {
+                    document.getElementById('story-img-preview-img').src = url;
+                    document.getElementById('story-img-preview').classList.remove('hidden');
+                } else {
+                    showToast('請先輸入故事插圖URL');
+                }
+            });
+
+            document.getElementById('preview-board-img').addEventListener('click', function() {
+                const url = document.getElementById('board-image').value.trim();
+                if (url) {
+                    document.getElementById('board-img-preview-img').src = url;
+                    document.getElementById('board-img-preview').classList.remove('hidden');
+                }
+            });
+
+            document.getElementById('preview-piece-img').addEventListener('click', function() {
+                const url = document.getElementById('piece-img-url').value.trim();
+                if (url) {
+                    document.getElementById('piece-img-preview-img').src = url;
+                    document.getElementById('piece-img-preview').classList.remove('hidden');
+                }
+            });
+
+            // Add piece button
+            document.getElementById('add-piece-btn').addEventListener('click', function() {
+                resetPieceForm();
+                pieceForm.classList.remove('hidden');
+            });
+
+            // Cancel piece button
+            document.getElementById('cancel-piece-btn').addEventListener('click', function() {
+                pieceForm.classList.add('hidden');
+            });
+
+            // Save piece button
+            document.getElementById('save-piece-btn').addEventListener('click', savePiece);
+
+            // Team filter buttons
+            document.getElementById('filter-blue').addEventListener('click', function() {
+                filterPieces('blue');
+            });
+
+            document.getElementById('filter-red').addEventListener('click', function() {
+                filterPieces('red');
+            });
+
+            document.getElementById('filter-all').addEventListener('click', function() {
+                filterPieces('all');
+            });
+
+            // Clear board button
+            document.getElementById('clear-board-btn').addEventListener('click', function() {
+                if (confirm('確定要清空棋盤嗎？這個操作不可撤銷。')) {
+                    appState.initialPositions = [];
+                    updateBoardDisplay();
+                    updatePlacedPiecesList();
+                    showToast('棋盤已清空');
+                }
+            });
+
+            // Cell selection modal buttons
+            document.getElementById('cancel-cell-selection-btn').addEventListener('click', function() {
+                document.getElementById('cell-selection-modal').classList.add('hidden');
+            });
+
+            document.getElementById('clear-cell-btn').addEventListener('click', function() {
+                const modal = document.getElementById('cell-selection-modal');
+                const row = parseInt(modal.dataset.row);
+                const col = parseInt(modal.dataset.col);
+
+                // Remove this position from initialPositions
+                appState.initialPositions = appState.initialPositions.filter(pos =>
+                    !(pos.position[0] === row && pos.position[1] === col)
+                );
+
+                updateBoardDisplay();
+                updatePlacedPiecesList();
+                modal.classList.add('hidden');
+            });
+
+            // Export CSV button
+            document.getElementById('export-csv-btn').addEventListener('click', function() {
+                showExportModal();
+            });
+
+            // Close export modal
+            document.getElementById('close-export-modal').addEventListener('click', function() {
+                document.getElementById('export-modal').classList.add('hidden');
+            });
+
+            // Copy CSV button
+            document.getElementById('copy-csv-btn').addEventListener('click', function() {
+                const csvOutput = document.getElementById('csv-output');
+                csvOutput.select();
+                document.execCommand('copy');
+                showToast('CSV已複製到剪貼板');
+            });
+
+            // Download CSV button
+            document.getElementById('download-csv-btn').addEventListener('click', function() {
+                // 提取關卡資訊以作為默認檔案名稱
+                const defaultFilename = `level_${appState.levelInfo.id}_${appState.levelInfo.title || 'untitled'}`;
+
+                // 設置默認檔案名到輸入框
+                document.getElementById('custom-filename').value = defaultFilename;
+
+                // 顯示檔案名稱輸入對話框
+                document.getElementById('filename-modal').classList.remove('hidden');
+
+                // 聚焦到檔案名輸入框
+                setTimeout(() => {
+                    document.getElementById('custom-filename').focus();
+                    document.getElementById('custom-filename').select();
+                }, 100);
+            });
+
+            // 關閉檔案名對話框
+            document.getElementById('close-filename-modal').addEventListener('click', function() {
+                document.getElementById('filename-modal').classList.add('hidden');
+            });
+
+            document.getElementById('cancel-filename-btn').addEventListener('click', function() {
+                document.getElementById('filename-modal').classList.add('hidden');
+            });
+
+            // 確認檔案名並下載
+            document.getElementById('confirm-filename-btn').addEventListener('click', function() {
+                // 獲取用戶輸入的檔案名
+                let filename = document.getElementById('custom-filename').value.trim();
+
+                // 使用默認檔案名如果用戶未輸入
+                if (!filename) {
+                    filename = `level_${appState.levelInfo.id}_untitled`;
+                }
+
+                // 確保有 .csv 副檔名
+                if (!filename.toLowerCase().endsWith('.csv')) {
+                    filename += '.csv';
+                }
+
+                // 獲取CSV內容並下載
+                const csv = document.getElementById('csv-output').value;
+                const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+
+                a.href = url;
+                a.download = filename;
+                a.style.display = 'none';
+
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+                // 關閉對話框
+                document.getElementById('filename-modal').classList.add('hidden');
+
+                // 顯示成功訊息
+                showToast(`CSV檔案 "${filename}" 已下載`);
+            });
+
+            // 允許在檔案名輸入框按Enter鍵確認
+            document.getElementById('custom-filename').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    document.getElementById('confirm-filename-btn').click();
+                }
+            });
+
+            // Import CSV button
+            document.getElementById('import-csv-btn').addEventListener('click', function() {
+                // 創建隱藏的文件輸入元素
+                const fileInput = document.createElement('input');
+                fileInput.type = 'file';
+                fileInput.accept = '.csv';
+                fileInput.style.display = 'none';
+
+                // 添加到DOM並觸發點擊
+                document.body.appendChild(fileInput);
+
+                // 當文件被選中時，處理導入
+                fileInput.addEventListener('change', function() {
+                    if (fileInput.files && fileInput.files[0]) {
+                        const file = fileInput.files[0];
+                        const reader = new FileReader();
+
+                        reader.onload = function(e) {
+                            try {
+                                const csvContent = e.target.result;
+                                importFromCSV(csvContent);
+                                showToast('CSV文件導入成功');
+                            } catch (error) {
+                                console.error('CSV導入錯誤:', error);
+                                showToast('CSV文件導入失敗: ' + error.message);
+                            }
+                        };
+
+                        reader.onerror = function() {
+                            showToast('讀取文件時發生錯誤');
+                        };
+
+                        reader.readAsText(file);
+                    }
+
+                    // 從DOM移除文件輸入元素
+                    document.body.removeChild(fileInput);
+                });
+
+                fileInput.click();
+            });
+
+            // Event saving listeners for level info
+            document.getElementById('level-id').addEventListener('change', saveCurrentLevelInfo);
+            document.getElementById('level-title').addEventListener('change', saveCurrentLevelInfo);
+            document.getElementById('level-subtitle').addEventListener('change', saveCurrentLevelInfo);
+            document.getElementById('story-image').addEventListener('change', saveCurrentLevelInfo);
+            document.getElementById('board-image').addEventListener('change', saveCurrentLevelInfo);
+            document.getElementById('board-bgm').addEventListener('change', saveCurrentLevelInfo);
+            document.getElementById('story-desc').addEventListener('change', saveCurrentLevelInfo);
+
+            // Victory and Defeat conditions
+            document.getElementById('victory-condition-type').addEventListener('change', saveVictoryCondition);
+            document.getElementById('victory-description').addEventListener('change', saveVictoryCondition);
+            document.getElementById('defeat-condition-type').addEventListener('change', saveDefeatCondition);
+            document.getElementById('defeat-description').addEventListener('change', saveDefeatCondition);
+        }
+
+        // 顯示特定事件類型的輸入欄位
+        function showEventTypeSection(eventType) {
+            // 隱藏所有事件類型區塊
+            document.querySelectorAll('.event-type-section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // 顯示指定的事件類型區塊
+            const sectionToShow = document.getElementById(`${eventType}-section`);
+            if (sectionToShow) {
+                sectionToShow.classList.add('active');
+            }
+
+            // 確保對應的棋子選擇器被更新
+            updateEventFormPieceOptions();
+        }
+
+        // Save current level info
+        function saveCurrentLevelInfo() {
+            appState.levelInfo.id = parseInt(document.getElementById('level-id').value) || 1;
+            appState.levelInfo.title = document.getElementById('level-title').value;
+            appState.levelInfo.subtitle = document.getElementById('level-subtitle').value;
+            appState.levelInfo.storyImage = document.getElementById('story-image').value;
+            appState.levelInfo.boardImage = document.getElementById('board-image').value;
+            appState.levelInfo.boardbgm = document.getElementById('board-bgm').value;
+            appState.levelInfo.storyDesc = document.getElementById('story-desc').value;
+
+            // Update board background if changed
+            if (gameBoard && appState.levelInfo.boardImage) {
+                gameBoard.style.backgroundImage = `url('${appState.levelInfo.boardImage}')`;
+            }
+        }
+
+        // Save victory condition
+        function saveVictoryCondition() {
+            appState.conditions.victory.type = document.getElementById('victory-condition-type').value;
+            appState.conditions.victory.description = document.getElementById('victory-description').value;
+        }
+
+        // Save defeat condition
+        function saveDefeatCondition() {
+            appState.conditions.defeat.type = document.getElementById('defeat-condition-type').value;
+            appState.conditions.defeat.description = document.getElementById('defeat-description').value;
+        }
+
+        // Reset piece form
+        function resetPieceForm() {
+            document.getElementById('piece-id').value = '';
+            document.getElementById('piece-type').value = '';
+            document.getElementById('piece-team').value = 'blue';
+            document.getElementById('piece-move-type').value = 'pawn';
+            document.getElementById('piece-hit').value = '3';
+            document.getElementById('piece-dodge').value = '3';
+            document.getElementById('piece-atktype').value = '';
+            document.getElementById('piece-weapon-colour').value = '';
+            document.getElementById('piece-crosshair-type').value = '';
+            document.getElementById('piece-img-url').value = '';
+            document.getElementById('piece-img-preview').classList.add('hidden');
+            appState.editingPieceIndex = -1;
+        }
+
+        // Save piece
+        function savePiece() {
+            const id = document.getElementById('piece-id').value.trim();
+            const type = document.getElementById('piece-type').value.trim();
+            const team = document.getElementById('piece-team').value;
+            const moveType = document.getElementById('piece-move-type').value;
+            const hit = parseInt(document.getElementById('piece-hit').value) || 3;
+            const dodge = parseInt(document.getElementById('piece-dodge').value) || 3;
+            const bgmtype = document.getElementById('piece-atktype').value.trim();
+            const weapon_colour = document.getElementById('piece-weapon-colour').value.trim();
+            const crosshairType = document.getElementById('piece-crosshair-type').value.trim();
+            const imgUrl = document.getElementById('piece-img-url').value.trim();
+
+            if (!id || !type || !imgUrl) {
+                showToast('棋子ID、名稱和圖片URL為必填項');
+                return;
+            }
+
+            // Create piece object
+            const piece = {
+                id, type, team, moveType, hit, dodge, bgmtype, weapon_colour, crosshairType, imgUrl
+            };
+
+            const oldPieceId = appState.editingPieceIndex >= 0 ? appState.pieces[appState.editingPieceIndex].id : null;
+
+            // Check if we're editing or adding
+            if (appState.editingPieceIndex >= 0) {
+                // 從數組中移除舊的棋子
+                appState.pieces.splice(appState.editingPieceIndex, 1);
+
+                // 將編輯後的棋子添加到數組開頭
+                appState.pieces.unshift(piece);
+
+                // If the piece ID was changed, update any references in events
+                if (oldPieceId && oldPieceId !== id) {
+                    updatePieceIdInEvents(oldPieceId, id);
+                }
+            } else {
+                // Check for duplicate ID
+                if (appState.pieces.some(p => p.id === id)) {
+                    showToast('已存在相同ID的棋子');
+                    return;
+                }
+
+                // Add new piece to the beginning of the array
+                appState.pieces.unshift(piece);
+            }
+
+            // Hide form and update UI
+            pieceForm.classList.add('hidden');
+            updatePiecesList();
+            updatePiecesSelection();
+
+            // 更新事件表單中的棋子選項 - 即使事件表單未顯示，也預先更新確保同步
+            updateEventFormPieceOptions();
+
+            // 如果事件列表有內容，更新顯示以反映棋子名稱變化
+            if (appState.events.length > 0) {
+                updateEventsList();
+            }
+
+            // 如果事件表單當前正在顯示，更新其中的棋子選項
+            if (!document.getElementById('event-form').classList.contains('hidden')) {
+                // 保持當前選中的值
+                updateEventFormPieceOptions();
+            }
+
+            // Show confirmation
+            showToast('棋子已保存');
+        }
+
+        // 更新事件中的棋子ID引用
+        function updatePieceIdInEvents(oldId, newId) {
+            appState.events.forEach(event => {
+                // 更新條件中的棋子ID
+                if (event.condition && event.condition.pieceId === oldId) {
+                    event.condition.pieceId = newId;
+                }
+
+                // 更新動作中的棋子ID
+                if (event.action && event.action.pieceId === oldId) {
+                    event.action.pieceId = newId;
+                }
+
+                // 更新捕獲者棋子ID（如果有的話）
+                if (event.action && event.action.capturerId === oldId) {
+                    event.action.capturerId = newId;
+                }
+
+                // 更新目標棋子ID（用於替換棋子動作）
+                if (event.action && event.action.targetPieceId === oldId) {
+                    event.action.targetPieceId = newId;
+                }
+            });
+
+            // 需要更新事件列表顯示
+            updateEventsList();
+        }
+
+        // Update pieces list in table
+        function updatePiecesList() {
+            piecesList.innerHTML = '';
+
+            if (appState.pieces.length === 0) {
+                const emptyRow = document.createElement('tr');
+                const emptyCell = document.createElement('td');
+                emptyCell.className = 'py-4 px-4 text-center text-gray-400';
+                emptyCell.colSpan = 11;
+                emptyCell.textContent = '尚未創建任何棋子';
+                emptyRow.appendChild(emptyCell);
+                piecesList.appendChild(emptyRow);
+                return;
+            }
+
+            appState.pieces.forEach((piece, index) => {
+                const row = document.createElement('tr');
+
+                // ID
+                const idCell = document.createElement('td');
+                idCell.className = 'py-2 px-4 border-b border-srw-accent';
+                idCell.textContent = piece.id;
+                row.appendChild(idCell);
+
+                // Preview
+                const previewCell = document.createElement('td');
+                previewCell.className = 'py-2 px-4 border-b border-srw-accent';
+                const img = document.createElement('img');
+                img.src = piece.imgUrl;
+                img.alt = piece.type;
+                img.className = `h-10 w-10 object-contain ${piece.team === 'red' ? 'transform scale-x-[-1]' : ''}`;
+                previewCell.appendChild(img);
+                row.appendChild(previewCell);
+
+                // Name
+                const nameCell = document.createElement('td');
+                nameCell.className = 'py-2 px-4 border-b border-srw-accent';
+                nameCell.textContent = piece.type;
+                row.appendChild(nameCell);
+
+                // Team
+                const teamCell = document.createElement('td');
+                teamCell.className = 'py-2 px-4 border-b border-srw-accent';
+                teamCell.innerHTML = piece.team === 'blue' ?
+                    '<span class="text-srw-blue font-bold">藍方</span>' :
+                    '<span class="text-srw-red font-bold">紅方</span>';
+                row.appendChild(teamCell);
+
+                // Move Type
+                const moveTypeCell = document.createElement('td');
+                moveTypeCell.className = 'py-2 px-4 border-b border-srw-accent';
+                moveTypeCell.textContent = getMoveTypeDisplay(piece.moveType);
+                row.appendChild(moveTypeCell);
+
+                // Hit
+                const hitCell = document.createElement('td');
+                hitCell.className = 'py-2 px-4 border-b border-srw-accent text-center';
+                hitCell.textContent = piece.hit;
+                row.appendChild(hitCell);
+
+                // Dodge
+                const dodgeCell = document.createElement('td');
+                dodgeCell.className = 'py-2 px-4 border-b border-srw-accent text-center';
+                dodgeCell.textContent = piece.dodge;
+                row.appendChild(dodgeCell);
+
+                // BGM Type
+                const bgmTypeCell = document.createElement('td');
+                bgmTypeCell.className = 'py-2 px-4 border-b border-srw-accent text-center';
+                bgmTypeCell.textContent = piece.bgmtype || '';
+                row.appendChild(bgmTypeCell);
+
+                // Weapon Color
+                const weaponColorCell = document.createElement('td');
+                weaponColorCell.className = 'py-2 px-4 border-b border-srw-accent text-center';
+                weaponColorCell.textContent = piece.weapon_colour || '';
+                row.appendChild(weaponColorCell);
+
+                // Crosshair Type
+                const crosshairTypeCell = document.createElement('td');
+                crosshairTypeCell.className = 'py-2 px-4 border-b border-srw-accent text-center';
+                crosshairTypeCell.textContent = piece.crosshairType || '';
+                row.appendChild(crosshairTypeCell);
+
+                // Actions
+                const actionsCell = document.createElement('td');
+                actionsCell.className = 'py-2 px-4 border-b border-srw-accent text-center';
+
+                const editBtn = document.createElement('button');
+                editBtn.className = 'text-srw-blue hover:text-srw-gold mr-2 transition-colors';
+                editBtn.title = '編輯棋子';
+                editBtn.innerHTML = '<i class="fas fa-edit"></i>';
+                editBtn.addEventListener('click', () => editPiece(index));
+                actionsCell.appendChild(editBtn);
+
+                const copyBtn = document.createElement('button');
+                copyBtn.className = 'text-srw-accent hover:text-srw-gold mr-2 transition-colors';
+                copyBtn.title = '複製棋子';
+                copyBtn.innerHTML = '<i class="fas fa-copy"></i>';
+                copyBtn.addEventListener('click', () => duplicatePiece(index));
+                actionsCell.appendChild(copyBtn);
+
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'text-srw-red hover:text-srw-gold transition-colors';
+                deleteBtn.title = '刪除棋子';
+                deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
+                deleteBtn.addEventListener('click', () => deletePiece(index));
+                actionsCell.appendChild(deleteBtn);
+
+                row.appendChild(actionsCell);
+
+                piecesList.appendChild(row);
+            });
+        }
+
+        // Edit a piece
+        function editPiece(index) {
+            // 獲取要編輯的棋子
+            const piece = appState.pieces[index];
+
+            // 將棋子從當前位置移除
+            appState.pieces.splice(index, 1);
+
+            // 將棋子添加到數組的最前面
+            appState.pieces.unshift(piece);
+
+            // 更新列表顯示，讓棋子立即顯示在最頂部
+            updatePiecesList();
+            updatePiecesSelection();
+
+            // Fill the form with piece data
+            document.getElementById('piece-id').value = piece.id;
+            document.getElementById('piece-type').value = piece.type;
+            document.getElementById('piece-team').value = piece.team;
+            document.getElementById('piece-move-type').value = piece.moveType;
+            document.getElementById('piece-hit').value = piece.hit;
+            document.getElementById('piece-dodge').value = piece.dodge;
+            document.getElementById('piece-atktype').value = piece.bgmtype || '';
+            document.getElementById('piece-weapon-colour').value = piece.weapon_colour || '';
+            document.getElementById('piece-crosshair-type').value = piece.crosshairType || '';
+            document.getElementById('piece-img-url').value = piece.imgUrl;
+
+            // Show preview
+            document.getElementById('piece-img-preview-img').src = piece.imgUrl;
+            document.getElementById('piece-img-preview').classList.remove('hidden');
+
+            // 將編輯索引設為0，因為棋子現在在數組的第一位
+            appState.editingPieceIndex = 0;
+            pieceForm.classList.remove('hidden');
+
+            // 預先更新事件表單中的棋子選項，確保實時同步
+            updateEventFormPieceOptions();
+        }
+
+        // 複製一個棋子
+        function duplicatePiece(index) {
+            const originalPiece = appState.pieces[index];
+            const now = new Date();
+            const timestamp = now.getHours().toString().padStart(2, '0') +
+                              now.getMinutes().toString().padStart(2, '0') +
+                              now.getSeconds().toString().padStart(2, '0');
+
+            // 創建新的棋子對象，複製所有屬性並修改ID
+            const newPiece = {
+                ...originalPiece,
+                id: `${originalPiece.id}_copy_${timestamp}`, // 確保ID唯一
+                type: `${originalPiece.type} (複製)`  // 修改名稱
+            };
+
+            // 添加到棋子列表的最頂端
+            appState.pieces.unshift(newPiece);
+
+            // 更新UI
+            updatePiecesList();
+            updatePiecesSelection();
+
+            // 自動開啟編輯表單，讓用戶可以立即修改複製的棋子
+            appState.editingPieceIndex = 0; // 由於新棋子添加到了列表頂部
+
+            // 填充表單
+            document.getElementById('piece-id').value = newPiece.id;
+            document.getElementById('piece-type').value = newPiece.type;
+            document.getElementById('piece-team').value = newPiece.team;
+            document.getElementById('piece-move-type').value = newPiece.moveType;
+            document.getElementById('piece-hit').value = newPiece.hit;
+            document.getElementById('piece-dodge').value = newPiece.dodge;
+            document.getElementById('piece-atktype').value = newPiece.bgmtype || '';
+            document.getElementById('piece-weapon-colour').value = newPiece.weapon_colour || '';
+            document.getElementById('piece-crosshair-type').value = newPiece.crosshairType || '';
+            document.getElementById('piece-img-url').value = newPiece.imgUrl;
+
+            // 顯示預覽
+            document.getElementById('piece-img-preview-img').src = newPiece.imgUrl;
+            document.getElementById('piece-img-preview').classList.remove('hidden');
+
+            // 顯示表單
+            pieceForm.classList.remove('hidden');
+
+            // 通知用戶
+            showToast('棋子已複製，現在可以編輯複製的棋子');
+        }
+
+        // Delete a piece
+        function deletePiece(index) {
+            if (confirm('確定要刪除這個棋子嗎？這個操作不可撤銷，並會移除棋盤上的相關位置。')) {
+                const pieceId = appState.pieces[index].id;
+
+                // Remove from pieces array
+                appState.pieces.splice(index, 1);
+
+                // Remove from board positions
+                appState.initialPositions = appState.initialPositions.filter(pos => pos.id !== pieceId);
+
+                // 檢查並清理事件中的棋子ID引用
+                appState.events = appState.events.filter(event => {
+                    // 移除引用了此棋子ID的事件條件
+                    if (event.condition && event.condition.pieceId === pieceId) {
+                        return false;
+                    }
+                    // 移除引用了此棋子ID的事件動作
+                    if (event.action && (event.action.pieceId === pieceId || event.action.capturerId === pieceId || event.action.targetPieceId === pieceId)) {
+                        return false;
+                    }
+                    return true;
+                });
+
+                // Update UI
+                updatePiecesList();
+                updatePiecesSelection();
+                updateBoardDisplay();
+                updatePlacedPiecesList();
+                updateEventsList();
+
+                // 更新所有事件表單中的棋子選擇項 - 即使事件表單當前未顯示也進行更新
+                updateEventFormPieceOptions();
+
+                showToast('棋子已刪除');
+            }
+        }
+
+        // Update pieces selection grid
+        function updatePiecesSelection() {
+            piecesSelection.innerHTML = '';
+
+            // Filter pieces based on current filter
+            const filteredPieces = appState.pieces.filter(piece => {
+                return appState.currentTeamFilter === 'all' || piece.team === appState.currentTeamFilter;
+            });
+
+            // Display message if no pieces
+            if (filteredPieces.length === 0) {
+                const emptyMsg = document.createElement('div');
+                emptyMsg.className = 'col-span-2 p-4 text-center text-gray-400';
+                emptyMsg.textContent = '沒有可用的棋子，請先創建棋子';
+                piecesSelection.appendChild(emptyMsg);
+                return;
+            }
+
+            // Create piece selection items
+            filteredPieces.forEach(piece => {
+                const pieceElement = document.createElement('div');
+                pieceElement.className = 'p-2 rounded piece-card flex flex-col items-center cursor-pointer relative';
+                pieceElement.dataset.pieceId = piece.id;
+
+                // Add click handler
+                pieceElement.addEventListener('click', () => {
+                    showToast('請點擊棋盤上的格子放置棋子');
+                    // Set a data attribute on the body to track the selected piece for placement
+                    document.body.dataset.selectedPiece = piece.id;
+                });
+
+                // Piece image
+                const img = document.createElement('img');
+                img.src = piece.imgUrl;
+                img.alt = piece.type;
+                img.className = `w-12 h-12 object-contain ${piece.team === 'red' ? 'transform scale-x-[-1]' : ''}`;
+                pieceElement.appendChild(img);
+
+                // Piece name
+                const nameEl = document.createElement('div');
+                nameEl.className = 'mt-1 text-xs font-bold truncate-text w-full text-center';
+                nameEl.textContent = piece.type;
+                pieceElement.appendChild(nameEl);
+
+                // Piece type
+                const infoEl = document.createElement('div');
+                infoEl.className = 'text-xs text-gray-400';
+                infoEl.textContent = getMoveTypeShort(piece.moveType);
+                pieceElement.appendChild(infoEl);
+
+                piecesSelection.appendChild(pieceElement);
+            });
+        }
+
+        // Filter pieces by team
+        function filterPieces(team) {
+            appState.currentTeamFilter = team;
+
+            // Update UI for filter buttons
+            document.getElementById('filter-blue').classList.remove('srw-button-blue');
+            document.getElementById('filter-red').classList.remove('srw-button-red');
+            document.getElementById('filter-all').classList.remove('bg-gray-600');
+
+            switch(team) {
+                case 'blue':
+                    document.getElementById('filter-blue').classList.add('srw-button-blue');
+                    break;
+                case 'red':
+                    document.getElementById('filter-red').classList.add('srw-button-red');
+                    break;
+                default:
+                    document.getElementById('filter-all').classList.add('bg-gray-600');
+            }
+
+            updatePiecesSelection();
+        }
+
+        // Handle cell click for piece placement
+        function handleCellClick(e) {
+            const row = parseInt(this.dataset.row);
+            const col = parseInt(this.dataset.col);
+
+            const selectedPieceId = document.body.dataset.selectedPiece;
+
+            if (selectedPieceId) {
+                // A piece was pre-selected from the selection panel
+                const piece = appState.pieces.find(p => p.id === selectedPieceId);
+                if (piece) {
+                    addPieceToBoard(piece, row, col);
+                    document.body.removeAttribute('dataset-selected-piece');
+                }
+            } else {
+                // Open selection modal
+                const modal = document.getElementById('cell-selection-modal');
+                modal.classList.remove('hidden');
+                modal.dataset.row = row;
+                modal.dataset.col = col;
+
+                document.getElementById('selected-cell-coords').textContent = `[${row}, ${col}]`;
+                populateCellPieceSelection(row, col);
+            }
+        }
+
+        // Populate cell piece selection modal
+        function populateCellPieceSelection(row, col) {
+            const selection = document.getElementById('cell-piece-selection');
+            selection.innerHTML = '';
+
+            // Check if any pieces exist
+            if (appState.pieces.length === 0) {
+                const emptyMsg = document.createElement('div');
+                emptyMsg.className = 'col-span-2 p-4 text-center text-gray-400';
+                emptyMsg.textContent = '沒有可用的棋子，請先創建棋子';
+                selection.appendChild(emptyMsg);
+                return;
+            }
+
+            // Group pieces by team
+            const blueTeam = appState.pieces.filter(p => p.team === 'blue');
+            const redTeam = appState.pieces.filter(p => p.team === 'red');
+
+            // Add blue team header
+            if (blueTeam.length > 0) {
+                const blueHeader = document.createElement('div');
+                blueHeader.className = 'col-span-2 blue-team-header p-2 font-bold text-srw-blue font-orbitron';
+                blueHeader.textContent = '藍方';
+                selection.appendChild(blueHeader);
+
+                // Add blue team pieces
+                blueTeam.forEach(piece => {
+                    addPieceToSelectionModal(piece, row, col, selection);
+                });
+            }
+
+            // Add red team header
+            if (redTeam.length > 0) {
+                const redHeader = document.createElement('div');
+                redHeader.className = 'col-span-2 red-team-header p-2 font-bold text-srw-red font-orbitron mt-2';
+                redHeader.textContent = '紅方';
+                selection.appendChild(redHeader);
+
+                // Add red team pieces
+                redTeam.forEach(piece => {
+                    addPieceToSelectionModal(piece, row, col, selection);
+                });
+            }
+        }
+
+        // Add piece to selection modal
+        function addPieceToSelectionModal(piece, row, col, container) {
+            const pieceElement = document.createElement('div');
+            pieceElement.className = 'p-2 rounded piece-card flex items-center cursor-pointer relative';
+
+            // Add click handler
+            pieceElement.addEventListener('click', () => {
+                addPieceToBoard(piece, row, col);
+                document.getElementById('cell-selection-modal').classList.add('hidden');
+            });
+
+            // Add piece image
+            const img = document.createElement('img');
+            img.src = piece.imgUrl;
+            img.alt = piece.type;
+            img.className = `w-10 h-10 object-contain mr-2 ${piece.team === 'red' ? 'transform scale-x-[-1]' : ''}`;
+            pieceElement.appendChild(img);
+
+            // Add piece info
+            const infoDiv = document.createElement('div');
+            infoDiv.className = 'flex flex-col';
+
+            const nameEl = document.createElement('div');
+            nameEl.className = 'text-sm font-bold';
+            nameEl.textContent = piece.type;
+            infoDiv.appendChild(nameEl);
+
+            const typeEl = document.createElement('div');
+            typeEl.className = 'text-xs text-gray-400';
+            typeEl.textContent = getMoveTypeShort(piece.moveType);
+            infoDiv.appendChild(typeEl);
+
+            pieceElement.appendChild(infoDiv);
+            container.appendChild(pieceElement);
+        }
+
+        // Add a piece to board
+        function addPieceToBoard(piece, row, col) {
+            // Check if there's already a piece at this position
+            const existingPosition = appState.initialPositions.find(pos =>
+                pos.position[0] === row && pos.position[1] === col
+            );
+
+            // If yes, remove it
+            if (existingPosition) {
+                appState.initialPositions = appState.initialPositions.filter(pos =>
+                    !(pos.position[0] === row && pos.position[1] === col)
+                );
+            }
+
+            // Add new position
+            appState.initialPositions.push({
+                id: piece.id,
+                position: [row, col]
+            });
+
+            // Update board display
+            updateBoardDisplay();
+
+            // Update placed pieces list
+            updatePlacedPiecesList();
+
+            showToast(`${piece.type} 已放置在 [${row}, ${col}]`);
+        }
+
+        // Update board visual display
+        function updateBoardDisplay() {
+            // Clear all pieces first
+            const cells = document.querySelectorAll('.chess-cell');
+            cells.forEach(cell => {
+                const img = cell.querySelector('.piece-img');
+                if (img) cell.removeChild(img);
+            });
+
+            // Place pieces according to initialPositions
+            appState.initialPositions.forEach(pos => {
+                const piece = appState.pieces.find(p => p.id === pos.id);
+                if (!piece) return;
+
+                const cell = document.querySelector(`.chess-cell[data-row="${pos.position[0]}"][data-col="${pos.position[1]}"]`);
+                if (!cell) return;
+
+                const img = document.createElement('img');
+                img.src = piece.imgUrl;
+                img.alt = piece.type;
+                img.className = `piece-img ${piece.team === 'blue' ? 'blue-piece' : 'red-piece'}`;
+                img.dataset.pieceId = piece.id;
+                cell.appendChild(img);
+            });
+        }
+
+        // Update placed pieces list
+        function updatePlacedPiecesList() {
+            placedPiecesList.innerHTML = '';
+
+            if (appState.initialPositions.length === 0) {
+                const emptyMsg = document.createElement('div');
+                emptyMsg.className = 'p-2 text-center text-gray-400';
+                emptyMsg.textContent = '棋盤上沒有棋子';
+                placedPiecesList.appendChild(emptyMsg);
+                return;
+            }
+
+            // Sort positions by team and then by position
+            const positions = [...appState.initialPositions].sort((a, b) => {
+                const pieceA = appState.pieces.find(p => p.id === a.id);
+                const pieceB = appState.pieces.find(p => p.id === b.id);
+
+                if (!pieceA || !pieceB) return 0;
+
+                // Sort by team first
+                if (pieceA.team !== pieceB.team) {
+                    return pieceA.team === 'blue' ? -1 : 1;
+                }
+
+                // Then by row
+                if (a.position[0] !== b.position[0]) {
+                    return a.position[0] - b.position[0];
+                }
+
+                // Then by column
+                return a.position[1] - b.position[1];
+            });
+
+            positions.forEach(pos => {
+                const piece = appState.pieces.find(p => p.id === pos.id);
+                if (!piece) return;
+
+                const posItem = document.createElement('div');
+                posItem.className = `p-2 mb-1 border rounded flex items-center ${piece.team === 'blue' ? 'border-srw-blue bg-srw-blue bg-opacity-10' : 'border-srw-red bg-srw-red bg-opacity-10'}`;
+
+                const posText = document.createElement('div');
+                posText.className = 'mr-2 bg-srw-dark px-2 py-1 rounded text-xs font-orbitron';
+                posText.textContent = `[${pos.position[0]}, ${pos.position[1]}]`;
+                posItem.appendChild(posText);
+
+                const pieceInfo = document.createElement('div');
+                pieceInfo.className = 'flex-grow';
+                pieceInfo.textContent = piece.type;
+                posItem.appendChild(pieceInfo);
+
+                const removeBtn = document.createElement('button');
+                removeBtn.className = 'text-gray-400 hover:text-srw-red transition-colors';
+                removeBtn.innerHTML = '<i class="fas fa-times"></i>';
+                removeBtn.addEventListener('click', () => {
+                    // Remove this position
+                    appState.initialPositions = appState.initialPositions.filter(p =>
+                        !(p.position[0] === pos.position[0] && p.position[1] === pos.position[1])
+                    );
+
+                    updateBoardDisplay();
+                    updatePlacedPiecesList();
+                });
+                posItem.appendChild(removeBtn);
+
+                placedPiecesList.appendChild(posItem);
+            });
+        }
+
+        // Show export modal with generated CSV
+        function showExportModal() {
+            const csv = generateCSV();
+            document.getElementById('csv-output').value = csv;
+            document.getElementById('export-modal').classList.remove('hidden');
+        }
+
+        // Generate CSV from app state
+        function generateCSV() {
+            let csv = 'data_type,id,title,subtitle,storyImage,storyDesc,boardImage,boardbgm,team,type,moveType,imgUrl,hit,dodge,bgmtype,weapon_colour,crosshairType,position_row,position_col,condition_type,description,event_type,condition_turn,condition_team,condition_pieceId,condition_row,condition_col,action_type,action_pieceId,aim_row,aim_col,action_targetPieceId,action_findBestPosition,action_special,action_title,action_description,action_buttonText,action_character,action_text,action_from_row,action_from_col,action_to_row,action_to_col,action_position_row,action_position_col,once\n';
+
+
+            // Add level info
+            csv += `level_info,${appState.levelInfo.id},${appState.levelInfo.title},${appState.levelInfo.subtitle},${appState.levelInfo.storyImage},${appState.levelInfo.storyDesc},${appState.levelInfo.boardImage},${appState.levelInfo.boardbgm},,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,\n`;
+
+            // Add piece definitions
+            appState.pieces.forEach(piece => {
+                csv += `piece_definition,${piece.id},,,,,,,${piece.team},${piece.type},${piece.moveType},${piece.imgUrl},${piece.hit},${piece.dodge},${piece.bgmtype || ''},${piece.weapon_colour || ''},${piece.crosshairType || ''},,,,,,,,,,,,,,,,,,,,,,,,,,,,,\n`;
+            });
+
+            // Add initial positions
+            appState.initialPositions.forEach(pos => {
+                csv += `initial_position,${pos.id},,,,,,,,,,,,,,,,${pos.position[0]},${pos.position[1]},,,,,,,,,,,,,,,,,,,,,,,,,,,\n`;
+            });
+
+            // Add conditions
+            csv += `condition,victory,,,,,,,,,,,,,,,,,,${appState.conditions.victory.type},${appState.conditions.victory.description},,,,,,,,,,,,,,,,,,,,,,,,,\n`;
+            csv += `condition,defeat,,,,,,,,,,,,,,,,,,${appState.conditions.defeat.type},${appState.conditions.defeat.description},,,,,,,,,,,,,,,,,,,,,,,,,\n`;
+
+            // Add events (improved to correctly handle zero values)
+            appState.events.forEach(event => {
+                // 處理數字0與undefined/空值的區別
+                const conditionTurn = event.condition.turn !== undefined ? event.condition.turn : '';
+                const conditionRow = event.condition.row !== undefined ? event.condition.row : '';
+                const conditionCol = event.condition.col !== undefined ? event.condition.col : '';
+                const actionAimRow = event.action.aimRow !== undefined ? event.action.aimRow : '';
+                const actionAimCol = event.action.aimCol !== undefined ? event.action.aimCol : '';
+
+                // 處理數組中的位置值
+                const fromRow = event.action.from ? event.action.from[0] !== undefined ? event.action.from[0] : '' : '';
+                const fromCol = event.action.from ? event.action.from[1] !== undefined ? event.action.from[1] : '' : '';
+                const toRow = event.action.to ? event.action.to[0] !== undefined ? event.action.to[0] : '' : '';
+                const toCol = event.action.to ? event.action.to[1] !== undefined ? event.action.to[1] : '' : '';
+                const posRow = event.action.position ? event.action.position[0] !== undefined ? event.action.position[0] : '' : '';
+                const posCol = event.action.position ? event.action.position[1] !== undefined ? event.action.position[1] : '' : '';
+
+                // 對於pieceCaptured事件，要在action_pieceId欄位存儲捕獲者ID
+                let actionPieceId = event.action.pieceId || '';
+                if (event.type === 'pieceCaptured' && event.action.capturerId) {
+                    actionPieceId = event.action.capturerId;
+                }
+
+                // 添加findBestPosition和special標誌
+                const findBestPosition = (event.action.type === 'spawnPiece' || event.action.type === 'replacePiece') ?
+                    (event.action.findBestPosition !== false ? 'TRUE' : 'FALSE') : '';
+
+                const special = (event.action.type === 'spawnPiece' || event.action.type === 'replacePiece') ?
+                    (event.action.special !== false ? 'TRUE' : 'FALSE') : '';
+
+                // 添加目標棋子ID（用於replacePiece）
+                const targetPieceId = event.action.targetPieceId || '';
+
+                csv += `event,,,,,,,,,,,,,,,,,,,,,${event.type || ''},${conditionTurn},${event.condition.team || ''},${event.condition.pieceId || ''},${conditionRow},${conditionCol},${event.action.type || ''},${actionPieceId},${actionAimRow},${actionAimCol},${targetPieceId},${findBestPosition},${special},${event.action.title || ''},${event.action.description || ''},${event.action.buttonText || ''},${event.action.character || ''},${event.action.text || ''},${fromRow},${fromCol},${toRow},${toCol},${posRow},${posCol},${event.once ? 'TRUE' : ''}\n`;
+            });
+
+            return csv;
+        }
+
+
+        // Show toast notification
+        function showToast(message, duration = 3000) {
+            const toastEl = document.getElementById('toast');
+            toastEl.textContent = message;
+            toastEl.style.opacity = '1';
+
+            setTimeout(() => {
+                toastEl.style.opacity = '0';
+            }, duration);
+        }
+
+        // Import CSV function
+        function importFromCSV(csvContent) {
+            try {
+                // Split content into lines and remove empty lines
+                const lines = csvContent.split('\n').filter(line => line.trim().length > 0);
+
+                if (lines.length < 2) {
+                    throw new Error('CSV文件格式錯誤或為空');
+                }
+
+                // Check if header exists
+                const header = lines[0].split(',');
+                if (header.length < 6 || header[0] !== 'data_type') {
+                    throw new Error('CSV文件缺少必要的標頭列');
+                }
+
+                // Reset application state
+                const newAppState = {
+                    levelInfo: {
+                        id: 1,
+                        title: '',
+                        subtitle: '',
+                        storyImage: '',
+                        storyDesc: '',
+                        boardImage: '',
+                        boardbgm: ''
+                    },
+                    pieces: [],
+                    initialPositions: [],
+                    conditions: {
+                        victory: { type: 'captureKing', description: '' },
+                        defeat: { type: 'kingCaptured', description: '' }
+                    },
+                    events: [],
+                    editingPieceIndex: -1,
+                    currentTeamFilter: 'all'
+                };
+
+                // Parse each line
+                for (let i = 1; i < lines.length; i++) {
+                    const cells = parseCsvLine(lines[i]);
+                    const dataType = cells[0];
+
+                    // Process based on data type
+                    switch (dataType) {
+                        case 'level_info':
+                            // Level info: id, title, subtitle, storyImage, storyDesc, boardImage, boardbgm
+                            newAppState.levelInfo = {
+                                id: parseInt(cells[1]) || 1,
+                                title: cells[2] || '',
+                                subtitle: cells[3] || '',
+                                storyImage: cells[4] || '',
+                                storyDesc: cells[5] || '',
+                                boardImage: cells[6] || '',
+                                boardbgm: cells[7] || ''
+                            };
+                            break;
+
+                        case 'piece_definition':
+                            // Piece definition: id, team, type, moveType, imgUrl, hit, dodge, bgmtype, weapon_colour, crosshairType
+                            newAppState.pieces.push({
+                                id: cells[1] || '',
+                                team: cells[8] || 'blue',
+                                type: cells[9] || '',
+                                moveType: cells[10] || 'pawn',
+                                imgUrl: cells[11] || '',
+                                hit: parseInt(cells[12]) || 3,
+                                dodge: parseInt(cells[13]) || 3,
+                                bgmtype: cells[14] || '',
+                                weapon_colour: cells[15] || '',
+                                crosshairType: cells[16] || ''
+                            });
+                            break;
+
+                        case 'initial_position':
+                            // Initial position: id, position_row, position_col
+                            if (cells[1] && cells[17] && cells[18]) {
+                                newAppState.initialPositions.push({
+                                    id: cells[1],
+                                    position: [parseInt(cells[17]), parseInt(cells[18])]
+                                });
+                            }
+                            break;
+
+                        case 'condition':
+                            // Condition: id (victory/defeat), condition_type, description
+                            if (cells[1] === 'victory') {
+                                newAppState.conditions.victory = {
+                                    type: cells[19] || 'captureKing',
+                                    description: cells[20] || ''
+                                };
+                            } else if (cells[1] === 'defeat') {
+                                newAppState.conditions.defeat = {
+                                    type: cells[19] || 'kingCaptured',
+                                    description: cells[20] || ''
+                                };
+                            }
+                            break;
+
+                        case 'event':
+                            try {
+                                // 只導入支持的三種事件類型
+                                if (['turnStart', 'pieceMove', 'pieceCaptured'].includes(cells[21])) {
+                                    // Event: event_type, condition_turn, condition_team, etc.
+                                    // 處理數字0與空值的區別 - 為了CSV導入
+                                    const parseCsvNumber = (value) => {
+                                        if (value === undefined || value === null || value === '') return undefined;
+                                        const num = parseInt(value);
+                                        return isNaN(num) ? undefined : num;
+                                    };
+
+                                    // 處理pieceCaptured事件的特殊欄位映射
+                                    let pieceId = cells[24] || undefined;
+                                    let capturerId = undefined;
+
+                                    if (cells[21] === 'pieceCaptured') {
+                                        pieceId = cells[24] || undefined;  // condition_pieceId是被捕獲棋子
+                                        capturerId = cells[28] || undefined; // action_pieceId是捕獲者棋子
+                                    }
+
+                                    const event = {
+                                        type: cells[21] || 'turnStart',
+                                        condition: {
+                                            turn: parseCsvNumber(cells[22]),
+                                            team: cells[23] || undefined,
+                                            pieceId: pieceId,
+                                            row: parseCsvNumber(cells[25]),
+                                            col: parseCsvNumber(cells[26])
+                                        },
+                                        action: {
+                                            type: cells[27] || 'dialog',
+                                            pieceId: (cells[21] === 'pieceCaptured') ? undefined : cells[28] || undefined,
+                                            capturerId: capturerId,
+                                            aimRow: parseCsvNumber(cells[29]),
+                                            aimCol: parseCsvNumber(cells[30]),
+                                            findBestPosition: cells[32] === 'TRUE',
+                                            special: cells[33] === 'TRUE',
+                                            title: cells[34] || undefined,
+                                            description: cells[35] || undefined,
+                                            buttonText: cells[36] || undefined,
+                                            character: cells[37] || undefined,
+                                            text: cells[38] || undefined,
+                                            from: (cells[39] !== '' || cells[40] !== '') ?
+                                                [parseCsvNumber(cells[39]), parseCsvNumber(cells[40])] : undefined,
+                                            to: (cells[41] !== '' || cells[42] !== '') ?
+                                                [parseCsvNumber(cells[41]), parseCsvNumber(cells[42])] : undefined,
+                                            position: (cells[43] !== '' || cells[44] !== '') ?
+                                                [parseCsvNumber(cells[43]), parseCsvNumber(cells[44])] : undefined,
+                                            targetPieceId: cells[31] || undefined
+                                        },
+                                        once: cells[45] === 'TRUE'
+                                    };
+
+                                    // 清理事件对象，删除未定义的字段
+                                    for (const key in event.condition) {
+                                        if (event.condition[key] === undefined) {
+                                            delete event.condition[key];
+                                        }
+                                    }
+
+                                    for (const key in event.action) {
+                                        if (event.action[key] === undefined) {
+                                            delete event.action[key];
+                                        }
+                                    }
+
+                                    // Add event only if it has a valid type
+                                    if (event.type && event.type.trim() !== '') {
+                                        newAppState.events.push(event);
+                                    }
+                                }
+                            } catch (error) {
+                                console.error('解析事件时出错:', error, '行数据:', cells);
+                            }
+                            break;
+                    }
+                }
+
+                // Validate loaded data
+                if (!newAppState.levelInfo || !newAppState.levelInfo.id) {
+                    throw new Error('CSV文件缺少關卡基本信息');
+                }
+
+                // Update application state
+                Object.assign(appState, newAppState);
+
+                // Update UI
+                updateFormFields();
+                updatePiecesList();
+                updatePiecesSelection();
+                updateBoardDisplay();
+                updatePlacedPiecesList();
+                updateEventsList(); // 添加這一行來更新事件列表
+
+                return true;
+            } catch (error) {
+                console.error('CSV解析錯誤:', error);
+                showToast('CSV導入失敗: ' + error.message);
+                return false;
+            }
+        }
+
+        // Helper function to parse CSV line correctly (handling quoted fields with commas)
+        function parseCsvLine(line) {
+            const result = [];
+            let currentCell = '';
+            let inQuotes = false;
+
+            for (let i = 0; i < line.length; i++) {
+                const char = line[i];
+
+                if (char === '"') {
+                    inQuotes = !inQuotes;
+                } else if (char === ',' && !inQuotes) {
+                    result.push(currentCell);
+                    currentCell = '';
+                } else {
+                    currentCell += char;
+                }
+            }
+
+            // Add the last cell
+            result.push(currentCell);
+
+            return result;
+        }
+
+        // Update form fields based on app state
+        function updateFormFields() {
+            // Update level info fields
+            document.getElementById('level-id').value = appState.levelInfo.id;
+            document.getElementById('level-title').value = appState.levelInfo.title;
+            document.getElementById('level-subtitle').value = appState.levelInfo.subtitle;
+            document.getElementById('story-image').value = appState.levelInfo.storyImage;
+            document.getElementById('story-desc').value = appState.levelInfo.storyDesc;
+            document.getElementById('board-image').value = appState.levelInfo.boardImage;
+            document.getElementById('board-bgm').value = appState.levelInfo.boardbgm || '';
+
+            // Update image previews
+            if (appState.levelInfo.storyImage) {
+                document.getElementById('story-img-preview-img').src = appState.levelInfo.storyImage;
+                document.getElementById('story-img-preview').classList.remove('hidden');
+            } else {
+                document.getElementById('story-img-preview').classList.add('hidden');
+            }
+
+            if (appState.levelInfo.boardImage) {
+                document.getElementById('board-img-preview-img').src = appState.levelInfo.boardImage;
+                document.getElementById('board-img-preview').classList.remove('hidden');
+                gameBoard.style.backgroundImage = `url('${appState.levelInfo.boardImage}')`;
+            } else {
+                document.getElementById('board-img-preview').classList.add('hidden');
+                gameBoard.style.backgroundImage = '';
+            }
+
+            // Update condition fields
+            document.getElementById('victory-condition-type').value = appState.conditions.victory.type;
+            document.getElementById('victory-description').value = appState.conditions.victory.description;
+            document.getElementById('defeat-condition-type').value = appState.conditions.defeat.type;
+            document.getElementById('defeat-description').value = appState.conditions.defeat.description;
+        }
+
+        // Create new level function
+        function createNewLevel() {
+            // 檢查是否需要保存當前關卡
+            if (confirm('確定要創建新關卡嗎？這將清空當前所有編輯內容。')) {
+                // 重置應用狀態
+                appState.levelInfo = {
+                    id: appState.levelInfo.id + 1, // 增加ID
+                    title: '',
+                    subtitle: '',
+                    storyImage: '',
+                    storyDesc: '',
+                    boardImage: '',
+                    boardbgm: ''
+                };
+
+                appState.pieces = [];
+                appState.initialPositions = [];
+
+                appState.conditions = {
+                    victory: { type: 'captureKing', description: '' },
+                    defeat: { type: 'kingCaptured', description: '' }
+                };
+
+                appState.events = [];
+                appState.editingPieceIndex = -1;
+
+                // 重置表單
+                document.getElementById('level-id').value = appState.levelInfo.id;
+                document.getElementById('level-title').value = '';
+                document.getElementById('level-subtitle').value = '';
+                document.getElementById('story-image').value = '';
+                document.getElementById('board-image').value = '';
+                document.getElementById('board-bgm').value = '';
+                document.getElementById('story-desc').value = '';
+
+                // 隱藏圖片預覽
+                document.getElementById('story-img-preview').classList.add('hidden');
+                document.getElementById('board-img-preview').classList.add('hidden');
+
+                // 重置勝負條件
+                document.getElementById('victory-condition-type').value = 'captureKing';
+                document.getElementById('victory-description').value = '';
+                document.getElementById('defeat-condition-type').value = 'kingCaptured';
+                document.getElementById('defeat-description').value = '';
+
+                // 清空棋盤背景
+                if (gameBoard) {
+                    gameBoard.style.backgroundImage = '';
+                }
+
+                // 更新UI
+                updatePiecesList();
+                updatePiecesSelection();
+                updateBoardDisplay();
+                updatePlacedPiecesList();
+                updateEventsList();
+
+                // 顯示確認信息
+                showToast('已創建新關卡');
+            }
+        }
+
+        // Get display text for move type
+        function getMoveTypeDisplay(moveType) {
+            const moveTypeMap = {
+                'pawn': '步兵 (Pawn)',
+                'rook': '城堡 (Rook)',
+                'knight': '騎士 (Knight)',
+                'bishop': '主教 (Bishop)',
+                'queen': '皇后 (Queen)',
+                'king': '國王 (King)'
+            };
+
+            return moveTypeMap[moveType] || moveType;
+        }
+
+        // Get short display for move type
+        function getMoveTypeShort(moveType) {
+            const moveTypeMap = {
+                'pawn': '步兵',
+                'rook': '城堡',
+                'knight': '騎士',
+                'bishop': '主教',
+                'queen': '皇后',
+                'king': '國王'
+            };
+
+            return moveTypeMap[moveType] || moveType;
+        }
+
+        // Initialize with empty data
+        function initializeEmptyData() {
+            // Initialize empty level info
+            appState.levelInfo = {
+                id: 1,
+                title: '',
+                subtitle: '',
+                storyImage: '',
+                storyDesc: '',
+                boardImage: '',
+                boardbgm: ''
+            };
+
+            // Fill form fields with empty values
+            document.getElementById('level-id').value = appState.levelInfo.id;
+            document.getElementById('level-title').value = '';
+            document.getElementById('level-subtitle').value = '';
+            document.getElementById('story-image').value = '';
+            document.getElementById('board-image').value = '';
+            document.getElementById('board-bgm').value = '';
+            document.getElementById('story-desc').value = '';
+
+            // Clear board background
+            if (gameBoard) {
+                gameBoard.style.backgroundImage = '';
+            }
+
+            // Initialize empty conditions
+            appState.conditions = {
+                victory: {
+                    type: 'captureKing',
+                    description: ''
+                },
+                defeat: {
+                    type: 'kingCaptured',
+                    description: ''
+                }
+            };
+
+            // Set form fields for conditions
+            document.getElementById('victory-condition-type').value = appState.conditions.victory.type;
+            document.getElementById('victory-description').value = '';
+            document.getElementById('defeat-condition-type').value = appState.conditions.defeat.type;
+            document.getElementById('defeat-description').value = '';
+
+            // Initialize empty pieces array
+            appState.pieces = [];
+
+            // Initialize empty positions array
+            appState.initialPositions = [];
+
+            // Initialize empty events array
+            appState.events = [];
+
+            // Update UI with empty data
+            updatePiecesList();
+            updatePiecesSelection();
+            updateBoardDisplay();
+            updatePlacedPiecesList();
+            updateEventsList();
+
+            // Animation on load
+            document.querySelectorAll('.srw-panel').forEach(panel => {
+                panel.classList.add('animate-show');
+            });
+        }
+
+        // Reset event form
+        function resetEventForm() {
+            document.getElementById('event-type').value = 'turnStart';
+            document.getElementById('event-once').checked = true;
+
+            // 回合開始事件欄位
+            document.getElementById('turnStart-turn').value = '';
+            document.getElementById('turnStart-team').value = '';
+
+            // 棋子移動事件欄位
+            document.getElementById('pieceMove-pieceId').value = '';
+            document.getElementById('pieceMove-team').value = '';
+            document.getElementById('pieceMove-row').value = '';
+            document.getElementById('pieceMove-col').value = '';
+
+            // 棋子被吃掉事件欄位
+            document.getElementById('pieceCaptured-pieceId').value = '';
+            document.getElementById('pieceCaptured-capturerId').value = '';
+
+            // 動作欄位
+            document.getElementById('event-action-type').value = 'showMission';
+            document.getElementById('event-action-character').value = '';
+            document.getElementById('event-action-text').value = '';
+            document.getElementById('event-action-pieceId').value = '';
+            document.getElementById('event-action-targetPieceId').value = '';
+            document.getElementById('event-action-to-row').value = '';
+            document.getElementById('event-action-to-col').value = '';
+            document.getElementById('event-action-from-row').value = '';
+            document.getElementById('event-action-from-col').value = '';
+            document.getElementById('event-action-findBestPosition').checked = true;
+            document.getElementById('event-action-special').checked = true;
+            document.getElementById('event-action-title').value = '';
+            document.getElementById('event-action-description').value = '';
+            document.getElementById('event-action-buttonText').value = '確定';
+
+            // 隱藏所有相關欄位
+            document.getElementById('spawn-piece-description').classList.add('hidden');
+            document.getElementById('spawn-piece-options').classList.add('hidden');
+            document.getElementById('replace-piece-target').classList.add('hidden');
+            document.getElementById('move-piece-from-pos').classList.add('hidden');
+
+            // Show dialog options by default
+            document.querySelectorAll('[id^="action-"]').forEach(div => {
+                div.classList.add('hidden');
+            });
+            document.getElementById('action-dialog-options').classList.remove('hidden');
+
+            // Reset editing index
+            editingEventIndex = -1;
+        }
+
+        // Update event form piece options
+        function updateEventFormPieceOptions() {
+            const pieceSelects = [
+                document.getElementById('pieceMove-pieceId'),
+                document.getElementById('pieceCaptured-pieceId'),
+                document.getElementById('pieceCaptured-capturerId'),
+                document.getElementById('event-action-pieceId'),
+                document.getElementById('event-action-targetPieceId')
+            ];
+
+            pieceSelects.forEach(select => {
+                if (!select) return;
+
+                // Store the current value to restore it after updating options
+                const currentValue = select.value;
+
+                // Keep first option (empty/none option)
+                const firstOption = select.options[0];
+                select.innerHTML = '';
+                select.appendChild(firstOption);
+
+                // Add pieces as options
+                appState.pieces.forEach(piece => {
+                    const option = document.createElement('option');
+                    option.value = piece.id;
+                    option.textContent = `${piece.type} (${piece.id}) - ${piece.team === 'blue' ? '藍方' : '紅方'}`;
+                    select.appendChild(option);
+                });
+
+                // Restore the previously selected value if it still exists in the options
+                if (currentValue) {
+                    for (let i = 0; i < select.options.length; i++) {
+                        if (select.options[i].value === currentValue) {
+                            select.value = currentValue;
+                            break;
+                        }
+                    }
+                }
+            });
+        }
+
+        // Save event
+        function saveEvent() {
+            // 獲取事件類型
+            const eventType = document.getElementById('event-type').value;
+            const once = document.getElementById('event-once').checked;
+
+            // 創建基本事件對象
+            const event = {
+                type: eventType,
+                condition: {},
+                action: {},
+                once
+            };
+
+            // 根據事件類型填充條件欄位
+            if (eventType === 'turnStart') {
+                const turnValue = document.getElementById('turnStart-turn').value;
+                const teamValue = document.getElementById('turnStart-team').value;
+
+                if (turnValue) event.condition.turn = parseInt(turnValue);
+                if (teamValue) event.condition.team = teamValue;
+            }
+            else if (eventType === 'pieceMove') {
+                const pieceId = document.getElementById('pieceMove-pieceId').value;
+                const team = document.getElementById('pieceMove-team').value;
+                const row = document.getElementById('pieceMove-row').value;
+                const col = document.getElementById('pieceMove-col').value;
+
+                if (pieceId) event.condition.pieceId = pieceId;
+                if (team) event.condition.team = team;
+                if (row !== '') event.condition.row = parseInt(row);
+                if (col !== '') event.condition.col = parseInt(col);
+            }
+            else if (eventType === 'pieceCaptured') {
+                const pieceId = document.getElementById('pieceCaptured-pieceId').value;
+                const capturerId = document.getElementById('pieceCaptured-capturerId').value;
+
+                if (pieceId) event.condition.pieceId = pieceId;
+                if (capturerId) event.action.capturerId = capturerId;
+            }
+
+            // 獲取動作類型和相關欄位
+            const actionType = document.getElementById('event-action-type').value;
+            event.action.type = actionType;
+
+            // 填充動作欄位
+            if (actionType === 'showMission') {
+                const character = document.getElementById('event-action-character').value;
+                const text = document.getElementById('event-action-text').value;
+                const buttonText = document.getElementById('event-action-buttonText').value;
+
+                if (!text) {
+                    showToast('任務內容不能為空');
+                    return;
+                }
+
+                if (character) event.action.character = character;
+                event.action.text = text;
+                event.action.buttonText = buttonText || '確定';
+            }
+            else if (actionType === 'spawnPiece') {
+                const pieceId = document.getElementById('event-action-pieceId').value;
+                const aimRow = document.getElementById('event-action-to-row').value;
+                const aimCol = document.getElementById('event-action-to-col').value;
+                const findBestPosition = document.getElementById('event-action-findBestPosition').checked;
+                const special = document.getElementById('event-action-special').checked;
+                const title = document.getElementById('event-action-title').value;
+                const description = document.getElementById('event-action-description').value;
+                const buttonText = document.getElementById('event-action-buttonText').value;
+
+                if (!pieceId) {
+                    showToast('請選擇要生成的棋子');
+                    return;
+                }
+
+                event.action.pieceId = pieceId;
+
+                if (aimRow !== '' && aimCol !== '') {
+                    event.action.aimRow = parseInt(aimRow);
+                    event.action.aimCol = parseInt(aimCol);
+                }
+
+                event.action.findBestPosition = findBestPosition;
+                event.action.special = special;
+
+                if (title) event.action.title = title;
+                if (description) event.action.description = description;
+                if (buttonText) event.action.buttonText = buttonText || '確定';
+            }
+            else if (actionType === 'replacePiece') {
+                const pieceId = document.getElementById('event-action-pieceId').value;
+                const targetPieceId = document.getElementById('event-action-targetPieceId').value;
+                const row = document.getElementById('event-action-to-row').value;
+                const col = document.getElementById('event-action-to-col').value;
+                const findBestPosition = document.getElementById('event-action-findBestPosition').checked;
+                const special = document.getElementById('event-action-special').checked;
+                const title = document.getElementById('event-action-title').value;
+                const description = document.getElementById('event-action-description').value;
+                const buttonText = document.getElementById('event-action-buttonText').value;
+
+                if (!pieceId || !targetPieceId) {
+                    showToast('替換棋子時需要同時指定新棋子和目標棋子');
+                    return;
+                }
+
+                event.action.pieceId = pieceId;
+                event.action.targetPieceId = targetPieceId;
+
+                if (row !== '' && col !== '') {
+                    event.action.row = parseInt(row);
+                    event.action.col = parseInt(col);
+                }
+
+                event.action.findBestPosition = findBestPosition;
+                event.action.special = special;
+
+                if (title) event.action.title = title;
+                if (description) event.action.description = description;
+                if (buttonText) event.action.buttonText = buttonText || '確定';
+            }
+
+            // 更新或添加事件
+            if (editingEventIndex >= 0) {
+                appState.events[editingEventIndex] = event;
+                showToast('事件已更新');
+            } else {
+                appState.events.push(event);
+                showToast('事件已添加');
+            }
+
+            // 更新UI並隱藏表單
+            updateEventsList();
+            document.getElementById('event-form').classList.add('hidden');
+        }
+
+        // Update events list display
+        function updateEventsList() {
+            const eventsList = document.getElementById('events-list');
+            eventsList.innerHTML = '';
+
+            if (appState.events.length === 0) {
+                // Show empty message
+                const emptyMsg = document.createElement('div');
+                emptyMsg.className = 'p-6 border border-dashed border-srw-accent rounded-lg text-center text-gray-400 flex items-center justify-center col-span-2';
+                emptyMsg.innerHTML = `
+                    <div>
+                        <i class="fas fa-bolt text-4xl mb-2 text-srw-accent opacity-50"></i>
+                        <p>暫無事件，請點擊"添加事件"按鈕創建事件</p>
+                    </div>
+                `;
+                eventsList.appendChild(emptyMsg);
+                return;
+            }
+
+            // Add each event as a card
+            appState.events.forEach((event, index) => {
+                const eventCard = document.createElement('div');
+                eventCard.className = 'event-card rounded-lg p-4 relative';
+
+                // 不同事件類型使用不同背景色
+                if (event.type === 'turnStart') {
+                    eventCard.classList.add('border-blue-500');
+                } else if (event.type === 'pieceMove') {
+                    eventCard.classList.add('border-green-500');
+                } else if (event.type === 'pieceCaptured') {
+                    eventCard.classList.add('border-red-500');
+                }
+
+                // Event type badge with icon
+                const typeBadge = document.createElement('div');
+                typeBadge.className = 'absolute top-2 right-2 bg-srw-accent px-2 py-1 rounded-full text-xs flex items-center';
+
+                // 根據事件類型添加不同圖標
+                let iconClass = 'fa-bolt';
+                if (event.type === 'turnStart') iconClass = 'fa-hourglass-start';
+                else if (event.type === 'pieceMove') iconClass = 'fa-chess';
+                else if (event.type === 'pieceCaptured') iconClass = 'fa-skull';
+
+                typeBadge.innerHTML = `<i class="fas ${iconClass} mr-1"></i>${getEventTypeDisplay(event.type)}`;
+                eventCard.appendChild(typeBadge);
+
+                // Header with conditions
+                const header = document.createElement('div');
+                header.className = 'mb-3 pb-2 border-b border-srw-accent';
+
+                const title = document.createElement('h4');
+                title.className = 'font-bold text-lg text-srw-gold';
+                title.textContent = getEventTitle(event);
+                header.appendChild(title);
+
+                const conditions = getEventConditionText(event);
+                if (conditions) {
+                    const conditionsEl = document.createElement('p');
+                    conditionsEl.className = 'text-sm text-gray-300 mt-1';
+                    conditionsEl.innerHTML = `<i class="fas fa-filter mr-1 text-srw-accent"></i> ${conditions}`;
+                    header.appendChild(conditionsEl);
+                }
+
+                eventCard.appendChild(header);
+
+                // Action details
+                const actionDetails = document.createElement('div');
+                actionDetails.className = 'mb-2';
+
+                const actionType = document.createElement('div');
+                actionType.className = 'text-sm font-bold text-srw-accent';
+                actionType.innerHTML = `<i class="fas fa-play mr-1"></i> ${getActionTypeDisplay(event.action.type)}`;
+                actionDetails.appendChild(actionType);
+
+                const actionDesc = document.createElement('div');
+                actionDesc.className = 'mt-1 text-sm';
+                actionDesc.innerHTML = getActionDescription(event.action);
+                actionDetails.appendChild(actionDesc);
+
+                eventCard.appendChild(actionDetails);
+
+                // Once flag
+                if (event.once) {
+                    const onceFlag = document.createElement('div');
+                    onceFlag.className = 'text-xs text-gray-400 mt-2';
+                    onceFlag.innerHTML = '<i class="fas fa-history mr-1"></i> 僅觸發一次';
+                    eventCard.appendChild(onceFlag);
+                }
+
+                // Action buttons
+                const actions = document.createElement('div');
+                actions.className = 'mt-3 pt-2 border-t border-gray-700 flex justify-end space-x-2';
+
+                const editBtn = document.createElement('button');
+                editBtn.className = 'text-sm text-srw-blue hover:text-srw-gold transition-colors';
+                editBtn.innerHTML = '<i class="fas fa-edit mr-1"></i>編輯';
+                editBtn.addEventListener('click', () => editEvent(index));
+                actions.appendChild(editBtn);
+
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'text-sm text-srw-red hover:text-srw-gold transition-colors';
+                deleteBtn.innerHTML = '<i class="fas fa-trash mr-1"></i>刪除';
+                deleteBtn.addEventListener('click', () => deleteEvent(index));
+                actions.appendChild(deleteBtn);
+
+                eventCard.appendChild(actions);
+
+                eventsList.appendChild(eventCard);
+            });
+        }
+
+        // Get display text for event type
+        function getEventTypeDisplay(type) {
+            const typeMap = {
+                'turnStart': '回合開始',
+                'pieceMove': '棋子移動',
+                'pieceCaptured': '棋子被吃掉'
+            };
+
+            return typeMap[type] || type;
+        }
+
+        // Get display text for action type
+        function getActionTypeDisplay(type) {
+            const typeMap = {
+                'dialog': '對話',
+                'showMission': '顯示任務',
+                'showAlert': '顯示警告',
+                'movePiece': '移動棋子',
+                'removePiece': '移除棋子',
+                'addPiece': '添加棋子',
+                'spawnPiece': '生成棋子',
+                'replacePiece': '替換棋子'
+            };
+
+            return typeMap[type] || type;
+        }
+
+        // Get event title based on type and conditions
+        function getEventTitle(event) {
+            let title = getEventTypeDisplay(event.type);
+
+            // Add specific conditions to title based on event type
+            if (event.type === 'turnStart' && event.condition.turn) {
+                title += ` (回合 ${event.condition.turn})`;
+                if (event.condition.team) {
+                    title += ` ${event.condition.team === 'blue' ? '藍方' : '紅方'}`;
+                }
+            } else if (event.type === 'pieceMove' && event.condition.pieceId) {
+                const piece = appState.pieces.find(p => p.id === event.condition.pieceId);
+                if (piece) {
+                    title += ` (${piece.type})`;
+                }
+            } else if (event.type === 'pieceCaptured' && event.condition.pieceId) {
+                const piece = appState.pieces.find(p => p.id === event.condition.pieceId);
+                if (piece) {
+                    title += ` (${piece.type})`;
+                }
+            }
+
+            return title;
+        }
+
+        // Get event condition text
+        function getEventConditionText(event) {
+            const conditions = [];
+
+            // 根據事件類型顯示不同的條件文本
+            if (event.type === 'turnStart') {
+                if (event.condition.turn) {
+                    conditions.push(`回合 ${event.condition.turn}`);
+                }
+
+                if (event.condition.team) {
+                    conditions.push(event.condition.team === 'blue' ? '藍方' : '紅方');
+                }
+            } else if (event.type === 'pieceMove') {
+                if (event.condition.pieceId) {
+                    const piece = appState.pieces.find(p => p.id === event.condition.pieceId);
+                    if (piece) {
+                        conditions.push(`棋子: ${piece.type}`);
+                    } else {
+                        conditions.push(`棋子ID: ${event.condition.pieceId}`);
+                    }
+                }
+
+                if (event.condition.team) {
+                    conditions.push(event.condition.team === 'blue' ? '藍方' : '紅方');
+                }
+
+                if (event.condition.row !== undefined && event.condition.col !== undefined) {
+                    conditions.push(`移動到位置: [${event.condition.row}, ${event.condition.col}]`);
+                }
+            } else if (event.type === 'pieceCaptured') {
+                if (event.condition.pieceId) {
+                    const piece = appState.pieces.find(p => p.id === event.condition.pieceId);
+                    if (piece) {
+                        conditions.push(`被吃掉棋子: ${piece.type}`);
+                    } else {
+                        conditions.push(`被吃掉棋子ID: ${event.condition.pieceId}`);
+                    }
+                }
+
+                if (event.action.capturerId) {
+                    const piece = appState.pieces.find(p => p.id === event.action.capturerId);
+                    if (piece) {
+                        conditions.push(`捕獲者: ${piece.type}`);
+                    } else {
+                        conditions.push(`捕獲者ID: ${event.action.capturerId}`);
+                    }
+                }
+            }
+
+            return conditions.join(', ');
+        }
+
+        // Get action description text
+        function getActionDescription(action) {
+            switch (action.type) {
+                case 'showMission':
+                    let missionDesc = '';
+                    if (action.character) {
+                        missionDesc += `<span class="font-bold">${action.character}:</span> `;
+                    }
+                    missionDesc += action.text || '';
+                    if (action.buttonText && action.buttonText !== '確定') {
+                        missionDesc += `<br><span class="text-xs text-gray-400">按鈕: ${action.buttonText}</span>`;
+                    }
+                    return missionDesc;
+
+                case 'spawnPiece': // 生成棋子
+                    let spawnDesc = '';
+                    if (action.pieceId) {
+                        const piece = appState.pieces.find(p => p.id === action.pieceId);
+                        spawnDesc += piece ? piece.type : action.pieceId;
+                    }
+
+                    if (action.aimRow !== undefined && action.aimCol !== undefined) {
+                        spawnDesc += ` 生成於 [${action.aimRow}, ${action.aimCol}]`;
+                    } else if (action.findBestPosition) {
+                        spawnDesc += ` 自動尋找最佳位置`;
+                    }
+
+                    // 顯示標題和描述
+                    if (action.title) {
+                        spawnDesc += `<br><span class="text-xs font-bold text-srw-gold">${action.title}</span>`;
+                    }
+                    if (action.description) {
+                        spawnDesc += `<br><span class="text-xs text-green-400">${action.description}</span>`;
+                    }
+
+                    return spawnDesc || action.text || '';
+
+                case 'replacePiece': // 替換棋子
+                    let replaceDesc = '';
+
+                    if (action.pieceId && action.targetPieceId) {
+                        const newPiece = appState.pieces.find(p => p.id === action.pieceId);
+                        const targetPiece = appState.pieces.find(p => p.id === action.targetPieceId);
+
+                        replaceDesc += `${targetPiece ? targetPiece.type : action.targetPieceId} 替換為 ${newPiece ? newPiece.type : action.pieceId}`;
+                    }
+
+                    if (action.row !== undefined && action.col !== undefined) {
+                        replaceDesc += ` 在 [${action.row}, ${action.col}]`;
+                    }
+
+                    // 顯示標題和描述
+                    if (action.title) {
+                        replaceDesc += `<br><span class="text-xs font-bold text-srw-gold">${action.title}</span>`;
+                    }
+                    if (action.description) {
+                        replaceDesc += `<br><span class="text-xs text-green-400">${action.description}</span>`;
+                    }
+
+                    return replaceDesc || action.text || '';
+
+                default:
+                    // 對於未知的動作類型，嘗試顯示標題、文本或其他有用信息
+                    return action.title || action.text || '未知動作類型';
+            }
+        }
+
+        // Edit an event
+        function editEvent(index) {
+            editingEventIndex = index;
+            const event = appState.events[index];
+
+            // 首先重置表單
+            resetEventForm();
+
+            // 設置事件類型並顯示對應區塊
+            document.getElementById('event-type').value = event.type;
+            showEventTypeSection(event.type);
+
+            // 設置"僅觸發一次"複選框
+            document.getElementById('event-once').checked = !!event.once;
+
+            // 根據事件類型填充表單欄位
+            if (event.type === 'turnStart') {
+                if (event.condition.turn !== undefined) {
+                    document.getElementById('turnStart-turn').value = event.condition.turn;
+                }
+                if (event.condition.team) {
+                    document.getElementById('turnStart-team').value = event.condition.team;
+                }
+            }
+            else if (event.type === 'pieceMove') {
+                // 更新棋子選項
+                updateEventFormPieceOptions();
+
+                if (event.condition.pieceId) {
+                    document.getElementById('pieceMove-pieceId').value = event.condition.pieceId;
+                }
+                if (event.condition.team) {
+                    document.getElementById('pieceMove-team').value = event.condition.team;
+                }
+                if (event.condition.row !== undefined) {
+                    document.getElementById('pieceMove-row').value = event.condition.row;
+                }
+                if (event.condition.col !== undefined) {
+                    document.getElementById('pieceMove-col').value = event.condition.col;
+                }
+            }
+            else if (event.type === 'pieceCaptured') {
+                // 更新棋子選項
+                updateEventFormPieceOptions();
+
+                if (event.condition.pieceId) {
+                    document.getElementById('pieceCaptured-pieceId').value = event.condition.pieceId;
+                }
+                if (event.action.capturerId) {
+                    document.getElementById('pieceCaptured-capturerId').value = event.action.capturerId;
+                }
+            }
+
+            // 填充動作欄位
+            document.getElementById('event-action-type').value = event.action.type;
+
+            // 根據動作類型顯示和填充相應欄位
+            if (event.action.type === 'dialog' || event.action.type === 'showMission' || event.action.type === 'showAlert') {
+                document.getElementById('action-dialog-options').classList.remove('hidden');
+                document.getElementById('action-movePiece-options').classList.add('hidden');
+
+                document.getElementById('event-action-character').value = event.action.character || '';
+                document.getElementById('event-action-text').value = event.action.text || '';
+            }
+            else {
+                document.getElementById('action-dialog-options').classList.add('hidden');
+                document.getElementById('action-movePiece-options').classList.remove('hidden');
+
+                // 更新棋子選項並設置值
+                updateEventFormPieceOptions();
+
+                if (event.action.pieceId) {
+                    document.getElementById('event-action-pieceId').value = event.action.pieceId;
+                }
+
+                // 根據動作類型顯示和填充特定欄位
+                if (event.action.type === 'movePiece') {
+                    document.getElementById('move-piece-from-pos').classList.remove('hidden');
+
+                    if (event.action.from && event.action.from.length === 2) {
+                        document.getElementById('event-action-from-row').value = event.action.from[0];
+                        document.getElementById('event-action-from-col').value = event.action.from[1];
+                    }
+
+                    if (event.action.to && event.action.to.length === 2) {
+                        document.getElementById('event-action-to-row').value = event.action.to[0];
+                        document.getElementById('event-action-to-col').value = event.action.to[1];
+                    }
+                }
+                else if (event.action.type === 'spawnPiece') {
+                    document.getElementById('spawn-piece-options').classList.remove('hidden');
+                    document.getElementById('spawn-piece-description').classList.remove('hidden');
+
+                    document.getElementById('event-action-findBestPosition').checked = event.action.findBestPosition !== false;
+                    document.getElementById('event-action-special').checked = event.action.special !== false;
+
+                    document.getElementById('event-action-title').value = event.action.title || '';
+                    document.getElementById('event-action-description').value = event.action.description || '';
+                    document.getElementById('event-action-buttonText').value = event.action.buttonText || '確定';
+
+                    if (event.action.aimRow !== undefined && event.action.aimCol !== undefined) {
+                        document.getElementById('event-action-to-row').value = event.action.aimRow;
+                        document.getElementById('event-action-to-col').value = event.action.aimCol;
+                    }
+                }
+                else if (event.action.type === 'replacePiece') {
+                    document.getElementById('replace-piece-target').classList.remove('hidden');
+                    document.getElementById('spawn-piece-description').classList.remove('hidden');
+                    document.getElementById('spawn-piece-options').classList.remove('hidden');
+
+                    if (event.action.targetPieceId) {
+                        document.getElementById('event-action-targetPieceId').value = event.action.targetPieceId;
+                    }
+
+                    document.getElementById('event-action-findBestPosition').checked = event.action.findBestPosition !== false;
+                    document.getElementById('event-action-special').checked = event.action.special !== false;
+
+                    document.getElementById('event-action-title').value = event.action.title || '';
+                    document.getElementById('event-action-description').value = event.action.description || '';
+                    document.getElementById('event-action-buttonText').value = event.action.buttonText || '確定';
+
+                    if (event.action.row !== undefined && event.action.col !== undefined) {
+                        document.getElementById('event-action-to-row').value = event.action.row;
+                        document.getElementById('event-action-to-col').value = event.action.col;
+                    }
+                }
+                else if (event.action.type === 'removePiece') {
+                    if (event.action.position && event.action.position.length === 2) {
+                        document.getElementById('event-action-to-row').value = event.action.position[0];
+                        document.getElementById('event-action-to-col').value = event.action.position[1];
+                    }
+                }
+            }
+
+            // 手動觸發動作類型變更事件，確保正確顯示相關欄位
+            const actionTypeEvent = new Event('change');
+            document.getElementById('event-action-type').dispatchEvent(actionTypeEvent);
+
+            // 顯示表單
+            document.getElementById('event-form').classList.remove('hidden');
+        }
+
+        // Delete an event
+        function deleteEvent(index) {
+            if (confirm('確定要刪除這個事件嗎？這個操作不可撤銷。')) {
+                appState.events.splice(index, 1);
+                updateEventsList();
+                showToast('事件已刪除');
+            }
+        }
+    </script>
+
+
+
+
+</body></html>
