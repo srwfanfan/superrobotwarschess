@@ -3460,13 +3460,13 @@
             // Set victory card appearance based on winner
             if (winnerTeam === BLUE) {
                 victoryCard.className = "victory-card blue-victory";
-                victoryTitle.textContent = "藍方勝利！";
-                victoryMessage.textContent = "藍方成功擊敗了紅方！恭喜藍方玩家！";
+                victoryTitle.textContent = "勝利！";
+                victoryMessage.textContent = "您成功擊敗了敵人！可以進入下一話了！";
                 victoryIcon.textContent = "🏆";
             } else {
                 victoryCard.className = "victory-card red-victory";
-                victoryTitle.textContent = "紅方勝利！";
-                victoryMessage.textContent = "紅方成功擊敗了藍方！恭喜紅方玩家！";
+                victoryTitle.textContent = "戰敗了！";
+                victoryMessage.textContent = "您被敵方擊敗了！再接再厲吧！";
                 victoryIcon.textContent = "🏆";
             }
 
@@ -6389,7 +6389,7 @@
                 // 修改勝利畫面的按鈕文本
                 const victoryResetBtn = document.getElementById('victory-reset');
                 if (victoryResetBtn) {
-                    victoryResetBtn.textContent = '進入下一關';
+                    victoryResetBtn.textContent = '進入下一話';
 
                     // 克隆按鈕並替換以移除所有事件監聽器
                     const newBtn = victoryResetBtn.cloneNode(true);
