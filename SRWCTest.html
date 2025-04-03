@@ -6188,48 +6188,50 @@
 
                     // 根據提供的初始狀態設置棋子
                     initialState.forEach(piece => {
-                        if (!piece || !piece.id || !piece.position || !Array.isArray(piece.position) || piece.position.length !== 2) {
-                            console.error(`無效的棋子定義: ${JSON.stringify(piece)}`);
-                            return;
-                        }
+                    if (!piece || !piece.id || !piece.position || !Array.isArray(piece.position) || piece.position.length !== 2) {
+                        console.error(`無效的棋子定義: ${JSON.stringify(piece)}`);
+                        return;
+                    }
 
-                        // Get piece information and check for gundam replacement
-                        let actualPieceId = piece.id; // Create a local variable for the modified ID
-                        if (Get_fa_gundam === 1 && piece.id === 'gundam') {
-                            actualPieceId = 'fa_gundam';
-                            console.log(`Replacing ${piece.id} with fa_gundam at position [${piece.position[0]},${piece.position[1]}]`);
-                        }
-                        
-                        const [row, col] = position;
+                    const { id, position } = piece;
+                    const [row, col] = position;
 
-                        if (row < 0 || row >= BOARD_SIZE || col < 0 || col >= BOARD_SIZE) {
-                            console.error(`棋子位置超出範圍: [${row},${col}]`);
-                            return;
-                        }
+                    // Create a variable for the potentially modified ID
+                    let actualPieceId = id;
+    
+                    // Check if we should replace gundam with fa_gundam
+                    if (Get_fa_gundam === 1 && id === 'gundam') {
+                        actualPieceId = 'fa_gundam';
+                        console.log(`Replacing gundam with fa_gundam at position [${row},${col}]`);
+                    }
 
-                        // 從關卡的機體定義中獲取
-                        if (!levelPieceDefinitions[id]) {
-                            console.error(`在關卡 ${this.currentLevel} 中未定義的棋子ID: ${id}`);
-                            return;
-                        }
+                    if (row < 0 || row >= BOARD_SIZE || col < 0 || col >= BOARD_SIZE) {
+                        console.error(`棋子位置超出範圍: [${row},${col}]`);
+                        return;
+                    }
 
-                        // 使用關卡中的機體定義而不是全局定義
-                        const pieceDefinition = levelPieceDefinitions[actualPieceId];
-                        gameState.board[row][col] = {
-                            id: actualPieceId,
-                            team: pieceDefinition.team,
-                            type: pieceDefinition.type,
-                            moveType: pieceDefinition.moveType,
-                            imgUrl: pieceDefinition.imgUrl,
-                            hit: pieceDefinition.hit,
-                            dodge: pieceDefinition.dodge,
-                            bgmtype: pieceDefinition.bgmtype || '',
-                            weapon_colour: pieceDefinition.weapon_colour || '',
-                            crosshairType: pieceDefinition.crosshairType || 'Beam_Rifie',
-                            hasMoved: false
-                        };
-                    });
+                    // Check if the piece definition exists using actualPieceId
+                    if (!levelPieceDefinitions[actualPieceId]) {
+                        console.error(`在關卡 ${this.currentLevel} 中未定義的棋子ID: ${actualPieceId}`);
+                        return;
+                    }
 
+                    // Use the potentially modified piece ID for creating the piece
+                    const pieceDefinition = levelPieceDefinitions[actualPieceId];
+                    gameState.board[row][col] = {
+                        id: actualPieceId, // Use the potentially modified ID
+                        team: pieceDefinition.team,
+                        type: pieceDefinition.type,
+                        moveType: pieceDefinition.moveType,
+                        imgUrl: pieceDefinition.imgUrl,
+                        hit: pieceDefinition.hit,
+                        dodge: pieceDefinition.dodge,
+                        bgmtype: pieceDefinition.bgmtype || '',
+                        weapon_colour: pieceDefinition.weapon_colour || '',
+                        crosshairType: pieceDefinition.crosshairType || 'Beam_Rifie',
+                        hasMoved: false
+                    };
+                });
                     console.log(`棋盤初始化完成，更新UI，時間: ${Date.now() - window.gameLoadStartTime}ms`);
 
                     // 安全更新UI
