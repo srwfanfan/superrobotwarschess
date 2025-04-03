@@ -3,7 +3,7 @@ level_info,2,第二話,突擊！托爾吉斯Ⅲ！,https://i.imgur.com/ebgBZ2I.p
 piece_definition,fa_gundam,,,,,,,blue,FA高達,rook,https://i.imgur.com/SAf7S6T.pngWingzero,3,3,Gundam,#FF1493,Beam_Rifie,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 piece_definition,gundam,,,,,,,blue,高達,rook,https://i.imgur.com/ma9ZzPs.png,2,3,Gundam,#FF1493,Beam_Rifie,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 piece_definition,zaku_ii_3,,,,,,,red,扎古II 3,pawn,https://i.imgur.com/lMflnaQ.png,2,2,Gundam,#FFD700,Beam_Rifie,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-initial_position,gundam,,,,,,,,,,,,,,,,7,0,,,,,,,,,,,,,,,,,,,,,,,,,,,
+initial_position,gundam,,,,,,,,,,,,,,,,7,4,,,,,,,,,,,,,,,,,,,,,,,,,,,
 initial_position,zaku_ii_3,,,,,,,,,,,,,,,,1,4,,,,,,,,,,,,,,,,,,,,,,,,,,,
 condition,victory,,,,,,,,,,,,,,,,,,captureAllPieces,消滅所有敵方機體,,,,,,,,,,,,,,,,,,,,,,,,,
 condition,defeat,,,,,,,,,,,,,,,,,,kingCaptured,我方旗艦「勞·卡拉姆號」被摧毀,,,,,,,,,,,,,,,,,,,,,,,,,
