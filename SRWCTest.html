@@ -1924,6 +1924,9 @@
             result: null // 'attacker' or 'defender'
         };
 
+        // 隱藏要素相關代碼
+        let Get_fa_gundam = 0;
+        
         // 添加BGM及SE相關代碼
         let battleBgmPlayer = null;
         let introMusicPlayer = null;
@@ -6191,6 +6194,13 @@
                         }
 
                         const { id, position } = piece;
+
+                        // Check if we should replace gundam with fa_gundam
+                        if (Get_fa_gundam === 1 && pieceId === 'gundam') {
+                            pieceId = 'fa_gundam';
+                            console.log(`Replacing ${id} with fa_gundam at position [${position[0]},${position[1]}]`);
+                        }
+                        
                         const [row, col] = position;
 
                         if (row < 0 || row >= BOARD_SIZE || col < 0 || col >= BOARD_SIZE) {
@@ -6934,7 +6944,7 @@
             handleReplacePieceAction: function(action, context) {
                 console.log("执行替换棋子动作:", action);
                 const { position, pieceId, row, col, targetPieceId, special } = action;
-
+                
                 // 确定要替换的棋子位置
                 let targetRow, targetCol;
 
@@ -7008,6 +7018,11 @@
                     this.spawnPiece(pieceId, [targetRow, targetCol], context);
                 }
 
+                if (action.pieceId === 'fa_gundam') {
+                    console.log("FA Gundam has been unlocked!");
+                    Get_fa_gundam = 1;
+                }
+                
                 // 更新棋盘显示
                 updateBoardDisplay();
             },
