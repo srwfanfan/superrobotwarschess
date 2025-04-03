@@ -6216,7 +6216,7 @@
                         // 使用關卡中的機體定義而不是全局定義
                         const pieceDefinition = levelPieceDefinitions[id];
                         gameState.board[row][col] = {
-                            id: id,
+                            id: actualPieceId,
                             team: pieceDefinition.team,
                             type: pieceDefinition.type,
                             moveType: pieceDefinition.moveType,
