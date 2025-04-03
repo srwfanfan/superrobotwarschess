@@ -6193,12 +6193,11 @@
                             return;
                         }
 
-                        const { id, position } = piece;
-
-                        // Check if we should replace gundam with fa_gundam
-                        if (Get_fa_gundam === 1 && pieceId === 'gundam') {
-                            pieceId = 'fa_gundam';
-                            console.log(`Replacing ${id} with fa_gundam at position [${position[0]},${position[1]}]`);
+                        // Get piece information and check for gundam replacement
+                        let actualPieceId = piece.id; // Create a local variable for the modified ID
+                        if (Get_fa_gundam === 1 && piece.id === 'gundam') {
+                            actualPieceId = 'fa_gundam';
+                            console.log(`Replacing ${piece.id} with fa_gundam at position [${piece.position[0]},${piece.position[1]}]`);
                         }
                         
                         const [row, col] = position;
