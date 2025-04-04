@@ -1565,6 +1565,25 @@
             }
         }
 
+        /* 将军警告样式 */
+        #check-warning.show {
+          opacity: 1;
+          visibility: visible;
+          animation: pulse-warning 2s infinite;
+          pointer-events: all;
+        }
+
+        @keyframes pulse-warning {
+           0%, 100% {
+            transform: translateX(-50%) scale(1);
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.7);
+          }
+          50% {
+            transform: translateX(-50%) scale(1.05);
+            box-shadow: 0 0 50px rgba(255, 0, 0, 0.9);
+          }
+        }
+
     </style>
 </head>
 <body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-white min-h-screen p-4">
@@ -1828,6 +1847,12 @@
         </div>
     </div>
 
+    <!-- 将军警告消息 -->
+    <div id="check-warning" class="fixed top-[10%] left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-red-600 to-red-800 text-white py-4 px-6 rounded-lg shadow-lg z-[1000] flex items-center justify-center text-2xl font-bold opacity-0 invisible transition-all duration-500 pointer-events-none">
+        <div class="text-3xl mr-3">⚠️</div>
+        <div class="check-warning-text">您被將軍了！請立即應對！</div>
+    </div>
+    
     <!-- Event Dialog -->
     <div id="event-dialog" class="event-dialog">
         <div id="dialog-character" class="dialog-character">キャラクター</div>
@@ -3321,6 +3346,7 @@
             stopBattleBGM();
             stopIntroMusic();
             stopBoardBGM();
+            showCheckWarning(false);
             resetRequestSent = false;
             resetRequestReceived = false;
 
@@ -3504,6 +3530,12 @@
             } catch (error) {
                 console.error(`更新棋盤顯示時發生嚴重錯誤，時間: ${Date.now() - window.gameLoadStartTime}ms`, error);
             }
+
+            // 如果是玩家回合，检查将军状态
+            if (gameState.currentTurn === BLUE && !gameState.gameOver) {
+                checkPlayerKingInCheck();
+            }
+            
         }
 
         // Update turn indicator
@@ -3833,6 +3865,12 @@
                 gameState.validMoves = calculateValidMoves(row, col);
                 updateBoardDisplay();
             }
+
+            // 在移动完成后，如果游戏没有结束，检查将军状态
+            if (!gameState.gameOver && gameState.currentTurn === BLUE) {
+                checkPlayerKingInCheck();
+            }
+            
         }
 
         // Calculate valid moves for a piece
@@ -3936,6 +3974,49 @@
             return false;
         }
 
+        // 显示将军警告
+        function showCheckWarning(isShown) {
+          const warningElement = document.getElementById('check-warning');
+          if (!warningElement) return;
+  
+          if (isShown) {
+            warningElement.classList.add('show');
+    
+            if ('vibrate' in navigator) {
+              navigator.vibrate([200, 100, 200]);
+            }
+          } else {
+            warningElement.classList.remove('show');
+          }
+        }
+
+        // 检查玩家国王是否被将军
+        function checkPlayerKingInCheck() {
+          // 找到玩家国王位置
+          let kingPos = null;
+          for (let r = 0; r < BOARD_SIZE; r++) {
+            for (let c = 0; c < BOARD_SIZE; c++) {
+              const piece = gameState.board[r][c];
+              if (piece && piece.team === BLUE && piece.moveType === KING) {
+                kingPos = { row: r, col: c };
+                break;
+              }
+            }
+            if (kingPos) break;
+          }
+  
+          // 如果找不到国王，返回false
+          if (!kingPos) return false;
+  
+          // 检查国王是否被将军
+          const inCheck = isInCheck(gameState.board, kingPos.row, kingPos.col, BLUE);
+  
+          // 显示或隐藏警告
+          showCheckWarning(inCheck);
+  
+          return inCheck;
+        }
+        
         // Calculate pawn moves
         function calculatePawnMoves(row, col, piece) {
             const moves = [];
@@ -4406,6 +4487,13 @@
                 const aiDelay = 500;
                 aiMoveTimer = setTimeout(makeAIMove, aiDelay);
             }
+            
+            // 在交换回合后，如果现在是玩家回合，检查玩家国王是否被将军
+            if (gameState.currentTurn === BLUE && !gameState.gameOver) {
+                // AI刚刚移动完，现在是玩家回合，检查将军状态
+                setTimeout(checkPlayerKingInCheck, 300); // 短暂延迟确保UI已更新
+            }
+            
         }
 
         // 更新回合數顯示
