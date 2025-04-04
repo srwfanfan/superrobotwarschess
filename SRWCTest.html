@@ -2209,9 +2209,20 @@
                         return;
                     }
             
-                    // 根据完成的关卡数加载下一关
-                    let nextLevelId = completedLevel + 1;
-                    loadLevelById(nextLevelId, loadingOverlay);
+                    // 检查是否已完成所有可用关卡
+                    if (completedLevel < 3) {
+                        // 根据完成的关卡数加载下一关
+                        let nextLevelId = completedLevel + 1;
+                        loadLevelById(nextLevelId, loadingOverlay);
+                    } else {
+                        // 已完成所有关卡，显示消息
+                        document.getElementById('csv-loading-message').textContent = "您已完成所有可用關卡！";
+                        setTimeout(() => {
+                            loadingOverlay.style.display = 'none';
+                            // 可选：返回主菜单
+                            showCoverPage();
+                         }, 3000);
+                    }
                 };
         
                 reader.onerror = function() {
