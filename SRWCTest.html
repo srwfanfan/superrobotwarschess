@@ -2787,6 +2787,58 @@
                         "></div>
                     `;
                     break;
+
+                case 'Destructive_Thunder':
+                    // 正方形外框准星
+                    const frameWidth = Math.round(outerSize * 1); // 使用100%的外框大小
+                    const frameHeight = frameWidth; // 正方形，高度等于宽度
+    
+                    container.innerHTML = `
+                        <div class="crosshair-frame" style="
+                            position: absolute;
+                            top: 50%;
+                            left: 50%;
+                            width: ${frameWidth}px;
+                            height: ${frameHeight}px;
+                            border: ${borderWidth}px solid ${rgbaColor};
+                            transform: translate(-50%, -50%);
+                            box-shadow: 0 0 10px ${color};
+                            pointer-events: none;
+                        "></div>
+                        <div class="crosshair-horizontal" style="
+                            position: absolute;
+                            top: 50%;
+                            left: 0;
+                            width: 100%;
+                            height: ${lineThickness}px;
+                            background: linear-gradient(90deg, ${hexToRgba(color, 0)} 0%, ${rgbaColor} 50%, ${hexToRgba(color, 0)} 100%);
+                            transform: translateY(-50%);
+                            pointer-events: none;
+                        "></div>
+                        <div class="crosshair-vertical" style="
+                            position: absolute;
+                            top: 0;
+                            left: 50%;
+                            width: ${lineThickness}px;
+                            height: 100%;
+                            background: linear-gradient(0deg, ${hexToRgba(color, 0)} 0%, ${rgbaColor} 50%, ${hexToRgba(color, 0)} 100%);
+                            transform: translateX(-50%);
+                            pointer-events: none;
+                        "></div>
+                        <div class="crosshair-dot" style="
+                            position: absolute;
+                            top: 50%;
+                            left: 50%;
+                            width: ${dotSize}px;
+                            height: ${dotSize}px;
+                            background-color: ${rgbaColor};
+                            transform: translate(-50%, -50%);
+                            box-shadow: 0 0 5px ${color}, 0 0 10px ${color};
+                            animation: pulse 1s infinite alternate;
+                            pointer-events: none;
+                        "></div>
+                    `;
+                    break;
                     
                 case 'diamond':
                     // 菱形外框准星
@@ -3734,6 +3786,7 @@
                                 case "Beam_Rifie": crosshairTypeText = "光束步槍"; break;
                                 case "Beam_Saber": crosshairTypeText = "光束劍"; break;
                                 case "Cosmo_Nova": crosshairTypeText = "宇宙新星"; break;
+                                case "Destructive_Thunder": crosshairTypeText = "破壞雷電"; break;
                                 case "diamond": crosshairTypeText = "鑽石光束"; break;
                                 case "triangle": crosshairTypeText = "三角光束"; break;
                                 case "custom": crosshairTypeText = "自定義武器"; break;
@@ -4828,6 +4881,7 @@
                     case "Beam_Rifie": return "光束步槍";
                     case "Beam_Saber": return "光束劍";
                     case "Cosmo_Nova": return "宇宙新星";
+                    case "Destructive_Thunder": return "破壞雷電";
                     case "diamond": return "鑽石光束";
                     case "triangle": return "三角光束";
                     case "custom": return "自定義武器";
@@ -5249,6 +5303,9 @@
                 case 'Cosmo_Nova':
                     createConvergeShotEffect(weaponColor);
                     break;
+                case 'Destructive_Thunder':
+                    createThunderConvergenceEffect(weaponColor);
+                    break;
                 case 'diamond':
                     createScatterShotEffect(weaponColor);
                     break;
@@ -5582,6 +5639,222 @@
                 if (convergeZone.parentNode) convergeZone.parentNode.removeChild(convergeZone);
             }, 700);
         }
+
+        function createThunderConvergenceEffect(weaponColor) {
+            const containerRect = combatContainer.getBoundingClientRect();
+
+            // 添加必要的CSS
+            addCSSIfNeeded(`
+                @keyframes thunderBolt {
+                    0% { transform: scaleX(0); opacity: 0; }
+                    10% { transform: scaleX(0.2); opacity: 1; }
+                    20% { transform: scaleX(0.4); opacity: 0.8; }
+                    30% { transform: scaleX(0.6); opacity: 1; }
+                    40% { transform: scaleX(0.8); opacity: 0.8; }
+                    50% { transform: scaleX(1); opacity: 1; }
+                    100% { opacity: 0; }
+                }
+
+                @keyframes thunderPulse {
+                    0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.5; }
+                    50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+                    100% { transform: translate(-50%, -50%) scale(1.5); opacity: 0; }
+                }
+
+                @keyframes thunderZigZag {
+                    0% { d: path("M0,0 L20,20 L-20,40 L20,60 L-20,80 L20,100"); opacity: 0; }
+                    10% { opacity: 1; }
+                    30% { d: path("M0,0 L-20,20 L20,40 L-20,60 L20,80 L-20,100"); }
+                    50% { d: path("M0,0 L20,20 L-20,40 L20,60 L-20,80 L20,100"); }
+                    70% { d: path("M0,0 L-20,20 L20,40 L-20,60 L20,80 L-20,100"); }
+                    90% { opacity: 1; }
+                    100% { opacity: 0; }
+                }
+            `);
+
+            // 闪电颜色：主色和高亮色
+            const baseColor = weaponColor;
+            const highlightColor = '#FFFFFF'; // 白色高亮部分
+
+            // 中心爆发效果
+            const centerEffect = document.createElement('div');
+            centerEffect.style.position = 'absolute';
+            centerEffect.style.left = `${combatMode.mouseX}px`;
+            centerEffect.style.top = `${combatMode.mouseY}px`;
+            centerEffect.style.width = `${containerRect.width * 0.15}px`;
+            centerEffect.style.height = `${containerRect.width * 0.15}px`;
+            centerEffect.style.borderRadius = '50%';
+            centerEffect.style.background = `radial-gradient(circle, ${highlightColor} 0%, ${hexToRgba(baseColor, 0.9)} 30%, ${hexToRgba(baseColor, 0.2)} 70%, transparent 100%)`;
+            centerEffect.style.boxShadow = `0 0 30px ${baseColor}, 0 0 50px ${baseColor}`;
+            centerEffect.style.zIndex = '19';
+            centerEffect.style.transform = 'translate(-50%, -50%) scale(0.8)';
+            centerEffect.style.animation = 'thunderPulse 0.8s forwards';
+            combatContainer.appendChild(centerEffect);
+
+            // 播放雷电音效
+            const thunderSound = new Audio('./soundeffects/SRWCSE_Thunder.mp3');
+            if (typeof playCombatSound === 'function') {
+                playCombatSound(thunderSound);
+            } else {
+                thunderSound.volume = 0.7;
+                thunderSound.play().catch(e => console.log('无法播放雷电音效:', e));
+            }
+
+            // 从四个方向创建汇聚的闪电
+            const directions = [
+                { angle: 0, label: 'right' },   // 右
+                { angle: 90, label: 'bottom' }, // 下
+                { angle: 180, label: 'left' },  // 左
+                { angle: 270, label: 'top' }    // 上
+            ];
+
+            directions.forEach((dir, i) => {
+                // 为每个方向创建2条闪电，形成交叉效果
+                for (let j = 0; j < 2; j++) {
+                    setTimeout(() => {
+                        createLightningBolt(dir.angle, i * 100 + j * 50);
+                    }, i * 100 + j * 150); // 错开时间
+                }
+            });
+
+            // 对角线方向的闪电
+            const diagonalDirections = [
+                { angle: 45, label: 'bottomRight' },   // 右下
+                { angle: 135, label: 'bottomLeft' },   // 左下
+                { angle: 225, label: 'topLeft' },      // 左上
+                { angle: 315, label: 'topRight' }      // 右上
+            ];
+
+            diagonalDirections.forEach((dir, i) => {
+                setTimeout(() => {
+                    createLightningBolt(dir.angle, 400 + i * 100);
+                }, 400 + i * 100); // 在直线闪电之后出现
+            });
+
+            // 创建中心爆发光圈效果
+            setTimeout(() => {
+                // 中心爆发光圈
+                const burstEffect = document.createElement('div');
+                burstEffect.style.position = 'absolute';
+                burstEffect.style.left = `${combatMode.mouseX}px`;
+                burstEffect.style.top = `${combatMode.mouseY}px`;
+                burstEffect.style.width = `${containerRect.width * 0.25}px`;
+                burstEffect.style.height = `${containerRect.width * 0.25}px`;
+                burstEffect.style.borderRadius = '50%';
+                burstEffect.style.background = `radial-gradient(circle, ${highlightColor} 0%, transparent 70%)`;
+                burstEffect.style.boxShadow = `0 0 50px ${baseColor}, 0 0 100px ${baseColor}`;
+                burstEffect.style.zIndex = '20';
+                burstEffect.style.transform = 'translate(-50%, -50%) scale(0.1)';
+                burstEffect.style.animation = 'thunderPulse 0.6s forwards';
+                burstEffect.style.opacity = '0.9';
+                combatContainer.appendChild(burstEffect);
+
+                setTimeout(() => {
+                    if (burstEffect.parentNode) burstEffect.parentNode.removeChild(burstEffect);
+                }, 600);
+            }, 800); // 当所有闪电汇聚到中心后
+
+            // 创建闪电效果函数
+            function createLightningBolt(angle, delay) {
+                // 使用 SVG 创建闪电路径
+                const svgNS = "http://www.w3.org/2000/svg";
+                const svg = document.createElementNS(svgNS, "svg");
+                svg.style.position = 'absolute';
+                svg.style.left = '0';
+                svg.style.top = '0';
+                svg.style.width = '100%';
+                svg.style.height = '100%';
+                svg.style.pointerEvents = 'none';
+                svg.style.zIndex = '18';
+                svg.setAttribute('viewBox', `0 0 ${containerRect.width} ${containerRect.height}`);
+        
+                // 计算起点和终点
+                const centerX = combatMode.mouseX;
+                const centerY = combatMode.mouseY;
+                const distance = Math.max(containerRect.width, containerRect.height) * 0.8; // 保证闪电长度足够
+        
+                // 根据角度计算起点（从边缘开始）
+                const startX = centerX + Math.cos(angle * Math.PI / 180) * distance;
+                const startY = centerY + Math.sin(angle * Math.PI / 180) * distance;
+        
+                // 闪电的路径
+                const path = document.createElementNS(svgNS, "path");
+        
+                // 生成闪电路径上的随机点
+                let pathData = `M${startX},${startY} `;
+        
+                // 生成中间的锯齿点
+                const segments = 6; // 闪电的段数
+                const segmentLength = distance / segments;
+                const maxDeviation = segmentLength * 0.3; // 每段的最大偏移量
+        
+                let currentX = startX;
+                let currentY = startY;
+        
+                for (let i = 1; i <= segments; i++) {
+                    // 向中心移动一段
+                    const ratio = i / segments;
+                    const targetX = startX * (1 - ratio) + centerX * ratio;
+                    const targetY = startY * (1 - ratio) + centerY * ratio;
+            
+                    // 添加随机偏移（除了最后一段直接连到中心）
+                    if (i < segments) {
+                        const randomDeviation = (Math.random() * 2 - 1) * maxDeviation;
+                        // 计算垂直于中心连线的方向
+                        const perpAngle = angle * Math.PI / 180 + Math.PI / 2;
+                        const deviationX = Math.cos(perpAngle) * randomDeviation;
+                        const deviationY = Math.sin(perpAngle) * randomDeviation;
+                
+                        currentX = targetX + deviationX;
+                        currentY = targetY + deviationY;
+                    } else {
+                        // 最后一段直接连到中心
+                        currentX = centerX;
+                        currentY = centerY;
+                    }
+                    
+                    pathData += `L${currentX},${currentY} `;
+                }
+        
+                path.setAttribute('d', pathData);
+                path.setAttribute('stroke', baseColor);
+                path.setAttribute('stroke-width', '3');
+                path.setAttribute('fill', 'none');
+                path.setAttribute('stroke-linecap', 'round');
+                path.setAttribute('stroke-linejoin', 'round');
+        
+                // 添加霓虹灯发光效果
+                path.setAttribute('filter', `drop-shadow(0 0 5px ${baseColor})`);
+        
+                // 添加动画效果
+                path.style.strokeDasharray = distance;
+                path.style.strokeDashoffset = distance;
+                path.style.animation = `thunderBolt 0.5s ${delay}ms forwards`;
+        
+                // 创建内部高亮路径
+                const innerPath = path.cloneNode(true);
+                innerPath.setAttribute('stroke', highlightColor);
+                innerPath.setAttribute('stroke-width', '1.5');
+                innerPath.setAttribute('opacity', '0.7');
+        
+                // 添加到SVG
+                svg.appendChild(path);
+                svg.appendChild(innerPath);
+        
+                // 添加到容器
+                combatContainer.appendChild(svg);
+        
+                // 清理
+                setTimeout(() => {
+                    if (svg.parentNode) svg.parentNode.removeChild(svg);
+                }, delay + 800); // 延迟+动画时间+额外的显示时间
+            }
+
+            // 清理中心效果
+            setTimeout(() => {
+                if (centerEffect.parentNode) centerEffect.parentNode.removeChild(centerEffect);
+            }, 800);
+        }
         
         function createScatterShotEffect(weaponColor) {
             const containerRect = combatContainer.getBoundingClientRect();
@@ -5892,6 +6165,17 @@
                             {x: Cosmo_NovaSize, y: 0},
                             {x: 0, y: Cosmo_NovaSize},
                             {x: -Cosmo_NovaSize, y: 0}
+                        ];
+                        break;
+
+                    case 'Destructive_Thunder':
+                        // 使用与 Beam_Saber 相同的方形碰撞检测
+                        const squareSize = crosshairRadius * 0.8; // 稍微缩小以匹配视觉大小
+                        crosshairPoints = [
+                            {x: -squareSize, y: -squareSize},
+                            {x: squareSize, y: -squareSize},
+                            {x: squareSize, y: squareSize},
+                            {x: -squareSize, y: squareSize}
                         ];
                         break;
                         
