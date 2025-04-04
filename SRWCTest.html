@@ -2131,33 +2131,44 @@
 
         // 保存进度到CSV文件
         function saveProgress() {
-        // 获取当前通关的关卡数
-        const completedLevel = levelManager ? levelManager.currentLevel : 0;
+            // 获取当前通关的关卡数
+            const completedLevel = levelManager ? levelManager.currentLevel : 0;
     
-        // 创建CSV内容
-        const csvContent = "completed_level\n" + completedLevel;
+            // 生成10位数字组合
+            let hiddenCode = "";
+            // 第一位是随机数字
+             hiddenCode += Math.floor(Math.random() * 10);
+            // 第二位是已完成关卡数值
+            hiddenCode += completedLevel;
+            // 后面8位是随机数字
+            for (let i = 0; i < 8; i++) {
+                hiddenCode += Math.floor(Math.random() * 10);
+            }
     
-        // 创建Blob对象
-        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-        
-        // 创建下载链接
-        const link = document.createElement("a");
-        const url = URL.createObjectURL(blob);
+            // 创建CSV内容，第一行是标题，第二行是我们的隐藏代码
+            const csvContent = "game_code\n" + hiddenCode;
     
-        // 设置链接属性
-        link.setAttribute("href", url);
-        link.setAttribute("download", "srwcsave.csv");
-        link.style.visibility = 'hidden';
+            // 创建Blob对象
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     
-        // 添加到文档并触发点击
-        document.body.appendChild(link);
-        link.click();
+            // 创建下载链接
+            const link = document.createElement("a");
+            const url = URL.createObjectURL(blob);
     
-        // 清理
-        document.body.removeChild(link);
+            // 设置链接属性
+            link.setAttribute("href", url);
+            link.setAttribute("download", "srwcsave.csv");
+            link.style.visibility = 'hidden';
     
-        // 显示提示
-        showToast("進度已保存");
+            // 添加到文档并触发点击
+            document.body.appendChild(link);
+            link.click();
+    
+            // 清理
+            document.body.removeChild(link);
+    
+            // 显示提示
+            showToast("進度已保存");
         }
 
         // 加载进度
@@ -2167,10 +2178,10 @@
             fileInput.type = 'file';
             fileInput.accept = '.csv';
             fileInput.style.display = 'none';
-
+    
             // 添加到文档
             document.body.appendChild(fileInput);
-
+    
             // 设置文件选择处理
             fileInput.onchange = function(event) {
                 const file = event.target.files[0];
@@ -2178,18 +2189,18 @@
                     document.body.removeChild(fileInput);
                     return;
                 }
-
+        
                 // 显示加载提示
                 const loadingOverlay = document.getElementById('csv-loading-overlay');
                 loadingOverlay.style.display = 'flex';
                 document.getElementById('csv-loading-message').textContent = "正在載入進度...";
-
+        
                 // 读取文件
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     const content = e.target.result;
                     const lines = content.split('\n');
-    
+            
                     // 确保文件格式正确
                     if (lines.length < 2) {
                         document.getElementById('csv-loading-message').textContent = "進度檔案格式錯誤";
@@ -2198,9 +2209,21 @@
                         }, 2000);
                         return;
                     }
-    
-                    // 获取通关关卡数
-                    const completedLevel = parseInt(lines[1].trim(), 10);
+            
+                    // 获取存档代码
+                    const gameCode = lines[1].trim();
+            
+                    // 验证存档代码格式 - 应该是10位数字
+                    if (!/^\d{10}$/.test(gameCode)) {
+                        document.getElementById('csv-loading-message').textContent = "進度檔案內容錯誤";
+                        setTimeout(() => {
+                            loadingOverlay.style.display = 'none';
+                        }, 2000);
+                        return;
+                    }
+            
+                    // 从第二位提取已完成关卡数
+                    const completedLevel = parseInt(gameCode.charAt(1), 10);
                     if (isNaN(completedLevel)) {
                         document.getElementById('csv-loading-message').textContent = "進度檔案內容錯誤";
                         setTimeout(() => {
@@ -2208,7 +2231,7 @@
                         }, 2000);
                         return;
                     }
-    
+            
                     // 检查是否已完成所有可用关卡
                     if (completedLevel < 3) {
                         // 根据完成的关卡数加载下一关
@@ -2224,21 +2247,21 @@
                         }, 3000);
                     }
                 };
-
+        
                 reader.onerror = function() {
                     document.getElementById('csv-loading-message').textContent = "讀取檔案時發生錯誤";
                     setTimeout(() => {
                         loadingOverlay.style.display = 'none';
                     }, 2000);
                 };
-
+        
                 // 开始读取文件
                 reader.readAsText(file);
-
+                
                 // 清理
                 document.body.removeChild(fileInput);
             };
-
+    
             // 触发文件选择
             fileInput.click();
         }
