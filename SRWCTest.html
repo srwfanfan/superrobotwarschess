@@ -2248,9 +2248,9 @@
             // 根据关卡ID决定加载哪个CSV文件
             let csvUrl = "";
             if (levelId === 1) {
-                csvUrl = "./stages/SRWCStage01v7.csv"; // 第一关
+                csvUrl = "./stages/SRWCStage02v3.csv"; // 第一关
             } else if (levelId === 2) {
-                csvUrl = "./stages/SRWCStage02v3.csv"; // 第二关
+                csvUrl = "./stages/SRWCStage02v3T.csv"; // 第二关
             } else {
                 // 默认或未来关卡
                 document.getElementById('csv-loading-message').textContent = "未找到對應關卡或關卡開發中";
@@ -7694,9 +7694,7 @@
             playIntroMusic();
 
             // 指定CSV URL
-            // const csvUrl = "https://cdn.jsdelivr.net/gh/jasonpang1030/srw.github.io@refs/heads/main/SRWCStage01v7.csv";
             const csvUrl = "./stages/SRWCStage02v3.csv";
-            // const csvUrl = "https://cdn.jsdelivr.net/gh/jasonpang1030/srw.github.io@refs/heads/main/eventtestv10.csv";
 
             // 隱藏封面頁面
             coverPage.classList.add('hide');
