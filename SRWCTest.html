@@ -2789,17 +2789,16 @@
                     break;
 
                 case 'Destructive_Thunder':
-                    // 正方形外框准星
-                    const frameWidth = Math.round(outerSize * 1); // 使用100%的外框大小
-                    const frameHeight = frameWidth; // 正方形，高度等于宽度
+                    // 使用不同的变量名避免冲突
+                    const thunderSquareSize = Math.round(outerSize * 1); // 使用100%的外框大小
     
                     container.innerHTML = `
                         <div class="crosshair-frame" style="
                             position: absolute;
                             top: 50%;
                             left: 50%;
-                            width: ${frameWidth}px;
-                            height: ${frameHeight}px;
+                            width: ${thunderSquareSize}px;
+                            height: ${thunderSquareSize}px;
                             border: ${borderWidth}px solid ${rgbaColor};
                             transform: translate(-50%, -50%);
                             box-shadow: 0 0 10px ${color};
@@ -6169,13 +6168,13 @@
                         break;
 
                     case 'Destructive_Thunder':
-                        // 使用与 Beam_Saber 相同的方形碰撞检测
-                        const squareSize = crosshairRadius * 0.8; // 稍微缩小以匹配视觉大小
+                        // 使用与 Beam_Saber 相同的方形碰撞检测，但使用不同的变量名
+                        const thunderSize = crosshairRadius * 0.8; // 稍微缩小以匹配视觉大小
                         crosshairPoints = [
-                            {x: -squareSize, y: -squareSize},
-                            {x: squareSize, y: -squareSize},
-                            {x: squareSize, y: squareSize},
-                            {x: -squareSize, y: squareSize}
+                            {x: -thunderSize, y: -thunderSize},
+                            {x: thunderSize, y: -thunderSize},
+                            {x: thunderSize, y: thunderSize},
+                            {x: -thunderSize, y: thunderSize}
                         ];
                         break;
                         
