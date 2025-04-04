@@ -1572,10 +1572,10 @@
     <div id="cover-page" class="cover-page">
         <div class="space-bg" id="cover-space-bg"></div>
         <div class="flex justify-center w-full mb-4">
-            <img src="https://i.imgur.com/zZgxioQ.png" alt="星球" class="max-w-[240px] h-auto">
+            <img src="./images/BluePlanet.png" alt="星球" class="max-w-[240px] h-auto">
         </div>
         <div class="flex justify-center w-full">
-            <img src="https://i.imgur.com/ve99gPQ.png" alt="超級機械人大戰Chess" class="max-w-[90%] h-auto mb-8">
+            <img src="./images/SRWCLogo.png" alt="超級機械人大戰Chess" class="max-w-[90%] h-auto mb-8">
         </div>
         <div class="cover-buttons">
             <button id="singleplayer-cover-btn" class="cover-button">開始遊戲</button>
@@ -1591,7 +1591,10 @@
             <div id="victory-icon" class="victory-icon">🏆</div>
             <h2 id="victory-title" class="victory-title">勝利！</h2>
             <p id="victory-message" class="victory-message">恭喜您獲得勝利！</p>
-            <button id="victory-reset" class="victory-reset">返回主畫面</button>
+            <div class="flex justify-center space-x-4">
+                <button id="save-progress-btn" class="victory-reset">儲存進度</button>
+                <button id="victory-reset" class="victory-reset">返回主畫面</button>
+            </div>
         </div>
     </div>
 
@@ -1779,7 +1782,8 @@
                 <!-- Game Controls Panel -->
                 <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
                     <h2 class="text-xl font-semibold mb-4">遊戲控制</h2>
-                    <div class="flex justify-center mt-4">
+                    <div class="flex justify-center space-x-4 mt-4">
+                        <button id="load-progress-btn" class="px-6 py-3 bg-blue-500 text-white rounded-lg font-bold text-lg hover:bg-blue-600 transition">載入進度</button>
                         <button id="reset-btn" class="px-6 py-3 bg-red-500 text-white rounded-lg font-bold text-lg hover:bg-red-600 transition">重置遊戲</button>
                     </div>
                 </div>
@@ -1924,6 +1928,9 @@
             result: null // 'attacker' or 'defender'
         };
 
+        // 隱藏要素相關代碼
+        let Get_fa_gundam = 0;
+        
         // 添加BGM及SE相關代碼
         let battleBgmPlayer = null;
         let introMusicPlayer = null;
@@ -1976,10 +1983,10 @@
             let bgmUrl = '';
             switch(bgmtype) {
                 case 'Gundam':
-                    bgmUrl = 'https://cdn.jsdelivr.net/gh/jasonpang1030/srw.github.io@main/SRWCBGM_Gundam.mp3';
+                    bgmUrl = './audio/SRWCBGM_Gundam.mp3';
                     break;
                 case 'Wingzero':
-                    bgmUrl = 'https://cdn.jsdelivr.net/gh/jasonpang1030/srw.github.io@main/SRWCBGM_Wingzero.mp3';
+                    bgmUrl = './audio/SRWCBGM_Wingzero.mp3';
                     break;
                 default:
                     return; // 沒有匹配的BGM類型，不播放
@@ -2026,7 +2033,7 @@
             }
 
             // 指定介紹音樂的URL
-            const introMusicUrl = 'https://cdn.jsdelivr.net/gh/jasonpang1030/srw.github.io@main/SRWCBGM_Intro.mp3';
+            const introMusicUrl = './audio/SRWCBGM_Intro.mp3';
 
             // 創建新的音頻播放器
             introMusicPlayer = new Audio(introMusicUrl);
@@ -2089,15 +2096,15 @@
         // 预加载战斗音效
         function preloadCombatSounds() {
             // 加载激光枪音效
-            beamGunSound = new Audio('https://cdn.jsdelivr.net/gh/jasonpang1030/srw.github.io@main/SRWCSE_BeamGun.mp3');
+            beamGunSound = new Audio('./soundeffects/SRWCSE_BeamGun.mp3');
             beamGunSound.load();
 
             // 加载爆炸音效
-            explosionSound = new Audio('https://cdn.jsdelivr.net/gh/jasonpang1030/srw.github.io@main/SRWCSE_Explosion.mp3');
+            explosionSound = new Audio('./soundeffects/SRWCSE_Explosion.mp3');
             explosionSound.load();
 
             // 加载光束剑音效
-            beamSaberSound = new Audio('https://cdn.jsdelivr.net/gh/jasonpang1030/srw.github.io@main/SRWCSE_BeamSaber.mp3');
+            beamSaberSound = new Audio('./soundeffects/SRWCSE_BeamSaber.mp3');
             beamSaberSound.load();
 
             // 设置加载完成标志
@@ -2122,6 +2129,241 @@
             }
         }
 
+        // 保存进度到CSV文件
+        function saveProgress() {
+            // 获取当前通关的关卡数
+            const completedLevel = levelManager ? levelManager.currentLevel : 0;
+    
+            // 生成第一行10位数字组合 - 关卡进度
+            let hiddenCode1 = "";
+            // 第一位是随机数字
+            hiddenCode1 += Math.floor(Math.random() * 10);
+            // 第二位是已完成关卡数值
+            hiddenCode1 += completedLevel;
+            // 后面8位是随机数字
+            for (let i = 0; i < 8; i++) {
+                hiddenCode1 += Math.floor(Math.random() * 10);
+            }
+    
+            // 生成第二行10位数字组合 - FA Gundam状态
+            let hiddenCode2 = "";
+            // 前9位是0-1的随机整数
+            for (let i = 0; i < 9; i++) {
+                hiddenCode2 += Math.floor(Math.random() * 2);
+            }
+            // 最后一位是Get_fa_gundam的值
+            hiddenCode2 += Get_fa_gundam;
+    
+            // 创建CSV内容，包含两行数据
+            const csvContent = "game_code\n" + hiddenCode1 + "\n" + hiddenCode2;
+    
+            // 创建Blob对象
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    
+            // 创建下载链接
+            const link = document.createElement("a");
+            const url = URL.createObjectURL(blob);
+    
+            // 设置链接属性
+            link.setAttribute("href", url);
+            link.setAttribute("download", "srwcsave.csv");
+            link.style.visibility = 'hidden';
+    
+            // 添加到文档并触发点击
+            document.body.appendChild(link);
+            link.click();
+    
+            // 清理
+            document.body.removeChild(link);
+    
+            // 显示提示
+            showToast("進度已保存");
+        }
+
+        // 加载进度
+        function loadProgress() {
+            // 创建文件输入元素
+            const fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.accept = '.csv';
+            fileInput.style.display = 'none';
+            
+            // 添加到文档
+            document.body.appendChild(fileInput);
+    
+            // 设置文件选择处理
+            fileInput.onchange = function(event) {
+                const file = event.target.files[0];
+                if (!file) {
+                    document.body.removeChild(fileInput);
+                    return;
+                }
+        
+                // 显示加载提示
+                const loadingOverlay = document.getElementById('csv-loading-overlay');
+                loadingOverlay.style.display = 'flex';
+                document.getElementById('csv-loading-message').textContent = "正在載入進度...";
+        
+                // 读取文件
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const content = e.target.result;
+                    const lines = content.split('\n');
+            
+                    // 确保文件格式正确 - 至少有3行(标题行+两行数据)
+                    if (lines.length < 3) {
+                        document.getElementById('csv-loading-message').textContent = "進度檔案格式錯誤";
+                        setTimeout(() => {
+                            loadingOverlay.style.display = 'none';
+                        }, 2000);
+                        return;
+                    }
+            
+                    // 获取关卡进度代码和FA Gundam状态代码
+                    const levelCode = lines[1].trim();
+                    const gundamCode = lines[2].trim();
+                
+                    // 验证存档代码格式 - 应该都是10位数字
+                    if (!/^\d{10}$/.test(levelCode) || !/^\d{10}$/.test(gundamCode)) {
+                        document.getElementById('csv-loading-message').textContent = "進度檔案內容錯誤";
+                        setTimeout(() => {
+                            loadingOverlay.style.display = 'none';
+                        }, 2000);
+                        return;
+                    }
+            
+                    // 从第一个代码的第二位提取已完成关卡数
+                    const completedLevel = parseInt(levelCode.charAt(1), 10);
+                    if (isNaN(completedLevel)) {
+                        document.getElementById('csv-loading-message').textContent = "進度檔案內容錯誤";
+                        setTimeout(() => {
+                            loadingOverlay.style.display = 'none';
+                        }, 2000);
+                        return;
+                    }
+            
+                    // 从第二个代码的最后一位提取Get_fa_gundam值
+                    const faGundamValue = parseInt(gundamCode.charAt(9), 10);
+                    if (isNaN(faGundamValue)) {
+                        document.getElementById('csv-loading-message').textContent = "進度檔案內容錯誤";
+                        setTimeout(() => {
+                            loadingOverlay.style.display = 'none';
+                        }, 2000);
+                        return;
+                    }
+            
+                    // 设置全局变量Get_fa_gundam
+                    Get_fa_gundam = faGundamValue;
+                    console.log("从存档读取FA Gundam状态:", Get_fa_gundam);
+            
+                    // 检查是否已完成所有可用关卡
+                    if (completedLevel < 3) {
+                        // 根据完成的关卡数加载下一关
+                        let nextLevelId = completedLevel + 1;
+                        loadLevelById(nextLevelId, loadingOverlay);
+                    } else {
+                        // 已完成所有关卡，显示消息
+                        document.getElementById('csv-loading-message').textContent = "您已完成所有可用關卡！";
+                        setTimeout(() => {
+                            loadingOverlay.style.display = 'none';
+                            // 可选：返回主菜单
+                            showCoverPage();
+                        }, 3000);
+                    }
+                };
+        
+                reader.onerror = function() {
+                    document.getElementById('csv-loading-message').textContent = "讀取檔案時發生錯誤";
+                    setTimeout(() => {
+                        loadingOverlay.style.display = 'none';
+                    }, 2000);
+                };
+        
+                // 开始读取文件
+                reader.readAsText(file);
+        
+                // 清理
+                document.body.removeChild(fileInput);
+            };
+    
+            // 触发文件选择
+            fileInput.click();
+        }
+
+        // 根据关卡ID加载关卡
+        function loadLevelById(levelId, loadingOverlay) {
+            // 根据关卡ID决定加载哪个CSV文件
+            let csvUrl = "";
+            if (levelId === 1) {
+                csvUrl = "./stages/SRWCStage01.csv"; // 第一关
+            } else if (levelId === 2) {
+                csvUrl = "./stages/SRWCStage02.csv"; // 第二关
+            } else {
+                // 默认或未来关卡
+                document.getElementById('csv-loading-message').textContent = "未找到對應關卡或關卡開發中";
+                setTimeout(() => {
+                    loadingOverlay.style.display = 'none';
+                }, 2000);
+                return;
+            }
+    
+            // 加载关卡
+            loadLevelsFromURL(csvUrl).then(success => {
+                if (success) {
+                    // 更新加载消息
+                    document.getElementById('csv-loading-message').textContent = "正在預載圖片資源...";
+            
+                    // 预加载图片
+                    const imagesToLoad = getAllImageURLsFromLevelData();
+                    preloadImages(imagesToLoad).then(() => {
+                        // 隐藏加载界面
+                        loadingOverlay.style.display = 'none';
+                
+                        // 清理当前游戏状态
+                        gameState.board = Array(BOARD_SIZE).fill().map(() => Array(BOARD_SIZE).fill(null));
+                        gameState.blueCaptured = [];
+                        gameState.redCaptured = [];
+                        gameState.currentTurn = BLUE;
+                        gameState.selectedPiece = null;
+                        gameState.validMoves = [];
+                        gameState.gameOver = false;
+                        gameState.winner = null;
+                        gameState.turnCount = 0;
+                    
+                        // 更新UI
+                        updateBoardDisplay();
+                        updateCapturedPieces();
+                        updateTurnIndicator();
+                        updateTurnCountDisplay();
+                
+                        // 隐藏封面页面
+                        coverPage.classList.add('hide');
+                
+                        // 显示游戏UI
+                        gameUI.style.display = 'block';
+                
+                        // 加载关卡
+                        const nextLevelId = window.levelData.length > 0 ? window.levelData[0].id : 1;
+                        if (levelManager) {
+                            levelManager.loadLevel(nextLevelId);
+                        }
+                    });
+                } else {
+                    // 加载失败
+                    document.getElementById('csv-loading-message').textContent = "無法載入關卡數據";
+                    setTimeout(() => {
+                        loadingOverlay.style.display = 'none';
+                    }, 2000);
+                }
+            }).catch(error => {
+                console.error("載入關卡時出錯:", error);
+                document.getElementById('csv-loading-message').textContent = "載入關卡時出錯: " + error.message;
+                setTimeout(() => {
+                    loadingOverlay.style.display = 'none';
+                }, 2000);
+            });
+        }        
+        
         /**
          * 将十六进制颜色转换为rgba格式
          * @param {string} hexColor - 十六进制颜色值 (#RRGGBB 或 #RGB 格式)
@@ -3457,13 +3699,13 @@
             // Set victory card appearance based on winner
             if (winnerTeam === BLUE) {
                 victoryCard.className = "victory-card blue-victory";
-                victoryTitle.textContent = "藍方勝利！";
-                victoryMessage.textContent = "藍方成功擊敗了紅方！恭喜藍方玩家！";
+                victoryTitle.textContent = "勝利！";
+                victoryMessage.textContent = "您成功擊敗了敵人！可以進入下一話了！";
                 victoryIcon.textContent = "🏆";
             } else {
                 victoryCard.className = "victory-card red-victory";
-                victoryTitle.textContent = "紅方勝利！";
-                victoryMessage.textContent = "紅方成功擊敗了藍方！恭喜紅方玩家！";
+                victoryTitle.textContent = "戰敗了！";
+                victoryMessage.textContent = "您被敵方擊敗了！再接再厲吧！";
                 victoryIcon.textContent = "🏆";
             }
 
@@ -4004,9 +4246,12 @@
 
                 // Check if captured piece is a king (game over)
                 if (capturedPiece.moveType === KING) {
-                    gameState.gameOver = true;
-                    gameState.winner = piece.team;
-                  }
+                    // 只有在没有自定义胜利条件或胜利条件是'captureKing'时才立即结束游戏
+                    if (!gameState.victoryCondition || gameState.victoryCondition.type === 'captureKing') {
+                        gameState.gameOver = true;
+                        gameState.winner = piece.team;
+                    }
+                }
 
                 // 在这里触发 pieceCaptured 事件
                 if (typeof eventSystem !== 'undefined') {
@@ -6182,42 +6427,50 @@
 
                     // 根據提供的初始狀態設置棋子
                     initialState.forEach(piece => {
-                        if (!piece || !piece.id || !piece.position || !Array.isArray(piece.position) || piece.position.length !== 2) {
-                            console.error(`無效的棋子定義: ${JSON.stringify(piece)}`);
-                            return;
-                        }
+                    if (!piece || !piece.id || !piece.position || !Array.isArray(piece.position) || piece.position.length !== 2) {
+                        console.error(`無效的棋子定義: ${JSON.stringify(piece)}`);
+                        return;
+                    }
 
-                        const { id, position } = piece;
-                        const [row, col] = position;
+                    const { id, position } = piece;
+                    const [row, col] = position;
 
-                        if (row < 0 || row >= BOARD_SIZE || col < 0 || col >= BOARD_SIZE) {
-                            console.error(`棋子位置超出範圍: [${row},${col}]`);
-                            return;
-                        }
+                    // Create a variable for the potentially modified ID
+                    let actualPieceId = id;
+    
+                    // Check if we should replace gundam with fa_gundam
+                    if (Get_fa_gundam === 1 && id === 'gundam') {
+                        actualPieceId = 'fa_gundam';
+                        console.log(`Replacing gundam with fa_gundam at position [${row},${col}]`);
+                    }
 
-                        // 從關卡的機體定義中獲取
-                        if (!levelPieceDefinitions[id]) {
-                            console.error(`在關卡 ${this.currentLevel} 中未定義的棋子ID: ${id}`);
-                            return;
-                        }
+                    if (row < 0 || row >= BOARD_SIZE || col < 0 || col >= BOARD_SIZE) {
+                        console.error(`棋子位置超出範圍: [${row},${col}]`);
+                        return;
+                    }
 
-                        // 使用關卡中的機體定義而不是全局定義
-                        const pieceDefinition = levelPieceDefinitions[id];
-                        gameState.board[row][col] = {
-                            id: id,
-                            team: pieceDefinition.team,
-                            type: pieceDefinition.type,
-                            moveType: pieceDefinition.moveType,
-                            imgUrl: pieceDefinition.imgUrl,
-                            hit: pieceDefinition.hit,
-                            dodge: pieceDefinition.dodge,
-                            bgmtype: pieceDefinition.bgmtype || '',
-                            weapon_colour: pieceDefinition.weapon_colour || '',
-                            crosshairType: pieceDefinition.crosshairType || 'Beam_Rifie',
-                            hasMoved: false
-                        };
-                    });
+                    // Check if the piece definition exists using actualPieceId
+                    if (!levelPieceDefinitions[actualPieceId]) {
+                        console.error(`在關卡 ${this.currentLevel} 中未定義的棋子ID: ${actualPieceId}`);
+                        return;
+                    }
 
+                    // Use the potentially modified piece ID for creating the piece
+                    const pieceDefinition = levelPieceDefinitions[actualPieceId];
+                    gameState.board[row][col] = {
+                        id: actualPieceId, // Use the potentially modified ID
+                        team: pieceDefinition.team,
+                        type: pieceDefinition.type,
+                        moveType: pieceDefinition.moveType,
+                        imgUrl: pieceDefinition.imgUrl,
+                        hit: pieceDefinition.hit,
+                        dodge: pieceDefinition.dodge,
+                        bgmtype: pieceDefinition.bgmtype || '',
+                        weapon_colour: pieceDefinition.weapon_colour || '',
+                        crosshairType: pieceDefinition.crosshairType || 'Beam_Rifie',
+                        hasMoved: false
+                    };
+                });
                     console.log(`棋盤初始化完成，更新UI，時間: ${Date.now() - window.gameLoadStartTime}ms`);
 
                     // 安全更新UI
@@ -6375,7 +6628,7 @@
                 // 修改勝利畫面的按鈕文本
                 const victoryResetBtn = document.getElementById('victory-reset');
                 if (victoryResetBtn) {
-                    victoryResetBtn.textContent = '進入下一關';
+                    victoryResetBtn.textContent = '進入下一話';
 
                     // 克隆按鈕並替換以移除所有事件監聽器
                     const newBtn = victoryResetBtn.cloneNode(true);
@@ -6420,16 +6673,81 @@
             // 進入下一關
             nextLevel: function() {
                 console.log("進入下一關");
-                const nextLevelId = this.currentLevel + 1;
-
-                // 檢查是否有下一關的數據
-                const nextLevelInfo = window.levelData.find(level => level.id === nextLevelId);
-                if (nextLevelInfo) {
-                    this.loadLevel(nextLevelId);
-                } else {
-                    // 沒有下一關的數據，顯示"敬請期待"的消息
-                    this.showComingSoonMessage();
+    
+                // 隱藏勝利畫面
+                if (victoryOverlay) {
+                    victoryOverlay.classList.remove('show');
                 }
+    
+                // 顯示加載界面
+                const loadingOverlay = document.getElementById('csv-loading-overlay');
+                if (loadingOverlay) {
+                    loadingOverlay.style.display = 'flex';
+                    const loadingMessage = document.getElementById('csv-loading-message');
+                    if (loadingMessage) {
+                        loadingMessage.textContent = "正在載入第二關數據...";
+                    }
+                }
+    
+                // 根據當前關卡ID決定載入哪個CSV文件
+                let nextCsvUrl = "";
+                if (this.currentLevel === 1) {
+                    // 從第一關到第二關
+                    nextCsvUrl = "./stages/SRWCStage02.csv";
+                } else {
+                    // 其他情況（未來可能的第三關等）
+                    this.showComingSoonMessage();
+                    return;
+                }
+    
+                // 載入下一關的CSV
+                loadLevelsFromURL(nextCsvUrl).then(success => {
+                    if (success) {
+                        // 更新加載消息
+                        const loadingMessage = document.getElementById('csv-loading-message');
+                        if (loadingMessage) {
+                            loadingMessage.textContent = "正在預載圖片資源...";
+                        }
+            
+                        // 預載圖片
+                        console.log("開始預載圖片...");
+                        const imagesToLoad = getAllImageURLsFromLevelData();
+                        preloadImages(imagesToLoad).then(() => {
+                            // 隱藏加載界面
+                            if (loadingOverlay) {
+                                loadingOverlay.style.display = 'none';
+                            }
+                
+                            // 清理當前遊戲狀態
+                            gameState.board = Array(BOARD_SIZE).fill().map(() => Array(BOARD_SIZE).fill(null));
+                            gameState.blueCaptured = [];
+                            gameState.redCaptured = [];
+                            gameState.currentTurn = BLUE;
+                            gameState.selectedPiece = null;
+                            gameState.validMoves = [];
+                            gameState.gameOver = false;
+                            gameState.winner = null;
+                            gameState.turnCount = 0;
+                
+                            // 更新UI
+                            updateBoardDisplay();
+                            updateCapturedPieces();
+                            updateTurnIndicator();
+                            updateTurnCountDisplay();
+                
+                            // 載入第二關
+                            const nextLevelId = window.levelData.length > 0 ? window.levelData[0].id : 1;
+                            this.loadLevel(nextLevelId);
+                        });
+                    } else {
+                        // 載入失敗
+                        console.error("無法載入下一關數據");
+                        this.showComingSoonMessage();
+                    }
+                }).catch(error => {
+                    console.error("載入下一關時出錯:", error);
+                    this.showComingSoonMessage();
+                });
             },
 
             // 顯示"敬請期待"的消息
@@ -6866,7 +7184,7 @@
             handleReplacePieceAction: function(action, context) {
                 console.log("执行替换棋子动作:", action);
                 const { position, pieceId, row, col, targetPieceId, special } = action;
-
+                
                 // 确定要替换的棋子位置
                 let targetRow, targetCol;
 
@@ -6940,6 +7258,11 @@
                     this.spawnPiece(pieceId, [targetRow, targetCol], context);
                 }
 
+                if (action.pieceId === 'fa_gundam') {
+                    console.log("FA Gundam has been unlocked!");
+                    Get_fa_gundam = 1;
+                }
+                
                 // 更新棋盘显示
                 updateBoardDisplay();
             },
@@ -7349,6 +7672,21 @@
             };
         }
 
+        // 在DOM加载完成后添加事件监听器
+        document.addEventListener('DOMContentLoaded', function() {
+            // 保存进度按钮
+            const saveProgressBtn = document.getElementById('save-progress-btn');
+            if (saveProgressBtn) {
+                saveProgressBtn.addEventListener('click', saveProgress);
+            }
+    
+            // 载入进度按钮
+            const loadProgressBtn = document.getElementById('load-progress-btn');
+            if (loadProgressBtn) {
+                loadProgressBtn.addEventListener('click', loadProgress);
+            }
+        });
+
         // 從URL加載關卡
         async function loadLevelsFromURL(url) {
             // 顯示加載界面
@@ -7403,8 +7741,7 @@
             playIntroMusic();
 
             // 指定CSV URL
-            const csvUrl = "https://cdn.jsdelivr.net/gh/jasonpang1030/srw.github.io@refs/heads/main/SRWCStage01v7.csv";
-            // const csvUrl = "https://cdn.jsdelivr.net/gh/jasonpang1030/srw.github.io@refs/heads/main/eventtestv10.csv";
+            const csvUrl = "./stages/SRWCStage01.csv";
 
             // 隱藏封面頁面
             coverPage.classList.add('hide');
