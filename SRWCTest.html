@@ -2129,6 +2129,183 @@
             }
         }
 
+        // 保存进度到CSV文件
+        function saveProgress() {
+        // 获取当前通关的关卡数
+        const completedLevel = levelManager ? levelManager.currentLevel : 0;
+    
+        // 创建CSV内容
+        const csvContent = "completed_level\n" + completedLevel;
+    
+        // 创建Blob对象
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        
+        // 创建下载链接
+        const link = document.createElement("a");
+        const url = URL.createObjectURL(blob);
+    
+        // 设置链接属性
+        link.setAttribute("href", url);
+        link.setAttribute("download", "srwcsave.csv");
+        link.style.visibility = 'hidden';
+    
+        // 添加到文档并触发点击
+        document.body.appendChild(link);
+        link.click();
+    
+        // 清理
+        document.body.removeChild(link);
+    
+        // 显示提示
+        showToast("進度已保存");
+        }
+
+        // 加载进度
+        function loadProgress() {
+            // 创建文件输入元素
+            const fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.accept = '.csv';
+            fileInput.style.display = 'none';
+    
+            // 添加到文档
+            document.body.appendChild(fileInput);
+    
+            // 设置文件选择处理
+            fileInput.onchange = function(event) {
+                const file = event.target.files[0];
+                if (!file) {
+                    document.body.removeChild(fileInput);
+                    return;
+                }
+        
+                // 显示加载提示
+                const loadingOverlay = document.getElementById('csv-loading-overlay');
+                loadingOverlay.style.display = 'flex';
+                document.getElementById('csv-loading-message').textContent = "正在載入進度...";
+        
+                // 读取文件
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const content = e.target.result;
+                    const lines = content.split('\n');
+            
+                    // 确保文件格式正确
+                    if (lines.length < 2) {
+                        document.getElementById('csv-loading-message').textContent = "進度檔案格式錯誤";
+                        setTimeout(() => {
+                            loadingOverlay.style.display = 'none';
+                        }, 2000);
+                        return;
+                    }
+            
+                    // 获取通关关卡数
+                    const completedLevel = parseInt(lines[1].trim(), 10);
+                    if (isNaN(completedLevel)) {
+                        document.getElementById('csv-loading-message').textContent = "進度檔案內容錯誤";
+                        setTimeout(() => {
+                            loadingOverlay.style.display = 'none';
+                        }, 2000);
+                        return;
+                    }
+            
+                    // 根据完成的关卡数加载下一关
+                    let nextLevelId = completedLevel + 1;
+                    loadLevelById(nextLevelId, loadingOverlay);
+                };
+        
+                reader.onerror = function() {
+                    document.getElementById('csv-loading-message').textContent = "讀取檔案時發生錯誤";
+                    setTimeout(() => {
+                        loadingOverlay.style.display = 'none';
+                    }, 2000);
+                };
+        
+                // 开始读取文件
+                reader.readAsText(file);
+        
+                // 清理
+                document.body.removeChild(fileInput);
+            };
+    
+            // 触发文件选择
+            fileInput.click();
+        }
+
+        // 根据关卡ID加载关卡
+        function loadLevelById(levelId, loadingOverlay) {
+            // 根据关卡ID决定加载哪个CSV文件
+            let csvUrl = "";
+            if (levelId === 1) {
+                csvUrl = "./stages/SRWCStage01v7.csv"; // 第一关
+            } else if (levelId === 2) {
+                csvUrl = "./stages/SRWCStage02v3.csv"; // 第二关
+            } else {
+                // 默认或未来关卡
+                document.getElementById('csv-loading-message').textContent = "未找到對應關卡或關卡開發中";
+                setTimeout(() => {
+                    loadingOverlay.style.display = 'none';
+                }, 2000);
+                return;
+            }
+    
+            // 加载关卡
+            loadLevelsFromURL(csvUrl).then(success => {
+                if (success) {
+                    // 更新加载消息
+                    document.getElementById('csv-loading-message').textContent = "正在預載圖片資源...";
+            
+                    // 预加载图片
+                    const imagesToLoad = getAllImageURLsFromLevelData();
+                    preloadImages(imagesToLoad).then(() => {
+                        // 隐藏加载界面
+                        loadingOverlay.style.display = 'none';
+                
+                        // 清理当前游戏状态
+                        gameState.board = Array(BOARD_SIZE).fill().map(() => Array(BOARD_SIZE).fill(null));
+                        gameState.blueCaptured = [];
+                        gameState.redCaptured = [];
+                        gameState.currentTurn = BLUE;
+                        gameState.selectedPiece = null;
+                        gameState.validMoves = [];
+                        gameState.gameOver = false;
+                        gameState.winner = null;
+                        gameState.turnCount = 0;
+                    
+                        // 更新UI
+                        updateBoardDisplay();
+                        updateCapturedPieces();
+                        updateTurnIndicator();
+                        updateTurnCountDisplay();
+                
+                        // 隐藏封面页面
+                        coverPage.classList.add('hide');
+                
+                        // 显示游戏UI
+                        gameUI.style.display = 'block';
+                
+                        // 加载关卡
+                        const nextLevelId = window.levelData.length > 0 ? window.levelData[0].id : 1;
+                        if (levelManager) {
+                            levelManager.loadLevel(nextLevelId);
+                        }
+                    });
+                } else {
+                    // 加载失败
+                    document.getElementById('csv-loading-message').textContent = "無法載入關卡數據";
+                    setTimeout(() => {
+                        loadingOverlay.style.display = 'none';
+                    }, 2000);
+                }
+            }).catch(error => {
+                console.error("載入關卡時出錯:", error);
+                document.getElementById('csv-loading-message').textContent = "載入關卡時出錯: " + error.message;
+                setTimeout(() => {
+                    loadingOverlay.style.display = 'none';
+                }, 2000);
+            });
+        }        
+        
         /**
          * 将十六进制颜色转换为rgba格式
          * @param {string} hexColor - 十六进制颜色值 (#RRGGBB 或 #RGB 格式)
@@ -7436,6 +7613,21 @@
                 document.getElementById('settings-overlay').style.pointerEvents = 'none';
             };
         }
+
+        // 在DOM加载完成后添加事件监听器
+        document.addEventListener('DOMContentLoaded', function() {
+            // 保存进度按钮
+            const saveProgressBtn = document.getElementById('save-progress-btn');
+            if (saveProgressBtn) {
+                saveProgressBtn.addEventListener('click', saveProgress);
+            }
+    
+            // 载入进度按钮
+            const loadProgressBtn = document.getElementById('load-progress-btn');
+            if (loadProgressBtn) {
+                loadProgressBtn.addEventListener('click', loadProgress);
+            }
+        });
 
         // 從URL加載關卡
         async function loadLevelsFromURL(url) {
