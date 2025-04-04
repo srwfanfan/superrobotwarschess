@@ -2167,10 +2167,10 @@
             fileInput.type = 'file';
             fileInput.accept = '.csv';
             fileInput.style.display = 'none';
-    
+
             // 添加到文档
             document.body.appendChild(fileInput);
-    
+
             // 设置文件选择处理
             fileInput.onchange = function(event) {
                 const file = event.target.files[0];
@@ -2178,18 +2178,18 @@
                     document.body.removeChild(fileInput);
                     return;
                 }
-        
+
                 // 显示加载提示
                 const loadingOverlay = document.getElementById('csv-loading-overlay');
                 loadingOverlay.style.display = 'flex';
                 document.getElementById('csv-loading-message').textContent = "正在載入進度...";
-        
+
                 // 读取文件
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     const content = e.target.result;
                     const lines = content.split('\n');
-            
+    
                     // 确保文件格式正确
                     if (lines.length < 2) {
                         document.getElementById('csv-loading-message').textContent = "進度檔案格式錯誤";
@@ -2198,7 +2198,7 @@
                         }, 2000);
                         return;
                     }
-            
+    
                     // 获取通关关卡数
                     const completedLevel = parseInt(lines[1].trim(), 10);
                     if (isNaN(completedLevel)) {
@@ -2208,7 +2208,7 @@
                         }, 2000);
                         return;
                     }
-            
+    
                     // 检查是否已完成所有可用关卡
                     if (completedLevel < 3) {
                         // 根据完成的关卡数加载下一关
@@ -2221,24 +2221,24 @@
                             loadingOverlay.style.display = 'none';
                             // 可选：返回主菜单
                             showCoverPage();
-                         }, 3000);
+                        }, 3000);
                     }
                 };
-        
+
                 reader.onerror = function() {
                     document.getElementById('csv-loading-message').textContent = "讀取檔案時發生錯誤";
                     setTimeout(() => {
                         loadingOverlay.style.display = 'none';
                     }, 2000);
                 };
-        
+
                 // 开始读取文件
                 reader.readAsText(file);
-        
+
                 // 清理
                 document.body.removeChild(fileInput);
             };
-    
+
             // 触发文件选择
             fileInput.click();
         }
