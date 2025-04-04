@@ -2740,6 +2740,54 @@
                     `;
                     break;
 
+                case 'Cosmo_Nova':
+                    // 菱形外框准星
+                    container.innerHTML = `
+                        <div class="crosshair-frame" style="
+                            position: absolute;
+                            top: 50%;
+                            left: 50%;
+                            width: ${outerSize * 0.7}px;
+                            height: ${outerSize * 0.7}px;
+                            border: ${borderWidth}px solid ${rgbaColor};
+                            transform: translate(-50%, -50%) rotate(45deg);
+                            box-shadow: 0 0 10px ${color};
+                            pointer-events: none;
+                        "></div>
+                        <div class="crosshair-horizontal" style="
+                            position: absolute;
+                            top: 50%;
+                            left: 0;
+                            width: 100%;
+                            height: ${lineThickness}px;
+                            background: linear-gradient(90deg, ${hexToRgba(color, 0)} 0%, ${rgbaColor} 50%, ${hexToRgba(color, 0)} 100%);
+                            transform: translateY(-50%);
+                            pointer-events: none;
+                        "></div>
+                        <div class="crosshair-vertical" style="
+                            position: absolute;
+                            top: 0;
+                            left: 50%;
+                            width: ${lineThickness}px;
+                            height: 100%;
+                            background: linear-gradient(0deg, ${hexToRgba(color, 0)} 0%, ${rgbaColor} 50%, ${hexToRgba(color, 0)} 100%);
+                            transform: translateX(-50%);
+                            pointer-events: none;
+                        "></div>
+                        <div class="crosshair-dot" style="
+                            position: absolute;
+                            top: 50%;
+                            left: 50%;
+                            width: ${dotSize}px;
+                            height: ${dotSize}px;
+                            background-color: ${rgbaColor};
+                            transform: translate(-50%, -50%) rotate(45deg);
+                            box-shadow: 0 0 5px ${color};
+                            pointer-events: none;
+                        "></div>
+                    `;
+                    break;
+                    
                 case 'diamond':
                     // 菱形外框准星
                     container.innerHTML = `
@@ -3685,6 +3733,7 @@
                             switch(pieceInfo.crosshairType) {
                                 case "Beam_Rifie": crosshairTypeText = "光束步槍"; break;
                                 case "Beam_Saber": crosshairTypeText = "光束劍"; break;
+                                case "Cosmo_Nova": crosshairTypeText = "宇宙新星"; break;
                                 case "diamond": crosshairTypeText = "鑽石光束"; break;
                                 case "triangle": crosshairTypeText = "三角光束"; break;
                                 case "custom": crosshairTypeText = "自定義武器"; break;
@@ -4778,6 +4827,7 @@
                 switch(crosshairType) {
                     case "Beam_Rifie": return "光束步槍";
                     case "Beam_Saber": return "光束劍";
+                    case "Cosmo_Nova": return "宇宙新星";
                     case "diamond": return "鑽石光束";
                     case "triangle": return "三角光束";
                     case "custom": return "自定義武器";
@@ -5196,6 +5246,9 @@
                 case 'Beam_Saber':
                     createEnergyPulseEffect(weaponColor);
                     break;
+                case 'Cosmo_Nova':
+                    createConvergeShotEffect(weaponColor);
+                    break;
                 case 'diamond':
                     createScatterShotEffect(weaponColor);
                     break;
@@ -5403,6 +5456,133 @@
             }, 800);
         }
 
+        function createConvergeShotEffect(weaponColor) {
+            const containerRect = combatContainer.getBoundingClientRect();
+
+            // 添加必要的CSS
+            addCSSIfNeeded(`
+                @keyframes convergeShot {
+                    0% { transform: translate(-50%, -50%) scale(1.5); opacity: 0; }
+                    50% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.3; }
+                    90% { transform: translate(-50%, -50%) scale(0.4); opacity: 0.8; }
+                    100% { transform: translate(-50%, -50%) scale(0.2); opacity: 1; }
+                }
+        
+                @keyframes centralExplosion {
+                    0% { transform: translate(-50%, -50%) scale(0.2); opacity: 1; }
+                    50% { opacity: 1; }
+                    100% { transform: translate(-50%, -50%) scale(2); opacity: 0; }
+                }
+
+                @keyframes convergeParticle {
+                    0% { transform: translate(var(--tx), var(--ty)) scale(1); opacity: 1; }
+                    90% { transform: translate(0, 0) scale(0.6); opacity: 0.8; }
+                    100% { transform: translate(0, 0) scale(0.2); opacity: 0; }
+                }
+            `);
+
+            // 创建中心汇聚区域
+            const convergeZone = document.createElement('div');
+            convergeZone.style.position = 'absolute';
+            convergeZone.style.left = `${combatMode.mouseX}px`;
+            convergeZone.style.top = `${combatMode.mouseY}px`;
+            convergeZone.style.width = `${containerRect.width * 0.05}px`; // 初始较小
+            convergeZone.style.height = `${containerRect.width * 0.05}px`;
+            convergeZone.style.borderRadius = '50%';
+            convergeZone.style.background = `radial-gradient(circle, ${hexToRgba(weaponColor, 0.7)} 0%, ${hexToRgba(weaponColor, 0.3)} 70%, transparent 100%)`;
+            convergeZone.style.boxShadow = `0 0 10px ${weaponColor}`;
+            convergeZone.style.zIndex = '16';
+            convergeZone.style.animation = 'convergeShot 0.7s forwards';
+            convergeZone.style.transform = 'translate(-50%, -50%) scale(1.5)';
+            combatContainer.appendChild(convergeZone);
+
+            // 创建汇聚粒子
+            for (let i = 0; i < 12; i++) {
+                const angle = (i * 30) + (Math.random() * 20 - 10); // 将360度分成12份
+                const radian = (angle * Math.PI) / 180;
+                const distance = containerRect.width * (0.2 + Math.random() * 0.3); // 20%-50%的容器宽度
+
+                const tx = Math.cos(radian) * distance;
+                const ty = Math.sin(radian) * distance;
+
+                const particle = document.createElement('div');
+                particle.style.position = 'absolute';
+                particle.style.left = `${combatMode.mouseX}px`;
+                particle.style.top = `${combatMode.mouseY}px`;
+                particle.style.width = `${8 + Math.random() * 7}px`; // 8-15px
+                particle.style.height = `${8 + Math.random() * 7}px`;
+                particle.style.borderRadius = '50%';
+                particle.style.background = `${hexToRgba(weaponColor, 0.9)}`;
+                particle.style.boxShadow = `0 0 10px ${weaponColor}`;
+                particle.style.zIndex = '17';
+
+                // 使用CSS变量传递不同的起始位置（与散射相反）
+                particle.style.setProperty('--tx', `${tx}px`);
+                particle.style.setProperty('--ty', `${ty}px`);
+                // 初始位置设置在外围
+                particle.style.transform = `translate(${tx}px, ${ty}px)`;
+                particle.style.animation = 'convergeParticle 0.7s forwards';
+
+                combatContainer.appendChild(particle);
+
+                // 清理粒子
+                setTimeout(() => {
+                    if (particle.parentNode) particle.parentNode.removeChild(particle);
+                }, 700);
+            }
+
+            // 粒子汇聚后，创建中心爆炸效果
+            setTimeout(() => {
+                const centerExplosion = document.createElement('div');
+                centerExplosion.style.position = 'absolute';
+                centerExplosion.style.left = `${combatMode.mouseX}px`;
+                centerExplosion.style.top = `${combatMode.mouseY}px`;
+                centerExplosion.style.width = `${containerRect.width * 0.15}px`; // 比初始区域大
+                centerExplosion.style.height = `${containerRect.width * 0.15}px`;
+                centerExplosion.style.borderRadius = '50%';
+                centerExplosion.style.background = `radial-gradient(circle, white 0%, ${hexToRgba(weaponColor, 0.9)} 30%, ${hexToRgba(weaponColor, 0.2)} 70%, transparent 100%)`;
+                centerExplosion.style.boxShadow = `0 0 30px ${weaponColor}, 0 0 50px ${weaponColor}`;
+                centerExplosion.style.zIndex = '18';
+                centerExplosion.style.animation = 'centralExplosion 0.5s forwards';
+                centerExplosion.style.transform = 'translate(-50%, -50%) scale(0.2)';
+                combatContainer.appendChild(centerExplosion);
+
+                // 添加光晕波纹
+                for (let i = 0; i < 3; i++) {
+                    setTimeout(() => {
+                        const ripple = document.createElement('div');
+                        ripple.style.position = 'absolute';
+                        ripple.style.left = `${combatMode.mouseX}px`;
+                        ripple.style.top = `${combatMode.mouseY}px`;
+                        ripple.style.width = `${containerRect.width * 0.1 * (i+1)}px`;
+                        ripple.style.height = `${containerRect.width * 0.1 * (i+1)}px`;
+                        ripple.style.borderRadius = '50%';
+                        ripple.style.border = `2px solid ${hexToRgba(weaponColor, 0.8 - i*0.2)}`;
+                        ripple.style.boxShadow = `0 0 15px ${weaponColor}`;
+                        ripple.style.zIndex = '17';
+                        ripple.style.transform = 'translate(-50%, -50%) scale(0)';
+                        ripple.style.animation = 'centralExplosion 0.4s forwards';
+                        combatContainer.appendChild(ripple);
+
+                        // 清理波纹
+                        setTimeout(() => {
+                            if (ripple.parentNode) ripple.parentNode.removeChild(ripple);
+                        }, 400);
+                    }, i * 100); // 依次产生波纹
+                }
+
+                // 清理中心爆炸
+                setTimeout(() => {
+                    if (centerExplosion.parentNode) centerExplosion.parentNode.removeChild(centerExplosion);
+                }, 500);
+            }, 650); // 在粒子快要汇聚完成时触发爆炸
+
+            // 清理汇聚区域
+            setTimeout(() => {
+                if (convergeZone.parentNode) convergeZone.parentNode.removeChild(convergeZone);
+            }, 700);
+        }
+        
         function createScatterShotEffect(weaponColor) {
             const containerRect = combatContainer.getBoundingClientRect();
 
@@ -5704,6 +5884,17 @@
                         ];
                         break;
 
+                    case 'Cosmo_Nova':
+                        // 创建菱形准星
+                        const diamondSize = crosshairRadius * 1.2;
+                        crosshairPoints = [
+                            {x: 0, y: -diamondSize},
+                            {x: diamondSize, y: 0},
+                            {x: 0, y: diamondSize},
+                            {x: -diamondSize, y: 0}
+                        ];
+                        break;
+                        
                     case 'diamond':
                         // 创建菱形准星
                         const diamondSize = crosshairRadius * 1.2;
