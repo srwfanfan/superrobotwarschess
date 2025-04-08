@@ -4092,6 +4092,10 @@
             if ('vibrate' in navigator) {
               navigator.vibrate([200, 100, 200]);
             }
+            // 添加1秒后自动隐藏
+            setTimeout(() => {
+              warningElement.classList.remove('show');
+            }, 1000); // 1秒 = 1000毫秒  
           } else {
             warningElement.classList.remove('show');
           }
