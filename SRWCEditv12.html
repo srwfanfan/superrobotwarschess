@@ -640,7 +640,12 @@
                                 <label class="block font-bold mb-2" for="board-bgm">
                                     關卡背景音樂URL:
                                 </label>
-                                <input type="text" id="board-bgm" class="srw-input appearance-none rounded w-full py-2 px-3 leading-tight focus:outline-none" placeholder="例如: https://cdn.jsdelivr.net/gh/username/repo@main/file.mp3">
+                                <select id="board-bgm" class="srw-select appearance-none rounded w-full py-2 px-3 leading-tight focus:outline-none">
+                                    <option value="">請選擇背景音樂</option>
+                                    <option value="./audio/SRWCBGM_Map01.mp3">地圖音樂01</option>
+                                    <option value="./audio/SRWCBGM_Map02.mp3">地圖音樂02</option>
+                                    <option value="./audio/SRWCBGM_Map03.mp3">地圖音樂03</option>
+                                </select>
                             </div>
                             <div class="mb-4">
                                 <label class="block font-bold mb-2" for="story-desc">
