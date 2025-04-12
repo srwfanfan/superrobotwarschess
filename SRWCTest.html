@@ -5697,15 +5697,11 @@
             centerEffect.style.animation = 'thunderPulse 0.8s forwards';
             combatContainer.appendChild(centerEffect);
     
-            // 优化点1: 从八个方向创建汇聚的闪电，但减少每个方向的闪电数量
+            // 优化点1: 从四个方向创建汇聚的闪电，但减少每个方向的闪电数量
             const directions = [
-                { angle: 0, label: 'right' },     // 右
                 { angle: 45, label: 'rightDown'}, // 右下
-                { angle: 90, label: 'bottom' },   // 下
                 { angle: 135, label: 'leftDown'}, // 左下
-                { angle: 180, label: 'left' },    // 左
                 { angle: 225, label: 'leftUp'},   // 左上
-                { angle: 270, label: 'top' },     // 上
                 { angle: 315, label: 'rightUp'}   // 右上
             ];
 
