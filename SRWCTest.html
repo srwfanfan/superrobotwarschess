@@ -1966,6 +1966,7 @@
         let beamSaberSound = null;
         let cosmoNovaSound = null;
         let thunderSound = null;
+        let GetterBeamSound = null;
         let explosionSound = null;
         let soundsLoaded = false;
 
@@ -2146,6 +2147,9 @@
 
             thunderSound = new Audio('./soundeffects/SRWCSE_Thunder.mp3');
             thunderSound.load();
+
+            GetterBeamSound = new Audio('./soundeffects/SRWCSE_GetterBeam.mp3');
+            GetterBeamSound.load();
 
             // 设置加载完成标志
             soundsLoaded = true;
