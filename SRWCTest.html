@@ -2849,6 +2849,58 @@
                         "></div>
                     `;
                     break;
+
+                // 添加Getter_Beam准星类型
+                case 'Getter_Beam':
+                    // 水平长方形准星(宽:高 = 6:1)
+                    const frameHeight = Math.round(outerSize * 0.4); // 较短的高度
+                    const frameWidth = frameHeight * 6; // 宽度是高度的6倍
+            
+                    container.innerHTML = `
+                        <div class="crosshair-frame" style="
+                            position: absolute;
+                            top: 50%;
+                            left: 50%;
+                            width: ${frameWidth}px;
+                            height: ${frameHeight}px;
+                            border: ${borderWidth}px solid ${rgbaColor};
+                            transform: translate(-50%, -50%);
+                            box-shadow: 0 0 10px ${color};
+                            pointer-events: none;
+                        "></div>
+                        <div class="crosshair-horizontal" style="
+                            position: absolute;
+                            top: 50%;
+                            left: 0;
+                            width: 100%;
+                            height: ${lineThickness}px;
+                            background: linear-gradient(90deg, ${hexToRgba(color, 0)} 0%, ${rgbaColor} 50%, ${hexToRgba(color, 0)} 100%);
+                            transform: translateY(-50%);
+                            pointer-events: none;
+                        "></div>
+                        <div class="crosshair-vertical" style="
+                            position: absolute;
+                            top: 0;
+                            left: 50%;
+                            width: ${lineThickness}px;
+                            height: 100%;
+                            background: linear-gradient(0deg, ${hexToRgba(color, 0)} 0%, ${rgbaColor} 50%, ${hexToRgba(color, 0)} 100%);
+                            transform: translateX(-50%);
+                            pointer-events: none;
+                        "></div>
+                        <div class="crosshair-dot" style="
+                            position: absolute;
+                            top: 50%;
+                            left: 50%;
+                            width: ${dotSize}px;
+                            height: ${dotSize}px;
+                            background-color: ${rgbaColor};
+                            transform: translate(-50%, -50%);
+                            box-shadow: 0 0 5px ${color};
+                            pointer-events: none;
+                        "></div>
+                    `;
+                    break;
                     
                 case 'diamond':
                     // 菱形外框准星
@@ -4905,6 +4957,7 @@
                     case "Beam_Saber": return "光束劍";
                     case "Cosmo_Nova": return "宇宙新星";
                     case "Destructive_Thunder": return "破壞雷電";
+                    case "Getter_Beam": return "三一死光"; 
                     case "diamond": return "鑽石光束";
                     case "triangle": return "三角光束";
                     case "custom": return "自定義武器";
@@ -5334,6 +5387,9 @@
                     break;
                 case 'Destructive_Thunder':
                     createThunderConvergenceEffect(weaponColor);
+                    break;
+                case 'Getter_Beam':
+                    createGetterBeamEffect(weaponColor);
                     break;
                 case 'diamond':
                     createScatterShotEffect(weaponColor);
@@ -6138,6 +6194,68 @@
             }, 400);
         }
 
+        function createGetterBeamEffect(weaponColor) {
+            const containerRect = combatContainer.getBoundingClientRect();
+            const centerX = combatMode.mouseX;
+            const centerY = combatMode.mouseY;
+
+            // 添加必要的CSS
+            addCSSIfNeeded(`
+                @keyframes getterScanLine {
+                    0% { opacity: 0.8; }
+                    50% { opacity: 1; }
+                    100% { opacity: 0; }
+                }
+            `);
+
+            // 水平长方形准星的参数计算
+            const outerSize = combatMode.crosshairSize * 0.8; // 外框大小为容器大小的80%
+            const frameHeight = Math.round(outerSize * 0.4); // 较短的高度
+            const frameWidth = frameHeight * 6; // 宽度是高度的6倍
+    
+            // 预先计算扫描线数量和时间参数
+            const scanCount = 7; // 创建7条扫描线
+            const scanDuration = 100; // 每条线的持续时间(毫秒)
+            const scanDelay = 50; // 线之间的延迟(毫秒)
+    
+            // 播放光束音效
+            playCombatSound(beamGunSound);
+    
+            // 创建扫描线动画
+            for (let i = 0; i < scanCount; i++) {
+                setTimeout(() => {
+                    // 在长方形内随机高度创建扫描线
+                    const randomOffset = (Math.random() - 0.5) * frameHeight;
+                    const scanY = centerY + randomOffset;
+            
+                    // 创建扫描线
+                    const scanLine = document.createElement('div');
+                    scanLine.style.position = 'absolute';
+                    scanLine.style.height = '5px'; // 加粗扫描线
+                    scanLine.style.width = `${frameWidth}px`;
+                    scanLine.style.left = `${centerX - frameWidth/2}px`;
+                    scanLine.style.top = `${scanY}px`;
+                    scanLine.style.background = `linear-gradient(90deg, ${hexToRgba(weaponColor, 0.3)} 0%, ${hexToRgba(weaponColor, 1)} 50%, ${hexToRgba(weaponColor, 0.3)} 100%)`;
+                    scanLine.style.boxShadow = `0 0 10px ${weaponColor}, 0 0 20px ${weaponColor}`;
+                    scanLine.style.zIndex = '9';
+                    scanLine.style.animation = 'getterScanLine 0.3s forwards';
+            
+                    // 添加到容器
+                    combatContainer.appendChild(scanLine);
+            
+                    // 清理扫描线
+                    setTimeout(() => {
+                        if (scanLine.parentNode) scanLine.parentNode.removeChild(scanLine);
+                    }, 300);
+                }, i * scanDelay);
+            }
+    
+            // 延迟检查命中 - 在最后一条扫描线后
+            setTimeout(() => {
+                checkHit();
+            }, scanCount * scanDelay + 150);
+        }
+            
         function createSpiralBeamEffect(weaponColor) {
             const containerRect = combatContainer.getBoundingClientRect();
 
@@ -6306,6 +6424,19 @@
                             {x: thunderSize, y: -thunderSize},
                             {x: thunderSize, y: thunderSize},
                             {x: -thunderSize, y: thunderSize}
+                        ];
+                        break;
+
+                    // 添加Getter_Beam形状
+                    case 'Getter_Beam':
+                        // 水平长方形准星，宽:高 = 6:1
+                        const getterBeamHeight = crosshairRadius * 0.4; // 高度较小
+                        const getterBeamWidth = getterBeamHeight * 6; // 宽度是高度的6倍
+                        crosshairPoints = [
+                            {x: -getterBeamWidth/2, y: -getterBeamHeight/2},
+                            {x: getterBeamWidth/2, y: -getterBeamHeight/2},
+                            {x: getterBeamWidth/2, y: getterBeamHeight/2},
+                            {x: -getterBeamWidth/2, y: getterBeamHeight/2}
                         ];
                         break;
                         
