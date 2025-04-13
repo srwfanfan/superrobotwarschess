@@ -1584,6 +1584,24 @@
           }
         }
 
+        /* 將 fire-particle 改為 breastfire-particle */
+        .breastfire-particle {
+            position: absolute;
+            border-radius: 50%;
+            z-index: 16;
+            pointer-events: none;
+        }
+
+        @keyframes breastfireParticle {
+            0% { transform: translate(0, 0) scale(1); opacity: 1; }
+            100% { transform: translate(var(--tx), var(--ty)) scale(0.2); opacity: 0; }
+        }
+
+        @keyframes breastfireWave {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0.9; }
+            100% { transform: translate(-50%, -50%) scale(1.5); opacity: 0; }
+        }
+
     </style>
 </head>
 <body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-white min-h-screen p-4">
@@ -2905,6 +2923,60 @@
                             transform: translate(-50%, -50%);
                             box-shadow: 0 0 5px ${color};
                             pointer-events: none;
+                        "></div>
+                    `;
+                    break;
+
+                case 'Breast_Fire':
+                    // 正三角形准星(底：高 = 2:1)，尖端朝下
+                    const breastfireWidth = Math.round(outerSize * 0.9); // 三角形底部寬度
+                    const breastfireHeight = breastfireWidth / 2; // 高度為寬度的一半
+    
+                    container.innerHTML = `
+                        <div class="crosshair-triangle" style="
+                            position: absolute;
+                            top: 50%;
+                            left: 50%;
+                            width: ${breastfireWidth}px;
+                            height: ${breastfireHeight}px;
+                            transform: translate(-50%, -50%);
+                            pointer-events: none;
+                            z-index: 10;
+                        ">
+                            <svg width="${breastfireWidth}" height="${breastfireHeight}" viewBox="0 0 ${breastfireWidth} ${breastfireHeight}">
+                                <polygon 
+                                    points="0,0 ${breastfireWidth},0 ${breastfireWidth/2},${breastfireHeight}"
+                                    fill="none"
+                                    stroke="${rgbaColor}"
+                                    stroke-width="${borderWidth}"
+                                    stroke-linejoin="round"
+                                    style="filter: drop-shadow(0 0 5px ${color});"
+                                />
+                                <polygon 
+                                    points="0,0 ${breastfireWidth},0 ${breastfireWidth/2},${breastfireHeight}"
+                                    fill="url(#fireGradient)"
+                                    opacity="0.3"
+                                />
+                                 <defs>
+                                    <linearGradient id="fireGradient" x1="0.5" y1="0" x2="0.5" y2="1">
+                                    <stop offset="0%" stop-color="yellow" />
+                                    <stop offset="70%" stop-color="${rgbaColor}" />
+                                    <stop offset="100%" stop-color="red" />
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                        </div>
+                        <div class="crosshair-dot" style="
+                            position: absolute;
+                            top: 50%;
+                            left: 50%;
+                            width: ${dotSize}px;
+                            height: ${dotSize}px;
+                            background-color: ${rgbaColor};
+                            transform: translate(-50%, -50%);
+                            box-shadow: 0 0 5px ${color};
+                            pointer-events: none;
+                            z-index: 11;
                         "></div>
                     `;
                     break;
@@ -6265,7 +6337,152 @@
                 checkHit();
             }, scanCount * scanDelay + 150);
         }
+
+        function createBreastFireEffect(weaponColor) {
+            const containerRect = combatContainer.getBoundingClientRect();
+            const centerX = combatMode.mouseX;
+            const centerY = combatMode.mouseY;
+
+            // 添加必要的CSS
+            addCSSIfNeeded(`
+                @keyframes breastfireParticle {
+                    0% { transform: translate(0, 0) scale(1); opacity: 1; }
+                    100% { transform: translate(var(--tx), var(--ty)) scale(0.2); opacity: 0; }
+                }
+        
+                @keyframes breastfireWave {
+                    0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0.9; }
+                    100% { transform: translate(-50%, -50%) scale(1.5); opacity: 0; }
+                }
+            `);
+    
+            // 火焰的基本顏色
+            const baseColor = weaponColor || '#FF4500';
             
+            // 創建主火焰區域 - 正三角形，尖端朝下
+            const breastfireWidth = containerRect.width * 0.2; // 適當比例
+            const breastfireHeight = breastfireWidth / 2;
+    
+            // 火焰三角形元素
+            const breastfireElement = document.createElement('div');
+            breastfireElement.style.position = 'absolute';
+            breastfireElement.style.left = `${centerX}px`;
+            breastfireElement.style.top = `${centerY}px`;
+            breastfireElement.style.width = `${breastfireWidth}px`;
+            breastfireElement.style.height = `${breastfireHeight}px`;
+            breastfireElement.style.zIndex = '15';
+            breastfireElement.style.transform = 'translate(-50%, -50%)';
+    
+            breastfireElement.innerHTML = `
+                <svg width="${breastfireWidth}" height="${breastfireHeight}" viewBox="0 0 ${breastfireWidth} ${breastfireHeight}">
+                    <polygon 
+                        points="0,0 ${breastfireWidth},0 ${breastfireWidth/2},${breastfireHeight}"
+                        fill="url(#breastFireGradient)"
+                        style="filter: drop-shadow(0 0 15px ${baseColor});"
+                    />
+                    <defs>
+                        <linearGradient id="breastFireGradient" x1="0.5" y1="0" x2="0.5" y2="1">
+                            <stop offset="0%" stop-color="white" />
+                            <stop offset="60%" stop-color="${baseColor}" />
+                            <stop offset="100%" stop-color="red" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+            `;
+    
+            combatContainer.appendChild(breastfireElement);
+    
+            // 添加火焰粒子效果 - 向下噴射
+            for (let i = 0; i < 30; i++) {
+                setTimeout(() => {
+                    const particle = document.createElement('div');
+                    particle.className = 'breastfire-particle';
+                    
+                    // 隨機位置 - 集中在三角形區域內，主要在上部
+                    const randomX = centerX + (Math.random() - 0.5) * breastfireWidth * (1 - Math.random() * 0.5);
+                    const randomY = centerY - breastfireHeight * 0.3 + Math.random() * breastfireHeight * 0.5;
+            
+                    particle.style.position = 'absolute';
+                    particle.style.left = `${randomX}px`;
+                    particle.style.top = `${randomY}px`;
+            
+                    // 隨機大小
+                    const size = 5 + Math.random() * 10;
+                    particle.style.width = `${size}px`;
+                    particle.style.height = `${size}px`;
+                    particle.style.borderRadius = '50%';
+            
+                    // 隨機顏色 - 從黃色到橙色到紅色
+                    const colors = ['#FFFF00', '#FFA500', '#FF4500', '#FF0000'];
+                    const randColor = colors[Math.floor(Math.random() * colors.length)];
+                    particle.style.backgroundColor = randColor;
+                    particle.style.boxShadow = `0 0 ${size/2}px ${randColor}`;
+                    particle.style.zIndex = '16';
+            
+                    // 動畫終點: 向下方噴射且有一定隨機偏移
+                    const tx = (Math.random() - 0.5) * 60;
+                    const ty = 40 + Math.random() * 60; // 向下為正值
+            
+                    particle.style.setProperty('--tx', `${tx}px`);
+                    particle.style.setProperty('--ty', `${ty}px`);
+            
+                    // 添加動畫
+                    const duration = 0.5 + Math.random() * 0.7;
+                    particle.style.animation = `breastfireParticle ${duration}s forwards ease-out`;
+            
+                    combatContainer.appendChild(particle);
+                
+                    // 動畫結束後移除粒子
+                    setTimeout(() => {
+                        if (particle.parentNode) particle.parentNode.removeChild(particle);
+                    }, duration * 1000);
+                }, i * 20); // 逐漸添加粒子
+            }
+    
+            // 添加擴散波效果
+            const breastfireWave = document.createElement('div');
+            breastfireWave.style.position = 'absolute';
+            breastfireWave.style.left = `${centerX}px`;
+            breastfireWave.style.top = `${centerY}px`;
+            breastfireWave.style.width = `${breastfireWidth}px`;
+            breastfireWave.style.height = `${breastfireHeight}px`;
+            breastfireWave.style.borderRadius = '50%';
+            breastfireWave.style.background = `radial-gradient(circle, ${hexToRgba(baseColor, 0.7)} 0%, ${hexToRgba(baseColor, 0.1)} 70%, transparent 100%)`;
+            breastfireWave.style.transform = 'translate(-50%, -50%) scale(0.5)';
+            breastfireWave.style.animation = 'breastfireWave 0.8s forwards';
+            breastfireWave.style.zIndex = '14';
+    
+            combatContainer.appendChild(breastfireWave);
+            
+            // 添加第二波擴散
+            setTimeout(() => {
+                const secondWave = document.createElement('div');
+                secondWave.style.position = 'absolute';
+                secondWave.style.left = `${centerX}px`;
+                secondWave.style.top = `${centerY}px`;
+                secondWave.style.width = `${breastfireWidth * 0.7}px`;
+                secondWave.style.height = `${breastfireHeight * 0.7}px`;
+                secondWave.style.borderRadius = '50%';
+                secondWave.style.background = `radial-gradient(circle, white 0%, ${hexToRgba(baseColor, 0.6)} 40%, transparent 100%)`;
+                secondWave.style.transform = 'translate(-50%, -50%) scale(0.5)';
+                secondWave.style.animation = 'breastfireWave 0.6s forwards';
+                secondWave.style.zIndex = '13';
+        
+                combatContainer.appendChild(secondWave);
+        
+                // 動畫結束後移除
+                setTimeout(() => {
+                    if (secondWave.parentNode) secondWave.parentNode.removeChild(secondWave);
+                }, 600);
+            }, 200);
+    
+            // 結束時移除三角形和波紋
+            setTimeout(() => {
+                if (breastfireElement.parentNode) breastfireElement.parentNode.removeChild(breastfireElement);
+                if (breastfireWave.parentNode) breastfireWave.parentNode.removeChild(breastfireWave);
+            }, 800);
+        }
+        
         function createSpiralBeamEffect(weaponColor) {
             const containerRect = combatContainer.getBoundingClientRect();
 
@@ -6447,6 +6664,16 @@
                             {x: getterBeamWidth/2, y: -getterBeamHeight/2},
                             {x: getterBeamWidth/2, y: getterBeamHeight/2},
                             {x: -getterBeamWidth/2, y: getterBeamHeight/2}
+                        ];
+                        break;
+
+                    case 'Breast_Fire':
+                        // 使用正三角形碰撞檢測
+                        const breastfireSize = crosshairRadius * 1.2;
+                        crosshairPoints = [
+                            {x: -breastfireSize, y: -breastfireSize/2},
+                            {x: breastfireSize, y: -breastfireSize/2},
+                            {x: 0, y: breastfireSize/2}
                         ];
                         break;
                         
