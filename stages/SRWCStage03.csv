@@ -75,7 +75,7 @@ initial_position,gundam_mk_ii,,,,,,,,,,,,,,,,7,6,,,,,,,,,,,,,,,,,,,,,,,,,,,
 initial_position,wing_zero_gundam,,,,,,,,,,,,,,,,7,1,,,,,,,,,,,,,,,,,,,,,,,,,,,
 initial_position,gundam,,,,,,,,,,,,,,,,7,0,,,,,,,,,,,,,,,,,,,,,,,,,,,
 initial_position,gp01_gundam,,,,,,,,,,,,,,,,7,7,,,,,,,,,,,,,,,,,,,,,,,,,,,
-condition,victory,,,,,,,,,,,,,,,,,,surviveNTurns,存活3回合,,,,,,,,,,,,,,,,,,,,,,,,,
+condition,victory,,,,,,,,,,,,,,,,,,surviveNTurns,存活30回合,,,,,,,,,,,,,,,,,,,,,,,,,
 condition,defeat,,,,,,,,,,,,,,,,,,kingCaptured,我方旗艦「勞·卡拉姆號」被摧毀,,,,,,,,,,,,,,,,,,,,,,,,,
 event,,,,,,,,,,,,,,,,,,,,,turnStart,25,blue,,,,spawnPiece,cybuster,5,7,,TRUE,TRUE,賽巴斯塔趕來救援！,英雄們身陷重大危機之中，這時賽巴斯塔突然現身於眾人面前。他是否能拯救深陷困境的英雄們，化解這場危機呢？,確定,,,,,,,,,TRUE
 event,,,,,,,,,,,,,,,,,,,,,pieceCaptured,,,gilgilgun_III,,,spawnPiece,gilgilgun_III_reborn_1,0,4,,TRUE,TRUE,基爾基爾鋼復活！,別以為要擊到我是一件容易的事！,確定,,,,,,,,,TRUE
