@@ -1985,6 +1985,7 @@
         let cosmoNovaSound = null;
         let thunderSound = null;
         let GetterBeamSound = null;
+        let breastFireSound = null;
         let explosionSound = null;
         let soundsLoaded = false;
 
@@ -2040,6 +2041,9 @@
                     break;
                 case 'GetterRobot':
                     bgmUrl = './audio/SRWCBGM_GetterRobot.mp3';
+                    break;
+                case 'MazingerZ':
+                    bgmUrl = './audio/SRWCBGM_MazingerZ.mp3';
                     break;
                 default:
                     return; // 沒有匹配的BGM類型，不播放
@@ -2168,6 +2172,9 @@
 
             GetterBeamSound = new Audio('./soundeffects/SRWCSE_GetterBeam.mp3');
             GetterBeamSound.load();
+
+            breastFireSound = new Audio('./soundeffects/SRWCSE_BreastFire.mp3');
+            breastFireSound.load();
 
             // 设置加载完成标志
             soundsLoaded = true;
@@ -5451,6 +5458,9 @@
             } else if (crosshairType === 'Getter_Beam') {
                 // 播放Getter Beam音效
                 playCombatSound(GetterBeamSound);
+            } else if (crosshairType === 'Breast_Fire') {
+                // 播放Breast Fire音效
+                playCombatSound(breastFireSound);
             } else {
                 // 播放激光枪音效
                 playCombatSound(beamGunSound);
@@ -5472,6 +5482,9 @@
                     break;
                 case 'Getter_Beam':
                     createGetterBeamEffect(weaponColor);
+                    break;
+                case 'Breast_Fire':
+                    createBreastFireEffect(weaponColor);
                     break;
                 case 'diamond':
                     createScatterShotEffect(weaponColor);
