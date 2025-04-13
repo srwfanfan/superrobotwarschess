@@ -2294,7 +2294,7 @@
                     console.log("从存档读取FA Gundam状态:", Get_fa_gundam);
             
                     // 检查是否已完成所有可用关卡
-                    if (completedLevel < 4) {
+                    if (completedLevel < 5) {
                         // 根据完成的关卡数加载下一关
                         let nextLevelId = completedLevel + 1;
                         loadLevelById(nextLevelId, loadingOverlay);
@@ -2337,6 +2337,8 @@
                 csvUrl = "./stages/SRWCStage02.csv"; // 第二关
             } else if (levelId === 3) {
                 csvUrl = "./stages/SRWCStage03.csv"; // 第三关
+            } else if (levelId === 4) {
+                csvUrl = "./stages/SRWCStage04.csv"; // 第四关
             } else {
                 // 默认或未来关卡
                 document.getElementById('csv-loading-message').textContent = "未找到對應關卡或關卡開發中";
@@ -7394,8 +7396,11 @@
                 } else if (this.currentLevel === 2) {
                     // 从第二关到第三关
                     nextCsvUrl = "./stages/SRWCStage03.csv";
+                } else if (this.currentLevel === 3) {
+                    // 从第三关到第四关
+                    nextCsvUrl = "./stages/SRWCStage04.csv";
                 } else {
-                    // 其他情況（未來可能的第三關等）
+                    // 其他情況（未來可能的第五關等）
                     this.showComingSoonMessage();
                     return;
                 }
