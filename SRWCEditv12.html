@@ -1684,8 +1684,12 @@
 
             // Download CSV button
             document.getElementById('download-csv-btn').addEventListener('click', function() {
-                // 提取關卡資訊以作為默認檔案名稱
-                const defaultFilename = `level_${appState.levelInfo.id}_${appState.levelInfo.title || 'untitled'}`;
+                // 设置关卡ID格式
+                const levelId = appState.levelInfo.id;
+                // 如果ID小于10，前面加0；否则直接使用ID
+                const formattedId = levelId < 10 ? `0${levelId}` : `${levelId}`;
+                // 设置默认文件名为 SRWCStage0X
+                const defaultFilename = `SRWCStage${formattedId}`;
 
                 // 設置默認檔案名到輸入框
                 document.getElementById('custom-filename').value = defaultFilename;
