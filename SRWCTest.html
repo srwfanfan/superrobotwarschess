@@ -1963,6 +1963,9 @@
         let currentBattleBgmType = null;
 
         let beamGunSound = null;
+        let beamSaberSound = null;
+        let cosmoNovaSound = null;
+        let thunderSound = null;
         let explosionSound = null;
         let soundsLoaded = false;
 
@@ -2134,6 +2137,12 @@
             // 加载光束剑音效
             beamSaberSound = new Audio('./soundeffects/SRWCSE_BeamSaber.mp3');
             beamSaberSound.load();
+
+            cosmoNovaSound = new Audio('./soundeffects/SRWCSE_CosmoNova.mp3');
+            cosmoNovaSound.load();
+
+            thunderSound = new Audio('./soundeffects/SRWCSE_Thunder.mp3');
+            thunderSound.load();
 
             // 设置加载完成标志
             soundsLoaded = true;
@@ -5299,10 +5308,16 @@
             if (crosshairType === 'Beam_Saber') {
                 // 播放光束剑音效
                 playCombatSound(beamSaberSound);
+            } else if (crosshairType === 'Cosmo_Nova') {
+                // 播放宇宙新星音效
+                playCombatSound(cosmoNovaSound);
+            } else if (crosshairType === 'Destructive_Thunder') {
+                // 播放雷电音效
+                playCombatSound(thunderSound);
             } else {
                 // 播放激光枪音效
                 playCombatSound(beamGunSound);
-            }
+            }   
 
             // 根据准星类型使用不同的攻击效果
             switch(crosshairType) {
@@ -5681,15 +5696,6 @@
             // 闪电颜色：主色和高亮色
             const baseColor = weaponColor;
             const highlightColor = '#FFFFFF'; // 白色高亮部分
-
-            // 播放雷电音效
-            const thunderSound = new Audio('./soundeffects/SRWCSE_Thunder.mp3');
-            if (typeof playCombatSound === 'function') {
-                playCombatSound(thunderSound);
-            } else {
-                thunderSound.volume = 0.7;
-                thunderSound.play().catch(e => console.log('无法播放雷电音效:', e));
-            }
 
             // 中心爆发效果
             const centerEffect = document.createElement('div');
