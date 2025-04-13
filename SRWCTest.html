@@ -7719,12 +7719,17 @@
                         // 檢查各種可能的棋子ID位置
                         let pieceIdMatched = false;
                         if (context) {
-                            if (context.piece && context.piece.id === condition.pieceId) {
-                                pieceIdMatched = true;
-                            } else if (context.capturedPiece && context.capturedPiece.id === condition.pieceId) {
-                                pieceIdMatched = true;
-                            } else if (context.capturingPiece && context.capturingPiece.id === condition.pieceId) {
-                                pieceIdMatched = true;
+                           // 对于 pieceCaptured 事件，只检查 capturedPiece
+                            if (event.type === 'pieceCaptured') {
+                                if (context.capturedPiece && context.capturedPiece.id === condition.pieceId) {
+                                    pieceIdMatched = true;
+                                } else if (context.piece && context.piece.id === condition.pieceId) {
+                                    pieceIdMatched = true;
+                                } else if (context.capturedPiece && context.capturedPiece.id === condition.pieceId) {
+                                    pieceIdMatched = true;
+                                } else if (context.capturingPiece && context.capturingPiece.id === condition.pieceId) {
+                                    pieceIdMatched = true;
+                                }
                             }
                         }
 
