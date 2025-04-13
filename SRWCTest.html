@@ -2856,16 +2856,16 @@
                 // 添加Getter_Beam准星类型
                 case 'Getter_Beam':
                     // 水平长方形准星(宽:高 = 6:1)
-                    const frameHeight = Math.round(outerSize * 0.4); // 较短的高度
-                    const frameWidth = frameHeight * 6; // 宽度是高度的6倍
+                    const getterBeamHeight = Math.round(outerSize * 0.4); // 较短的高度
+                    const getterBeamWidth = getterBeamHeight * 6; // 宽度是高度的6倍
             
                     container.innerHTML = `
                         <div class="crosshair-frame" style="
                             position: absolute;
                             top: 50%;
                             left: 50%;
-                            width: ${frameWidth}px;
-                            height: ${frameHeight}px;
+                            width: ${getterBeamWidth}px;
+                            height: ${getterBeamHeight}px;
                             border: ${borderWidth}px solid ${rgbaColor};
                             transform: translate(-50%, -50%);
                             box-shadow: 0 0 10px ${color};
