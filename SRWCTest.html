@@ -6216,46 +6216,46 @@
 
             // 水平长方形准星的参数计算
             const outerSize = combatMode.crosshairSize * 0.8; // 外框大小为容器大小的80%
-            const frameHeight = Math.round(outerSize * 0.4); // 较短的高度
-            const frameWidth = frameHeight * 6; // 宽度是高度的6倍
-    
+            const rectHeight = Math.round(outerSize * 0.4); // 较短的高度
+            const rectWidth = rectHeight * 6; // 宽度是高度的6倍
+
             // 预先计算扫描线数量和时间参数
             const scanCount = 7; // 创建7条扫描线
             const scanDuration = 100; // 每条线的持续时间(毫秒)
             const scanDelay = 50; // 线之间的延迟(毫秒)
-    
+        
             // 播放光束音效
             playCombatSound(GetterBeamSound);
-    
+
             // 创建扫描线动画
             for (let i = 0; i < scanCount; i++) {
                 setTimeout(() => {
                     // 在长方形内随机高度创建扫描线
-                    const randomOffset = (Math.random() - 0.5) * frameHeight;
+                    const randomOffset = (Math.random() - 0.5) * rectHeight;
                     const scanY = centerY + randomOffset;
-            
+    
                     // 创建扫描线
                     const scanLine = document.createElement('div');
                     scanLine.style.position = 'absolute';
                     scanLine.style.height = '5px'; // 加粗扫描线
-                    scanLine.style.width = `${frameWidth}px`;
-                    scanLine.style.left = `${centerX - frameWidth/2}px`;
+                    scanLine.style.width = `${rectWidth}px`;
+                    scanLine.style.left = `${centerX - rectWidth/2}px`;
                     scanLine.style.top = `${scanY}px`;
                     scanLine.style.background = `linear-gradient(90deg, ${hexToRgba(weaponColor, 0.3)} 0%, ${hexToRgba(weaponColor, 1)} 50%, ${hexToRgba(weaponColor, 0.3)} 100%)`;
                     scanLine.style.boxShadow = `0 0 10px ${weaponColor}, 0 0 20px ${weaponColor}`;
                     scanLine.style.zIndex = '9';
                     scanLine.style.animation = 'getterScanLine 0.3s forwards';
-            
+    
                     // 添加到容器
                     combatContainer.appendChild(scanLine);
-            
+    
                     // 清理扫描线
                     setTimeout(() => {
                         if (scanLine.parentNode) scanLine.parentNode.removeChild(scanLine);
                     }, 300);
                 }, i * scanDelay);
             }
-    
+
             // 延迟检查命中 - 在最后一条扫描线后
             setTimeout(() => {
                 checkHit();
