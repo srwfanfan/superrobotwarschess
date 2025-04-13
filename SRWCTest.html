@@ -7739,15 +7739,6 @@
                                 // 只检查被捕获的棋子ID，不检查攻击方ID
                                 if (context.capturedPiece && context.capturedPiece.id === condition.pieceId) {
                                     pieceIdMatched = true;
-                                } else {
-                                    // 其他事件类型的处理保持不变
-                                    if (context.piece && context.piece.id === condition.pieceId) {
-                                    pieceIdMatched = true;
-                                    } else if (context.capturedPiece && context.capturedPiece.id === condition.pieceId) {
-                                        pieceIdMatched = true;
-                                    } else if (context.capturingPiece && context.capturingPiece.id === condition.pieceId) {
-                                        pieceIdMatched = true;
-                                    }
                                 }
                             }
                         }
