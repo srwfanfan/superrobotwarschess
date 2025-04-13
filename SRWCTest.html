@@ -5372,6 +5372,9 @@
             } else if (crosshairType === 'Destructive_Thunder') {
                 // 播放雷电音效
                 playCombatSound(thunderSound);
+            } else if (crosshairType === 'Getter_Beam') {
+                // 播放Getter Beam音效
+                playCombatSound(GetterBeamSound);
             } else {
                 // 播放激光枪音效
                 playCombatSound(beamGunSound);
@@ -6222,7 +6225,7 @@
             const scanDelay = 50; // 线之间的延迟(毫秒)
     
             // 播放光束音效
-            playCombatSound(beamGunSound);
+            playCombatSound(GetterBeamSound);
     
             // 创建扫描线动画
             for (let i = 0; i < scanCount; i++) {
