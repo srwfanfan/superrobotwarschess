@@ -3038,6 +3038,15 @@
                                 description: entry.description
                             };
 
+                            // 处理特定类型的条件
+                            if (entry.condition_type === 'surviveNTurns') {
+                                // 从描述中提取数字
+                                const matches = entry.description.match(/\d+/);
+                                const turns = matches ? parseInt(matches[0], 10) : 10; // 默认值为3，以防提取失败
+                                conditionObj.turns = turns;
+                                console.log(`从描述 "${entry.description}" 中提取到回合数: ${turns}`);
+                            }
+
                             if (entry.id === 'victory') {
                                 currentLevel.victoryCondition = conditionObj;
                             } else if (entry.id === 'defeat') {
