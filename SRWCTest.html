@@ -5164,7 +5164,7 @@
                         // 計算百分比尺寸：(100% + (命中值-2)*35%) * (20% 的容器寬度)
                         const containerWidth = containerRect.width;
                         const baseSizePercent = 20; // 基礎大小為容器的20%
-                        const hitMultiplier = attackerPiece.hit / 3; // 3为中等命中值
+                        const hitMultiplier = attackerPiece.hit / 2.5; // 3为中等命中值
                         const crosshairSizePercent = hitMultiplier * baseSizePercent;
                         combatMode.crosshairSize = containerWidth * (crosshairSizePercent / 100);
                         crosshair.style.width = `${crosshairSizePercent}%`;
