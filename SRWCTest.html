@@ -6391,9 +6391,13 @@
     
             // 火焰的基本顏色
             const baseColor = weaponColor || '#FF4500';
+
+            // 应用相同的放大系数(1.98)
+            const sizeMultiplier = 1.98;
             
             // 創建主火焰區域 - 正三角形，尖端朝下
-            const breastfireWidth = containerRect.width * 0.2; // 適當比例
+            const baseBrfWidth = containerRect.width * 0.2; // 原始尺寸
+            const breastfireWidth = baseBrfWidth * sizeMultiplier; // 放大后的尺寸
             const breastfireHeight = breastfireWidth / 2;
     
             // 火焰三角形元素
@@ -6431,7 +6435,7 @@
                     const particle = document.createElement('div');
                     particle.className = 'breastfire-particle';
                     
-                    // 隨機位置 - 集中在三角形區域內，主要在上部
+                    // 隨機位置 - 放大粒子分布范围
                     const randomX = centerX + (Math.random() - 0.5) * breastfireWidth * (1 - Math.random() * 0.5);
                     const randomY = centerY - breastfireHeight * 0.3 + Math.random() * breastfireHeight * 0.5;
             
@@ -6439,8 +6443,8 @@
                     particle.style.left = `${randomX}px`;
                     particle.style.top = `${randomY}px`;
             
-                    // 隨機大小
-                    const size = 5 + Math.random() * 10;
+                    // 随机大小 - 稍微放大
+                    const size = (5 + Math.random() * 10) * (sizeMultiplier * 0.6);
                     particle.style.width = `${size}px`;
                     particle.style.height = `${size}px`;
                     particle.style.borderRadius = '50%';
@@ -6452,9 +6456,9 @@
                     particle.style.boxShadow = `0 0 ${size/2}px ${randColor}`;
                     particle.style.zIndex = '16';
             
-                    // 動畫終點: 向下方噴射且有一定隨機偏移
-                    const tx = (Math.random() - 0.5) * 60;
-                    const ty = 40 + Math.random() * 60; // 向下為正值
+                    // 動畫終點: 放大移动距离
+                    const tx = (Math.random() - 0.5) * 60 * sizeMultiplier * 0.8;
+                    const ty = (40 + Math.random() * 60) * sizeMultiplier * 0.8;
             
                     particle.style.setProperty('--tx', `${tx}px`);
                     particle.style.setProperty('--ty', `${ty}px`);
@@ -6487,7 +6491,7 @@
     
             combatContainer.appendChild(breastfireWave);
             
-            // 添加第二波擴散
+            // 添加第二波擴散 - 使用调整后尺寸
             setTimeout(() => {
                 const secondWave = document.createElement('div');
                 secondWave.style.position = 'absolute';
@@ -6701,8 +6705,10 @@
                         break;
 
                     case 'Breast_Fire':
-                        // 使用正三角形碰撞檢測
-                        const breastfireSize = crosshairRadius * 1.2;
+                        // 使用正三角形碰撞檢測，应用相同的放大系数
+                        const sizeMultiplier = 1.98;
+                        const baseBrfSize = crosshairRadius * 1.2;
+                        const breastfireSize = baseBrfSize * sizeMultiplier;
                         crosshairPoints = [
                             {x: -breastfireSize, y: -breastfireSize/2},
                             {x: breastfireSize, y: -breastfireSize/2},
