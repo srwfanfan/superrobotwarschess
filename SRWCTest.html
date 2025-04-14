@@ -2681,6 +2681,25 @@
             const borderWidth = Math.max(2, Math.floor(size / 40)); // 边框宽度最小2px
             const dotSize = Math.max(4, Math.floor(size / 15)); // 中心点大小
 
+            // 所有形状的面积均等化系数
+            const areaEqualizationFactors = {
+                'Beam_Rifie': 1,               // 圆形，基准值
+                'Beam_Saber': 0.91,            // √(0.79/0.96) ≈ 0.91
+                'Cosmo_Nova': 1.27,            // √(0.79/0.49) ≈ 1.27
+                'Destructive_Thunder': 0.89,   // √(0.79/1.00) ≈ 0.89
+                'Getter_Beam': 0.91,           // √(0.79/0.96) ≈ 0.91
+                'Breast_Fire': 1.98,           // √(0.79/0.2025) ≈ 1.98
+                'diamond': 1.27,               // √(0.79/0.49) ≈ 1.27
+                'triangle': 1.04,              // √(0.79/0.73) ≈ 1.04
+                'custom': 1                    // 特殊形状，保持不变
+            };
+    
+            // 获取当前形状的面积均等化系数
+            const equalizer = areaEqualizationFactors[type] || 1;
+    
+            // 应用均等化系数
+            const adjustedOuterSize = outerSize * equalizer;
+            
             switch (type) {
                 case 'Beam_Rifie':
                     // 圆形外框准星
@@ -2734,7 +2753,7 @@
 
                 case 'Beam_Saber':
                     // 垂直长方形准星 (宽:高 = 1:6)
-                    const frameWidth = Math.round(outerSize * 0.4); // 减小宽度以保持合理比例
+                    const frameWidth = Math.round(adjustedOuterSize * 0.4); // 减小宽度以保持合理比例
                     const frameHeight = frameWidth * 6; // 高度是宽度的6倍
 
                     container.innerHTML = `
@@ -2790,8 +2809,8 @@
                             position: absolute;
                             top: 50%;
                             left: 50%;
-                            width: ${outerSize * 0.7}px;
-                            height: ${outerSize * 0.7}px;
+                            width: ${adjustedOuterSize * 0.7}px;
+                            height: ${adjustedOuterSize * 0.7}px;
                             border: ${borderWidth}px solid ${rgbaColor};
                             transform: translate(-50%, -50%) rotate(45deg);
                             box-shadow: 0 0 10px ${color};
@@ -2832,9 +2851,8 @@
                     break;
 
                 case 'Destructive_Thunder':
-                    // 使用不同的变量名避免冲突
-                    const thunderSquareSize = Math.round(outerSize * 1); // 使用100%的外框大小
-    
+                    const thunderSquareSize = Math.round(adjustedOuterSize * 1); // 使用100%的外框大小
+                    
                     container.innerHTML = `
                         <div class="crosshair-frame" style="
                             position: absolute;
@@ -2884,8 +2902,7 @@
 
                 // 添加Getter_Beam准星类型
                 case 'Getter_Beam':
-                    // 水平长方形准星(宽:高 = 6:1)
-                    const getterBeamHeight = Math.round(outerSize * 0.4); // 较短的高度
+                    const getterBeamHeight = Math.round(adjustedOuterSize * 0.4); // 较短的高度
                     const getterBeamWidth = getterBeamHeight * 6; // 宽度是高度的6倍
             
                     container.innerHTML = `
@@ -2936,7 +2953,7 @@
 
                 case 'Breast_Fire':
                     // 正三角形准星(底：高 = 2:1)，尖端朝下
-                    const breastfireWidth = Math.round(outerSize * 0.9); // 三角形底部寬度
+                    const breastfireWidth = Math.round(adjustedOuterSize * 0.9); // 三角形底部寬度
                     const breastfireHeight = breastfireWidth / 2; // 高度為寬度的一半
     
                     container.innerHTML = `
@@ -5147,7 +5164,7 @@
                         // 計算百分比尺寸：(100% + (命中值-2)*35%) * (20% 的容器寬度)
                         const containerWidth = containerRect.width;
                         const baseSizePercent = 20; // 基礎大小為容器的20%
-                        const hitMultiplier = 1 + (attackerPiece.hit - 2) * 0.35; // 命中值修正因子
+                        const hitMultiplier = attackerPiece.hit / 3; // 3为中等命中值
                         const crosshairSizePercent = hitMultiplier * baseSizePercent;
                         combatMode.crosshairSize = containerWidth * (crosshairSizePercent / 100);
                         crosshair.style.width = `${crosshairSizePercent}%`;
