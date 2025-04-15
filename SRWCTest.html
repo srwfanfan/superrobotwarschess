@@ -1596,10 +1596,13 @@
             0% { transform: translate(0, 0) scale(1); opacity: 1; }
             100% { transform: translate(var(--tx), var(--ty)) scale(0.2); opacity: 0; }
         }
-
         @keyframes breastfireWave {
-            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0.9; }
-            100% { transform: translate(-50%, -50%) scale(1.5); opacity: 0; }
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0.8; }
+            100% { transform: translate(-50%, -50%) scale(2.0); opacity: 0; }
+        }
+        @keyframes breastfireWaveExpand {
+            0% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
+            100% { transform: translate(-50%, -50%) scale(20); opacity: 0; }
         }
 
     </style>
@@ -6430,14 +6433,14 @@
             combatContainer.appendChild(breastfireElement);
     
             // 添加火焰粒子效果 - 向下噴射
-            for (let i = 0; i < 30; i++) {
+            for (let i = 0; i < 40; i++) {
                 setTimeout(() => {
                     const particle = document.createElement('div');
                     particle.className = 'breastfire-particle';
                     
-                    // 隨機位置 - 放大粒子分布范围
-                    const randomX = centerX + (Math.random() - 0.5) * breastfireWidth * (1 - Math.random() * 0.5);
-                    const randomY = centerY - breastfireHeight * 0.3 + Math.random() * breastfireHeight * 0.5;
+                    // 所有粒子从中心点生成
+                    const particleX = centerX;
+                    const particleY = centerY;
             
                     particle.style.position = 'absolute';
                     particle.style.left = `${randomX}px`;
@@ -6456,9 +6459,13 @@
                     particle.style.boxShadow = `0 0 ${size/2}px ${randColor}`;
                     particle.style.zIndex = '16';
             
-                    // 動畫終點: 放大移动距离
-                    const tx = (Math.random() - 0.5) * 60 * sizeMultiplier * 0.8;
-                    const ty = (40 + Math.random() * 60) * sizeMultiplier * 0.8;
+                    // 360度随机方向扩散
+                    const angle = Math.random() * Math.PI * 2; // 0-2π，覆盖360度
+                    const distance = (30 + Math.random() * 80) * sizeMultiplier * 0.7; // 随机距离
+                        
+                    // 计算目标位置
+                    const tx = Math.cos(angle) * distance;
+                    const ty = Math.sin(angle) * distance;
             
                     particle.style.setProperty('--tx', `${tx}px`);
                     particle.style.setProperty('--ty', `${ty}px`);
@@ -6473,20 +6480,47 @@
                     setTimeout(() => {
                         if (particle.parentNode) particle.parentNode.removeChild(particle);
                     }, duration * 1000);
-                }, i * 20); // 逐漸添加粒子
+                }, i * 15); // 逐漸添加粒子
             }
+
+            // 创建中心爆发点 - 明亮闪光
+            const flashPoint = document.createElement('div');
+            flashPoint.style.position = 'absolute';
+            flashPoint.style.left = `${centerX}px`;
+            flashPoint.style.top = `${centerY}px`;
+            flashPoint.style.width = `20px`;
+            flashPoint.style.height = `20px`;
+            flashPoint.style.borderRadius = '50%';
+            flashPoint.style.backgroundColor = 'white';
+            flashPoint.style.boxShadow = `0 0 30px white`;
+            flashPoint.style.transform = 'translate(-50%, -50%)';
+            flashPoint.style.zIndex = '17';
+            flashPoint.style.opacity = '1';
+            flashPoint.style.transition = 'all 0.3s';
+
+            combatContainer.appendChild(flashPoint);
+
+            // 闪光消失
+            setTimeout(() => {
+                flashPoint.style.opacity = '0';
+                flashPoint.style.width = '40px';
+                flashPoint.style.height = '40px';
+                setTimeout(() => {
+                    if (flashPoint.parentNode) flashPoint.parentNode.removeChild(flashPoint);
+                }, 300);
+            }, 100);
     
             // 添加擴散波效果
             const breastfireWave = document.createElement('div');
             breastfireWave.style.position = 'absolute';
             breastfireWave.style.left = `${centerX}px`;
             breastfireWave.style.top = `${centerY}px`;
-            breastfireWave.style.width = `${breastfireWidth}px`;
-            breastfireWave.style.height = `${breastfireHeight}px`;
+            breastfireWave.style.width = `10px`; // 改为小尺寸开始
+            breastfireWave.style.height = `10px`; // 改为小尺寸开始
             breastfireWave.style.borderRadius = '50%';
             breastfireWave.style.background = `radial-gradient(circle, ${hexToRgba(baseColor, 0.7)} 0%, ${hexToRgba(baseColor, 0.1)} 70%, transparent 100%)`;
-            breastfireWave.style.transform = 'translate(-50%, -50%) scale(0.5)';
-            breastfireWave.style.animation = 'breastfireWave 0.8s forwards';
+            breastfireWave.style.transform = 'translate(-50%, -50%)'; // 移除初始缩放
+            breastfireWave.style.animation = 'breastfireWaveExpand 0.8s forwards'; // 更改动画名称
             breastfireWave.style.zIndex = '14';
     
             combatContainer.appendChild(breastfireWave);
@@ -6497,12 +6531,12 @@
                 secondWave.style.position = 'absolute';
                 secondWave.style.left = `${centerX}px`;
                 secondWave.style.top = `${centerY}px`;
-                secondWave.style.width = `${breastfireWidth * 0.7}px`;
-                secondWave.style.height = `${breastfireHeight * 0.7}px`;
+                secondWave.style.width = `20px`; // 固定小尺寸开始
+                secondWave.style.height = `20px`; // 固定小尺寸开始
                 secondWave.style.borderRadius = '50%';
                 secondWave.style.background = `radial-gradient(circle, white 0%, ${hexToRgba(baseColor, 0.6)} 40%, transparent 100%)`;
-                secondWave.style.transform = 'translate(-50%, -50%) scale(0.5)';
-                secondWave.style.animation = 'breastfireWave 0.6s forwards';
+                secondWave.style.transform = 'translate(-50%, -50%)'; // 移除初始缩放
+                secondWave.style.animation = 'breastfireWaveExpand 1.2s forwards'; // 更改动画和持续时间
                 secondWave.style.zIndex = '13';
         
                 combatContainer.appendChild(secondWave);
@@ -6510,7 +6544,7 @@
                 // 動畫結束後移除
                 setTimeout(() => {
                     if (secondWave.parentNode) secondWave.parentNode.removeChild(secondWave);
-                }, 600);
+                }, 1200);
             }, 200);
     
             // 結束時移除三角形和波紋
@@ -6705,10 +6739,12 @@
                         break;
 
                     case 'Breast_Fire':
-                        // 使用正三角形碰撞檢測，应用相同的放大系数
+                        // 使用正三角形碰撞检测，应用放大系数
                         const sizeMultiplier = 1.98;
                         const baseBrfSize = crosshairRadius * 1.2;
                         const breastfireSize = baseBrfSize * sizeMultiplier;
+    
+                        // 可以保持三角形检测不变，或者考虑改为圆形检测以匹配视觉效果
                         crosshairPoints = [
                             {x: -breastfireSize, y: -breastfireSize/2},
                             {x: breastfireSize, y: -breastfireSize/2},
