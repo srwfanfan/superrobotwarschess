@@ -1,6 +1,6 @@
 data_type,id,title,subtitle,storyImage,storyDesc,boardImage,boardbgm,team,type,moveType,imgUrl,hit,dodge,bgmtype,weapon_colour,crosshairType,position_row,position_col,condition_type,description,event_type,condition_turn,condition_team,condition_pieceId,condition_row,condition_col,action_type,action_pieceId,aim_row,aim_col,action_targetPieceId,action_findBestPosition,action_special,action_title,action_description,action_buttonText,action_character,action_text,action_from_row,action_from_col,action_to_row,action_to_col,action_position_row,action_position_col,once
 level_info,4,第四話,魔鬼高達的威脅,./images/cover/cover04.png,,./images/map/map04.png,./audio/SRWCBGM_Map02.mp3,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-piece_definition,mazingerz,,,,,,,blue,鐵甲萬能俠,bishop,./images/unit/MazingerZ.png,4,2,MazingerZ,#FF4500,Breast_Fire,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+piece_definition,mazingerz,,,,,,,blue,鐵甲萬能俠,bishop,./images/unit/mazinger_z.png,4,2,MazingerZ,#FF4500,Breast_Fire,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 piece_definition,getter_robot,,,,,,,blue,三一萬能俠,bishop,./images/unit/getter_robot.png,3,3,GetterRobot,#FF69B4,Getter_Beam,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 piece_definition,gilgilgun_III,,,,,,,red,基爾基爾鋼III,queen,./images/unit/gilgilgun_III.png,4,4,,#BF40BF,Destructive_Thunder,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 piece_definition,cybuster,,,,,,,blue,賽巴斯塔,rook,./images/unit/cybuster.png,3,5,Cybuster,#E6E8FA,Cosmo_Nova,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
