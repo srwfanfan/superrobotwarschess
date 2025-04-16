@@ -2725,6 +2725,7 @@
                                     if (cells[21] === 'pieceCaptured') {
                                         pieceId = cells[24] || undefined;  // condition_pieceId是被捕獲棋子
                                         capturerId = cells[28] || undefined; // action_pieceId是捕獲者棋子
+                                        actionPieceId = undefined; // 新增这行 - 在pieceCaptured事件中不使用actionPieceId
                                     }
 
                                     const event = {
@@ -2738,7 +2739,7 @@
                                         },
                                         action: {
                                             type: cells[27] || 'dialog',
-                                            pieceId: (cells[21] === 'pieceCaptured') ? undefined : cells[28] || undefined,
+                                            pieceId: actionPieceId, // 修改这行，使用处理后的actionPieceId
                                             capturerId: capturerId,
                                             aimRow: parseCsvNumber(cells[29]),
                                             aimCol: parseCsvNumber(cells[30]),
