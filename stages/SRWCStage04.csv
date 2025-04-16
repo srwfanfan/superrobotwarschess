@@ -29,4 +29,4 @@ initial_position,garada_k7,,,,,,,,,,,,,,,,1,5,,,,,,,,,,,,,,,,,,,,,,,,,,,
 initial_position,gilgilgun_III,,,,,,,,,,,,,,,,0,4,,,,,,,,,,,,,,,,,,,,,,,,,,,
 condition,victory,,,,,,,,,,,,,,,,,,captureAllPieces,敵全滅,,,,,,,,,,,,,,,,,,,,,,,,,
 condition,defeat,,,,,,,,,,,,,,,,,,kingCaptured,我方旗艦「勞·卡拉姆號」被摧毀,,,,,,,,,,,,,,,,,,,,,,,,,
-event,,,,,,,,,,,,,,,,,,,,,pieceCaptured,,,master_gundam,,,replacePiece,shinning_gundam_s,,,shinning_gundam,TRUE,TRUE,閃光高達進入超級模式,閃光高達越戰越勇，進入超級模式！,確定,,,,,,,,,TRUE
+event,,,,,,,,,,,,,,,,,,,,,pieceCaptured,,,master_gundam,,,replacePiece,shinning_gundam_s,,,shinning_gundam_s,TRUE,TRUE,閃光高達進入超級模式,閃光高達越戰越勇，進入超級模式！,確定,,,,,,,,,TRUE
