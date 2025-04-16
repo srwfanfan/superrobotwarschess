@@ -8339,12 +8339,24 @@
             handleReplacePieceAction: function(action, context) {
                 console.log("执行替换棋子动作:", action);
                 const { position, pieceId, row, col, targetPieceId, special } = action;
-                
+    
                 // 确定要替换的棋子位置
                 let targetRow, targetCol;
 
+                // 优先使用targetPieceId查找棋子的当前位置
+                if (targetPieceId) {
+                    const foundPosition = this.findPiecePosition(targetPieceId);
+                    if (foundPosition) {
+                        [targetRow, targetCol] = foundPosition;
+                        console.log(`通过ID ${targetPieceId} 找到棋子当前位置: [${targetRow},${targetCol}]`);
+                    } else {
+                        console.error(`未找到ID为 ${targetPieceId} 的棋子，无法执行替换`);
+                        return;
+                    }
+                }
+                // 如果没有提供targetPieceId或找不到棋子，才使用其他位置参数
                 // 如果直接提供了位置
-                if (position && Array.isArray(position) && position.length === 2) {
+                else if (position && Array.isArray(position) && position.length === 2) {
                     [targetRow, targetCol] = position;
                 }
                 // 如果提供了行列
@@ -8356,16 +8368,6 @@
                 else if (context && typeof context.row === 'number' && typeof context.col === 'number') {
                     targetRow = context.row;
                     targetCol = context.col;
-                }
-                // 搜索棋子ID
-                else if (targetPieceId) {
-                    const foundPosition = this.findPiecePosition(targetPieceId);
-                    if (foundPosition) {
-                        [targetRow, targetCol] = foundPosition;
-                    } else {
-                        console.error(`未找到ID为 ${targetPieceId} 的棋子，无法执行替换`);
-                        return;
-                    }
                 } else {
                     console.error("替换棋子动作缺少有效位置参数:", action);
                     return;
@@ -8417,7 +8419,7 @@
                     console.log("FA Gundam has been unlocked!");
                     Get_fa_gundam = 1;
                 }
-                
+    
                 // 更新棋盘显示
                 updateBoardDisplay();
             },
