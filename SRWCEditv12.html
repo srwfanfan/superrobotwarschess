@@ -2718,14 +2718,15 @@
                                         return isNaN(num) ? undefined : num;
                                     };
 
-                                    // 處理pieceCaptured事件的特殊欄位映射
+                                    // 處理特殊事件類型的欄位映射
                                     let pieceId = cells[24] || undefined;
-                                    let capturerId = undefined;
+                                    let targetPieceId = undefined;
+                                    let actionPieceId = cells[28] || undefined;
 
                                     if (cells[21] === 'pieceCaptured') {
                                         pieceId = cells[24] || undefined;  // condition_pieceId是被捕獲棋子
-                                        capturerId = cells[28] || undefined; // action_pieceId是捕獲者棋子
-                                        actionPieceId = undefined; // 新增这行 - 在pieceCaptured事件中不使用actionPieceId
+                                        targetPieceId = cells[31] || undefined; // 从CSV的action_targetPieceId获取目標棋子ID
+                                        actionPieceId = undefined; // 在pieceCaptured事件中不使用actionPieceId
                                     }
 
                                     const event = {
@@ -2739,8 +2740,9 @@
                                         },
                                         action: {
                                             type: cells[27] || 'dialog',
-                                            pieceId: actionPieceId, // 修改这行，使用处理后的actionPieceId
-                                            capturerId: capturerId,
+                                            pieceId: actionPieceId, // 从CSV的action_pieceId获取棋子ID
+                                            // 将capturerId改为targetPieceId
+                                            targetPieceId: cells[21] === 'pieceCaptured' ? targetPieceId : (cells[31] || undefined),
                                             aimRow: parseCsvNumber(cells[29]),
                                             aimCol: parseCsvNumber(cells[30]),
                                             findBestPosition: cells[32] === 'TRUE',
@@ -2756,7 +2758,6 @@
                                                 [parseCsvNumber(cells[41]), parseCsvNumber(cells[42])] : undefined,
                                             position: (cells[43] !== '' || cells[44] !== '') ?
                                                 [parseCsvNumber(cells[43]), parseCsvNumber(cells[44])] : undefined,
-                                            targetPieceId: cells[31] || undefined
                                         },
                                         once: cells[45] === 'TRUE'
                                     };
