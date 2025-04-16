@@ -1,5 +1,7 @@
 data_type,id,title,subtitle,storyImage,storyDesc,boardImage,boardbgm,team,type,moveType,imgUrl,hit,dodge,bgmtype,weapon_colour,crosshairType,position_row,position_col,condition_type,description,event_type,condition_turn,condition_team,condition_pieceId,condition_row,condition_col,action_type,action_pieceId,aim_row,aim_col,action_targetPieceId,action_findBestPosition,action_special,action_title,action_description,action_buttonText,action_character,action_text,action_from_row,action_from_col,action_to_row,action_to_col,action_position_row,action_position_col,once
 level_info,4,第四話,魔鬼高達的威脅,./images/cover/cover04.png,,./images/map/map04.png,./audio/SRWCBGM_Map02.mp3,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+piece_definition,master_gundam,,,,,,,red,盟主高達,queen,./images/unit/master_gundam.png,4,3,,#BF40BF,Beam_Saber,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+piece_definition,shinning_gundam_s,,,,,,,blue,閃光高達(S),knight,./images/unit/shinning_gundam_s.png,5,3,ShinningGundamS,#66FF66,Beam_Saber,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 piece_definition,shinning_gundam,,,,,,,blue,閃光高達,knight,./images/unit/shinning_gundam.png,4,2,ShinningGundam,#66FF66,Beam_Saber,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 piece_definition,mazinger_z,,,,,,,blue,鐵甲萬能俠,bishop,./images/unit/mazinger_z.png,4,2,MazingerZ,#FF4500,Breast_Fire,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 piece_definition,getter_robot,,,,,,,blue,三一萬能俠,bishop,./images/unit/getter_robot.png,3,3,GetterRobot,#FF69B4,Getter_Beam,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
@@ -18,7 +20,9 @@ initial_position,gilgilgun_III,,,,,,,,,,,,,,,,0,4,,,,,,,,,,,,,,,,,,,,,,,,,,,
 initial_position,getter_robot,,,,,,,,,,,,,,,,3,1,,,,,,,,,,,,,,,,,,,,,,,,,,,
 initial_position,mazinger_z,,,,,,,,,,,,,,,,3,7,,,,,,,,,,,,,,,,,,,,,,,,,,,
 initial_position,cybuster,,,,,,,,,,,,,,,,0,0,,,,,,,,,,,,,,,,,,,,,,,,,,,
-initial_position,shinning_gundam,,,,,,,,,,,,,,,,7,4,,,,,,,,,,,,,,,,,,,,,,,,,,,
 initial_position,gundam,,,,,,,,,,,,,,,,6,0,,,,,,,,,,,,,,,,,,,,,,,,,,,
+initial_position,shinning_gundam,,,,,,,,,,,,,,,,4,4,,,,,,,,,,,,,,,,,,,,,,,,,,,
+initial_position,master_gundam,,,,,,,,,,,,,,,,2,3,,,,,,,,,,,,,,,,,,,,,,,,,,,
 condition,victory,,,,,,,,,,,,,,,,,,captureAllPieces,敵全滅,,,,,,,,,,,,,,,,,,,,,,,,,
 condition,defeat,,,,,,,,,,,,,,,,,,kingCaptured,我方旗艦「勞·卡拉姆號」被摧毀,,,,,,,,,,,,,,,,,,,,,,,,,
+event,,,,,,,,,,,,,,,,,,,,,pieceCaptured,,,master_gundam,,,replacePiece,shinning_gundam,,,shinning_gundam,TRUE,TRUE,閃光高達進入超級模式,閃光高達越戰越勇，進入超級模式！,確定,,,,,,,,,TRUE
