@@ -4637,7 +4637,7 @@
                     console.log(`触发pieceCaptured事件，捕获者: ${piece.id}，被捕获: ${capturedPiece.id}`);
                     eventSystem.triggerEvent('pieceCaptured', {
                         capturedPiece: capturedPiece,
-                        capturingPiece: piece
+                        capturingPiece: piece,
                         attackerPos: { row: fromRow, col: fromCol },
                         defenderPos: { row: toRow, col: toCol }
                     });
