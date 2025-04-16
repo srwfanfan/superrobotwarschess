@@ -3035,7 +3035,6 @@
 
             // 棋子被吃掉事件欄位
             document.getElementById('pieceCaptured-pieceId').value = '';
-            document.getElementById('pieceCaptured-capturerId').value = '';
 
             // 動作欄位
             document.getElementById('event-action-type').value = 'showMission';
@@ -3074,7 +3073,6 @@
             const pieceSelects = [
                 document.getElementById('pieceMove-pieceId'),
                 document.getElementById('pieceCaptured-pieceId'),
-                document.getElementById('pieceCaptured-capturerId'),
                 document.getElementById('event-action-pieceId'),
                 document.getElementById('event-action-targetPieceId')
             ];
@@ -3145,7 +3143,6 @@
             }
             else if (eventType === 'pieceCaptured') {
                 const pieceId = document.getElementById('pieceCaptured-pieceId').value;
-                const capturerId = document.getElementById('pieceCaptured-capturerId').value;
 
                 if (pieceId) event.condition.pieceId = pieceId;
                 if (capturerId) event.action.capturerId = capturerId;
