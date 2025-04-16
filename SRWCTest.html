@@ -4615,78 +4615,91 @@
                 }
             }
 
-            // If capturing a piece, add to captured list
+            // 1. 保存捕獲棋子的信息
+            let capturedPieceInfo = null;
             if (capturedPiece) {
+                capturedPieceInfo = { ...capturedPiece };
+        
+                // 添加到捕獲列表
                 if (capturedPiece.team === BLUE) {
                     gameState.blueCaptured.push(capturedPiece);
                 } else {
                     gameState.redCaptured.push(capturedPiece);
                 }
 
-                // Check if captured piece is a king (game over)
+                // 檢查是否為國王（遊戲結束條件）
                 if (capturedPiece.moveType === KING) {
-                    // 只有在没有自定义胜利条件或胜利条件是'captureKing'时才立即结束游戏
                     if (!gameState.victoryCondition || gameState.victoryCondition.type === 'captureKing') {
                         gameState.gameOver = true;
                         gameState.winner = piece.team;
                     }
                 }
-
-                // 在这里触发 pieceCaptured 事件
-                if (typeof eventSystem !== 'undefined') {
-                    console.log(`触发pieceCaptured事件，捕获者: ${piece.id}，被捕获: ${capturedPiece.id}`);
-                    eventSystem.triggerEvent('pieceCaptured', {
-                        capturedPiece: capturedPiece,
-                        capturingPiece: piece
-                    });
-                }
             }
 
-            // Move the piece in the game state
+            // 2. 先更新棋盤狀態
             gameState.board[toRow][toCol] = piece;
             gameState.board[fromRow][fromCol] = null;
 
-            // 如果是車王易位，還需要移動車子
+            // 如果是車王易位，移動車子
             if (isCastling && castlingRookCol !== null && castlingRookNewCol !== null) {
-                // 獲取車子
                 const rook = gameState.board[toRow][castlingRookCol];
                 if (rook) {
-                    // 移動車子到新位置
                     gameState.board[toRow][castlingRookNewCol] = rook;
                     gameState.board[toRow][castlingRookCol] = null;
-
-                    // 標記車子已經移動
                     rook.hasMoved = true;
-
                     console.log(`執行車王易位：國王從(${fromRow},${fromCol})到(${toRow},${toCol})，車子從(${toRow},${castlingRookCol})到(${toRow},${castlingRookNewCol})`);
                 }
             }
 
-            // Mark the piece as moved (important for pawns)
+            // 標記棋子已移動
             piece.hasMoved = true;
 
-            // Clear selection and valid moves
+            // 3. 然後在棋盤更新後觸發捕獲事件
+            if (capturedPieceInfo && typeof eventSystem !== 'undefined') {
+                console.log(`觸發pieceCaptured事件，捕獲者: ${piece.id}，被捕獲: ${capturedPieceInfo.id}`);
+                eventSystem.triggerEvent('pieceCaptured', {
+                    capturedPiece: capturedPieceInfo,
+                    capturingPiece: piece,
+                    row: toRow,    // 提供新位置信息
+                    col: toCol
+                });
+            }
+
+            // 觸發棋子移動事件
+            if (typeof eventSystem !== 'undefined') {
+                console.log(`触发pieceMove事件，从[${fromRow},${fromCol}]到[${toRow},${toCol}]`);
+                eventSystem.triggerEvent('pieceMove', {
+                    piece: piece,
+                    fromRow: fromRow,
+                    fromCol: fromCol,
+                    row: toRow,
+                    col: toCol
+                });
+            }
+
+            // 清除選擇和有效移動
             gameState.selectedPiece = null;
             gameState.validMoves = [];
 
-            // Switch turns
+            // 以下部分保持不變...
+            // 切換回合
             gameState.currentTurn = gameState.currentTurn === BLUE ? RED : BLUE;
 
             // 當輪到藍方回合時增加回合數計數（每完成一個完整回合增加一）
             if (gameState.currentTurn === BLUE) {
                 gameState.turnCount++;
                 console.log(`回合數增加到: ${gameState.turnCount}`);
-
-                // 添加此行显示回合过渡
+    
+                // 顯示回合過渡
                 showTurnTransition(BLUE, gameState.turnCount);
 
-                // 检查是否正在播放战斗BGM
+                // 檢查是否正在播放戰鬥BGM
                 const wasBattleBgmPlaying = battleBgmPlayer !== null;
                 stopBattleBGM();
-
-                // 只有在之前正在播放战斗BGM时才从头播放boardbgm
+        
+                // 只有在之前正在播放戰鬥BGM時才從頭播放boardbgm
                 if (wasBattleBgmPlaying && levelManager && levelManager.currentLevel) {
-                    // 从头播放关卡BGM
+                    // 從頭播放關卡BGM
                     const currentLevelData = window.levelData.find(level => level.id === levelManager.currentLevel);
                     if (currentLevelData && currentLevelData.boardbgm) {
                         playBoardBGM(currentLevelData.boardbgm);
@@ -4710,21 +4723,9 @@
                         turn: gameState.turnCount
                     });
                 }
-
-             if (typeof eventSystem !== 'undefined') {
-                    console.log(`触发pieceMove事件，从[${fromRow},${fromCol}]到[${toRow},${toCol}]`);
-                    eventSystem.triggerEvent('pieceMove', {
-                        piece: piece,
-                        fromRow: fromRow,
-                        fromCol: fromCol,
-                        row: toRow,  // 注意这里使用toRow作为row
-                        col: toCol   // 注意这里使用toCol作为col
-                    });
-                }
-
             }
 
-            // Update UI
+            // 更新UI
             updateBoardDisplay();
             updateTurnIndicator();
             updateCapturedPieces();
