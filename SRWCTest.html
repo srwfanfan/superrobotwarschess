@@ -8336,107 +8336,107 @@
                 this.showMissionPopup(text);
             },
 
-// 添加替换棋子动作处理器
-handleReplacePieceAction: function(action, context) {
-    console.log("执行替换棋子动作:", action);
-    const { position, pieceId, row, col, targetPieceId, special } = action;
+            // 添加替换棋子动作处理器
+            handleReplacePieceAction: function(action, context) {
+                console.log("执行替换棋子动作:", action);
+                const { position, pieceId, row, col, targetPieceId, special } = action;
     
-    // 只有当上下文包含捕获信息时才进行捕获者检查
-    if (targetPieceId && context && context.capturedPiece && context.capturingPiece) {
-        // 检查是否指定的捕获者（targetPieceId）击败了指定的被捕获棋子
-        if (context.capturingPiece.id !== targetPieceId) {
-            console.log(`替换棋子动作未执行: 期望捕获者ID=${targetPieceId}，实际捕获者ID=${context.capturingPiece.id}`);
-            return; // 若捕获者不匹配，不执行替换
-        }
-        console.log(`捕获者检查通过: ${targetPieceId} 击败了棋子`);
-    } else if (targetPieceId) {
-        // 如果指定了targetPieceId但事件不是捕获事件，仍使用targetPieceId找位置，但不执行捕获者检查
-        console.log(`事件不是捕获事件或缺少必要上下文，跳过捕获者检查，使用targetPieceId=${targetPieceId}定位`);
-    }
+                // 只有当上下文包含捕获信息时才进行捕获者检查
+                if (targetPieceId && context && context.capturedPiece && context.capturingPiece) {
+                    // 检查是否指定的捕获者（targetPieceId）击败了指定的被捕获棋子
+                    if (context.capturingPiece.id !== targetPieceId) {
+                        console.log(`替换棋子动作未执行: 期望捕获者ID=${targetPieceId}，实际捕获者ID=${context.capturingPiece.id}`);
+                        return; // 若捕获者不匹配，不执行替换
+                    }
+                    console.log(`捕获者检查通过: ${targetPieceId} 击败了棋子`);
+                } else if (targetPieceId) {
+                    // 如果指定了targetPieceId但事件不是捕获事件，仍使用targetPieceId找位置，但不执行捕获者检查
+                    console.log(`事件不是捕获事件或缺少必要上下文，跳过捕获者检查，使用targetPieceId=${targetPieceId}定位`);
+                }
 
-    // 确定要替换的棋子位置
-    let targetRow, targetCol;
+                // 确定要替换的棋子位置
+                let targetRow, targetCol;
 
-    // 优先使用targetPieceId查找棋子的当前位置
-    if (targetPieceId) {
-        const foundPosition = this.findPiecePosition(targetPieceId);
-        if (foundPosition) {
-            [targetRow, targetCol] = foundPosition;
-            console.log(`通过ID ${targetPieceId} 找到棋子当前位置: [${targetRow},${targetCol}]`);
-        } else {
-            console.error(`未找到ID为 ${targetPieceId} 的棋子，无法执行替换`);
-            return;
-        }
-    }
-    // 如果没有提供targetPieceId或找不到棋子，才使用其他位置参数
-    // 如果直接提供了位置
-    else if (position && Array.isArray(position) && position.length === 2) {
-        [targetRow, targetCol] = position;
-    }
-    // 如果提供了行列
-    else if (typeof row === 'number' && typeof col === 'number') {
-        targetRow = row;
-        targetCol = col;
-    }
-    // 如果上下文提供了位置
-    else if (context && typeof context.row === 'number' && typeof context.col === 'number') {
-        targetRow = context.row;
-        targetCol = context.col;
-    } else {
-        console.error("替换棋子动作缺少有效位置参数:", action);
-        return;
-    }
+                // 优先使用targetPieceId查找棋子的当前位置
+                if (targetPieceId) {
+                    const foundPosition = this.findPiecePosition(targetPieceId);
+                    if (foundPosition) {
+                        [targetRow, targetCol] = foundPosition;
+                        console.log(`通过ID ${targetPieceId} 找到棋子当前位置: [${targetRow},${targetCol}]`);
+                    } else {
+                        console.error(`未找到ID为 ${targetPieceId} 的棋子，无法执行替换`);
+                        return;
+                    }
+                }
+                // 如果没有提供targetPieceId或找不到棋子，才使用其他位置参数
+                // 如果直接提供了位置
+                else if (position && Array.isArray(position) && position.length === 2) {
+                    [targetRow, targetCol] = position;
+                }
+                // 如果提供了行列
+                else if (typeof row === 'number' && typeof col === 'number') {
+                    targetRow = row;
+                    targetCol = col;
+                }
+                // 如果上下文提供了位置
+                else if (context && typeof context.row === 'number' && typeof context.col === 'number') {
+                    targetRow = context.row;
+                    targetCol = context.col;
+                } else {
+                    console.error("替换棋子动作缺少有效位置参数:", action);
+                    return;
+                }
+    
+                // 验证位置有效性
+                if (targetRow < 0 || targetRow >= BOARD_SIZE || targetCol < 0 || targetCol >= BOARD_SIZE) {
+                    console.error(`无效的替换位置: [${targetRow},${targetCol}]`);
+                    return;
+                }
 
-    // 验证位置有效性
-    if (targetRow < 0 || targetRow >= BOARD_SIZE || targetCol < 0 || targetCol >= BOARD_SIZE) {
-        console.error(`无效的替换位置: [${targetRow},${targetCol}]`);
-        return;
-    }
+                // 保存原位置棋子信息，用于后续替换和效果显示
+                const originalPiece = gameState.board[targetRow][targetCol];
+                if (!originalPiece) {
+                    console.warn(`位置 [${targetRow},${targetCol}] 没有棋子可替换`);
+                    // 如果没有原棋子，则直接在该位置生成新棋子
+                    if (special) {
+                        this.spawnPieceWithSpecialEffect(pieceId, [targetRow, targetCol], action, context);
+                    } else {
+                        this.spawnPiece(pieceId, [targetRow, targetCol], context);
+                    }
+                        return;
+                 }
 
-    // 保存原位置棋子信息，用于后续替换和效果显示
-    const originalPiece = gameState.board[targetRow][targetCol];
-    if (!originalPiece) {
-        console.warn(`位置 [${targetRow},${targetCol}] 没有棋子可替换`);
-        // 如果没有原棋子，则直接在该位置生成新棋子
-        if (special) {
-            this.spawnPieceWithSpecialEffect(pieceId, [targetRow, targetCol], action, context);
-        } else {
-            this.spawnPiece(pieceId, [targetRow, targetCol], context);
-        }
-        return;
-    }
+                // 从棋盘上移除原棋子
+                gameState.board[targetRow][targetCol] = null;
 
-    // 从棋盘上移除原棋子
-    gameState.board[targetRow][targetCol] = null;
+                // 触发棋子移除事件
+                this.triggerEvent('pieceRemoved', {
+                    piece: originalPiece,
+                    row: targetRow,
+                    col: targetCol
+                });
 
-    // 触发棋子移除事件
-    this.triggerEvent('pieceRemoved', {
-        piece: originalPiece,
-        row: targetRow,
-        col: targetCol
-    });
+                // 生成新棋子到同一位置
+                if (special) {
+                    // 使用特效生成
+                    const replacementAction = {
+                        ...action,
+                        originalPiece: originalPiece // 传递原棋子信息
+                    };
+                    this.spawnPieceWithSpecialEffect(pieceId, [targetRow, targetCol], replacementAction, context);
+                } else {
+                    // 普通生成
+                    this.spawnPiece(pieceId, [targetRow, targetCol], context);
+                }
 
-    // 生成新棋子到同一位置
-    if (special) {
-        // 使用特效生成
-        const replacementAction = {
-            ...action,
-            originalPiece: originalPiece // 传递原棋子信息
-        };
-        this.spawnPieceWithSpecialEffect(pieceId, [targetRow, targetCol], replacementAction, context);
-    } else {
-        // 普通生成
-        this.spawnPiece(pieceId, [targetRow, targetCol], context);
-    }
+                if (action.pieceId === 'fa_gundam') {
+                    console.log("FA Gundam has been unlocked!");
+                    Get_fa_gundam = 1;
+                }
 
-    if (action.pieceId === 'fa_gundam') {
-        console.log("FA Gundam has been unlocked!");
-        Get_fa_gundam = 1;
-    }
-
-    // 更新棋盘显示
-    updateBoardDisplay();
-},
+                // 更新棋盘显示
+                updateBoardDisplay();
+            },
 
             // 辅助函数：查找棋子位置
             findPiecePosition: function(pieceId) {
