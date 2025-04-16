@@ -8341,6 +8341,15 @@
                 console.log("执行替换棋子动作:", action);
                 const { position, pieceId, row, col, targetPieceId, special } = action;
     
+                // 检查这是否是pieceCaptured事件，及是否指定了targetPieceId
+                if (targetPieceId && context && context.capturedPiece) {
+                    // 检查是否指定的捕获者（targetPieceId）击败了指定的被捕获棋子（condition.pieceId）
+                    if (context.capturingPiece && context.capturingPiece.id !== targetPieceId) {
+                        console.log(`替换棋子动作未执行: 期望捕获者ID=${targetPieceId}，实际捕获者ID=${context.capturingPiece.id}`);
+                        return; // 若捕获者不匹配，不执行替换
+                    }
+                }
+
                 // 确定要替换的棋子位置
                 let targetRow, targetCol;
 
@@ -8420,7 +8429,7 @@
                     console.log("FA Gundam has been unlocked!");
                     Get_fa_gundam = 1;
                 }
-    
+
                 // 更新棋盘显示
                 updateBoardDisplay();
             },
