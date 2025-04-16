@@ -2720,13 +2720,13 @@
 
                                     // 處理特殊事件類型的欄位映射
                                     let pieceId = cells[24] || undefined;
-                                    let targetPieceId = undefined;
+                                    let targetPieceId = cells[31] || undefined;
                                     let actionPieceId = cells[28] || undefined;
 
                                     if (cells[21] === 'pieceCaptured') {
                                         pieceId = cells[24] || undefined;  // condition_pieceId是被捕獲棋子
                                         targetPieceId = cells[31] || undefined; // 从CSV的action_targetPieceId获取目標棋子ID
-                                        actionPieceId = undefined; // 在pieceCaptured事件中不使用actionPieceId
+                                        actionPieceId = cells[28] || undefined; // 在pieceCaptured事件中不使用actionPieceId
                                     }
 
                                     const event = {
@@ -2742,7 +2742,7 @@
                                             type: cells[27] || 'dialog',
                                             pieceId: actionPieceId, // 从CSV的action_pieceId获取棋子ID
                                             // 将capturerId改为targetPieceId
-                                            targetPieceId: cells[21] === 'pieceCaptured' ? targetPieceId : (cells[31] || undefined),
+                                            targetPieceId: cells[31] === 'pieceCaptured' ? targetPieceId : (cells[31] || undefined),
                                             aimRow: parseCsvNumber(cells[29]),
                                             aimCol: parseCsvNumber(cells[30]),
                                             findBestPosition: cells[32] === 'TRUE',
