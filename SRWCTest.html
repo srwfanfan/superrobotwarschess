@@ -1976,6 +1976,7 @@
 
         // 隱藏要素相關代碼
         let Get_fa_gundam = 0;
+        let Get_shinning_gundam_s = 0;
         
         // 添加BGM及SE相關代碼
         let battleBgmPlayer = null;
@@ -2212,7 +2213,7 @@
         function saveProgress() {
             // 获取当前通关的关卡数
             const completedLevel = levelManager ? levelManager.currentLevel : 0;
-    
+
             // 生成第一行10位数字组合 - 关卡进度
             let hiddenCode1 = "";
             // 第一位是随机数字
@@ -2223,7 +2224,7 @@
             for (let i = 0; i < 8; i++) {
                 hiddenCode1 += Math.floor(Math.random() * 10);
             }
-    
+
             // 生成第二行10位数字组合 - FA Gundam状态
             let hiddenCode2 = "";
             // 前9位是0-1的随机整数
@@ -2232,29 +2233,38 @@
             }
             // 最后一位是Get_fa_gundam的值
             hiddenCode2 += Get_fa_gundam;
-    
-            // 创建CSV内容，包含两行数据
-            const csvContent = "game_code\n" + hiddenCode1 + "\n" + hiddenCode2;
-    
+
+            // 生成第三行10位数字组合 - Shinning Gundam S状态
+            let hiddenCode3 = "";
+            // 前9位是0-1的随机整数
+            for (let i = 0; i < 9; i++) {
+                hiddenCode3 += Math.floor(Math.random() * 2);
+            }
+            // 最后一位是Get_shinning_gundam_s的值
+            hiddenCode3 += Get_shinning_gundam_s;
+
+            // 创建CSV内容，包含第一行标题和三行数据
+            const csvContent = "game_code\n" + hiddenCode1 + "\n" + hiddenCode2 + "\n" + hiddenCode3;
+
             // 创建Blob对象
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    
+
             // 创建下载链接
             const link = document.createElement("a");
             const url = URL.createObjectURL(blob);
-    
+
             // 设置链接属性
             link.setAttribute("href", url);
             link.setAttribute("download", "srwcsave.csv");
             link.style.visibility = 'hidden';
-    
+
             // 添加到文档并触发点击
             document.body.appendChild(link);
             link.click();
-    
+
             // 清理
             document.body.removeChild(link);
-    
+
             // 显示提示
             showToast("進度已保存");
         }
@@ -2303,7 +2313,7 @@
                     const gundamCode = lines[2].trim();
                 
                     // 验证存档代码格式 - 应该都是10位数字
-                    if (!/^\d{10}$/.test(levelCode) || !/^\d{10}$/.test(gundamCode)) {
+                   if (!/^\d{10}$/.test(levelCode) || !/^\d{10}$/.test(gundamCode) || (lines.length > 3 && !/^\d{10}$/.test(lines[3].trim()))) {
                         document.getElementById('csv-loading-message').textContent = "進度檔案內容錯誤";
                         setTimeout(() => {
                             loadingOverlay.style.display = 'none';
@@ -2334,7 +2344,18 @@
                     // 设置全局变量Get_fa_gundam
                     Get_fa_gundam = faGundamValue;
                     console.log("从存档读取FA Gundam状态:", Get_fa_gundam);
-            
+
+                    // 提取Shinning Gundam S状态 - 如果第四行存在
+                    if (lines.length > 3) {
+                        const shinningGundamSCode = lines[3].trim();
+                        const shinningGundamSValue = parseInt(shinningGundamSCode.charAt(9), 10);
+                        if (!isNaN(shinningGundamSValue)) {
+                            // 设置全局变量Get_shinning_gundam_s
+                            Get_shinning_gundam_s = shinningGundamSValue;
+                            console.log("从存档读取Shinning Gundam S状态:", Get_shinning_gundam_s);
+                        }
+                    }
+                    
                     // 检查是否已完成所有可用关卡
                     if (completedLevel < 5) {
                         // 根据完成的关卡数加载下一关
@@ -7593,7 +7614,11 @@
                         actualPieceId = 'fa_gundam';
                         console.log(`Replacing gundam with fa_gundam at position [${row},${col}]`);
                     }
-
+                    if (Get_shinning_gundam_s === 1 && id === 'shinning_gundam') {
+                        actualPieceId = 'shinning_gundam_s';
+                        console.log(`Replacing shinning_gundam with shinning_gundam_s at position [${row},${col}]`);
+                    }
+                        
                     if (row < 0 || row >= BOARD_SIZE || col < 0 || col >= BOARD_SIZE) {
                         console.error(`棋子位置超出範圍: [${row},${col}]`);
                         return;
@@ -8432,6 +8457,9 @@
                 if (action.pieceId === 'fa_gundam') {
                     console.log("FA Gundam has been unlocked!");
                     Get_fa_gundam = 1;
+                } else if (action.pieceId === 'shinning_gundam_s') {
+                    console.log("Super Shinning Gundam has been unlocked!");
+                    Get_shinning_gundam_s = 1;
                 }
 
                 // 更新棋盘显示
