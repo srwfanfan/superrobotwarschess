@@ -4637,9 +4637,7 @@
                     console.log(`触发pieceCaptured事件，捕获者: ${piece.id}，被捕获: ${capturedPiece.id}`);
                     eventSystem.triggerEvent('pieceCaptured', {
                         capturedPiece: capturedPiece,
-                        capturingPiece: piece,
-                        attackerPos: { row: fromRow, col: fromCol },
-                        defenderPos: { row: toRow, col: toCol }
+                        capturingPiece: piece
                     });
                 }
             }
@@ -8341,7 +8339,7 @@
             handleReplacePieceAction: function(action, context) {
                 console.log("执行替换棋子动作:", action);
                 const { position, pieceId, row, col, targetPieceId, special } = action;
-    
+                
                 // 确定要替换的棋子位置
                 let targetRow, targetCol;
 
@@ -8353,13 +8351,6 @@
                 else if (typeof row === 'number' && typeof col === 'number') {
                     targetRow = row;
                     targetCol = col;
-                }
-                // 特殊处理：如果是pieceCaptured事件且需要替换攻击方棋子
-                else if (context && context.capturedPiece && context.capturingPiece && 
-                         targetPieceId === context.capturingPiece.id) {
-                    // 使用被捕获棋子的位置，因为攻击方会移动到那里
-                    [targetRow, targetCol] = [context.defenderPos.row, context.defenderPos.col];
-                    console.log(`从捕获事件确定替换位置: [${targetRow}, ${targetCol}]`);
                 }
                 // 如果上下文提供了位置
                 else if (context && typeof context.row === 'number' && typeof context.col === 'number') {
@@ -8408,7 +8399,7 @@
                     row: targetRow,
                     col: targetCol
                 });
-    
+
                 // 生成新棋子到同一位置
                 if (special) {
                 // 使用特效生成
@@ -8426,7 +8417,7 @@
                     console.log("FA Gundam has been unlocked!");
                     Get_fa_gundam = 1;
                 }
-    
+                
                 // 更新棋盘显示
                 updateBoardDisplay();
             },
