@@ -2403,6 +2403,8 @@
                 csvUrl = "./stages/SRWCStage03.csv"; // 第三关
             } else if (levelId === 4) {
                 csvUrl = "./stages/SRWCStage04.csv"; // 第四关
+            } else if (levelId === 5) {
+                csvUrl = "./stages/SRWCStage05.csv"; // 第五关
             } else {
                 // 默认或未来关卡
                 document.getElementById('csv-loading-message').textContent = "未找到對應關卡或關卡開發中";
@@ -8086,8 +8088,11 @@
                 } else if (this.currentLevel === 3) {
                     // 从第三关到第四关
                     nextCsvUrl = "./stages/SRWCStage04.csv";
+                } else if (this.currentLevel === 4) {
+                    // 从第四关到第五关
+                    nextCsvUrl = "./stages/SRWCStage05.csv";
                 } else {
-                    // 其他情況（未來可能的第五關等）
+                    // 其他情況（未來可能的第六關等）
                     this.showComingSoonMessage();
                     return;
                 }
