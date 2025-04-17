@@ -27,6 +27,23 @@
             return true;
         }
 
+        // 全局武器類型翻譯函數
+        function getWeaponTypeText(crosshairType, pieceId) {
+            switch(crosshairType) {
+                case "Beam_Rifie": return "光束步槍";
+                case "Beam_Saber": return "光束劍";
+                case "Cosmo_Nova": return pieceId === "cybuster" ? "宇宙新星" : "會聚光波";
+                case "Destructive_Thunder": return pieceId === "great_mazinger" ? "閃電轟擊" : "破壞雷電";
+                case "Getter_Beam": return "三一死光";
+                case "Breast_Fire": return "高熱火焰";
+                case "Trapezoid_Punch": return "石破天驚拳";
+                case "diamond": return "鑽石光束";
+                case "triangle": return "三角光束";
+                case "custom": return "自定義武器";
+                default: return crosshairType || "未知武器";
+            }
+        }
+
         tailwind.config = {
             darkMode: 'class',
             theme: {
