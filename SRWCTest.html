@@ -3991,10 +3991,12 @@
                             switch(pieceInfo.crosshairType) {
                                 case "Beam_Rifie": crosshairTypeText = "光束步槍"; break;
                                 case "Beam_Saber": crosshairTypeText = "光束劍"; break;
-                                case "Cosmo_Nova": 
+                                case "Cosmo_Nova":
                                     crosshairTypeText = pieceInfo.id === "cybuster" ? "宇宙新星" : "會聚光波"; 
                                     break;
-                                case "Destructive_Thunder": crosshairTypeText = "破壞雷電"; break;
+                                case "Destructive_Thunder":
+                                    crosshairTypeText = pieceInfo.id === "great_mazinger" ? "閃電轟擊" : "破壞雷電"; 
+                                    break;
                                 case "Getter_Beam": crosshairTypeText = "三一死光"; break;
                                 case "Breast_Fire": crosshairTypeText = "高熱火焰"; break;
                                 case "diamond": crosshairTypeText = "鑽石光束"; break;
@@ -5096,7 +5098,7 @@
                     case "Beam_Rifie": return "光束步槍";
                     case "Beam_Saber": return "光束劍";
                     case "Cosmo_Nova": return pieceId === "cybuster" ? "宇宙新星" : "會聚光波";
-                    case "Destructive_Thunder": return "破壞雷電";
+                    case "Destructive_Thunder": return pieceId === "great_mazinger" ? "閃電轟擊" : "破壞雷電";
                     case "Getter_Beam": return "三一死光";
                     case "Breast_Fire": return "高熱火焰";
                     case "diamond": return "鑽石光束";
