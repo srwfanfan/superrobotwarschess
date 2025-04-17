@@ -2,7 +2,7 @@ data_type,id,title,subtitle,storyImage,storyDesc,boardImage,boardbgm,team,type,m
 level_info,5,第五話,復活的皮克多倫,./images/cover/cover04.png,英雄們擊退魔鬼高達與盟主高達後，暗中追蹤敵人撤退路徑，發現一座位於深山內的神秘基地。進入基地後，他們震驚地發現原本應該已死的皮克多倫參謀竟然復活了！眾人更親眼目睹皮克多倫利用神秘怪電波，將俘虜變成傀儡，並促使魔鬼高達進一步進化。正當英雄們試圖阻止時，基地警報突然響起，大批敵人迅速將他們團團包圍……,./images/map/map05.png,./audio/SRWCBGM_Map02.mp3,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 piece_definition,pigdoron_reborn_2,,,,,,,red,皮克多倫 復活2,queen,./images/unit/pigdoron.png,4,4,,#FF4500,Cosmo_Nova,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 piece_definition,pigdoron_reborn_1,,,,,,,red,皮克多倫 復活1,queen,./images/unit/pigdoron.png,4,4,,#FF4500,Cosmo_Nova,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-piece_definition,god_gundam,,,,,,,blue,神高達,knight,./images/unit/god_gundam.png,4,3,GodGundam,#FF4500,Beam_Saber,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+piece_definition,god_gundam,,,,,,,blue,神高達,knight,./images/unit/god_gundam.png,4,3,GodGundam,#FF4500,Trapezoid_Punch,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 piece_definition,great_mazinger_blue,,,,,,,blue,鐵甲萬能俠2號,bishop,./images/unit/great_mazinger.png,5,3,MazingerZ,#E6E8FA,Destructive_Thunder,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 piece_definition,new_getter_robot_blue,,,,,,,blue,新三一萬能俠,bishop,./images/unit/new_getter_robot.png,4,4,GetterRobot,#FF69B4,Getter_Beam,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 piece_definition,gundam_mk_ii,,,,,,,red,高達Mk-II,pawn,./images/unit/gundam_mk_ii.png,3,3,,#FF1493,Beam_Saber,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
