@@ -2269,39 +2269,37 @@
 
             // 生成第四行10位数字组合 - Great Mazinger状态
             let hiddenCode4 = "";
-            // 第一位是Get_great_mazinger的值
+            // 第1位是随机0-1的整数
+            hiddenCode4 += Math.floor(Math.random() * 2);
+            // 第2位是Get_great_mazinger的值
             hiddenCode4 += Get_great_mazinger;
-            // 后面9位是随机0-1的整数
-            for (let i = 0; i < 9; i++) {
+            // 后面8位是随机0-1的整数
+            for (let i = 0; i < 8; i++) {
                 hiddenCode4 += Math.floor(Math.random() * 2);
             }
 
             // 生成第五行10位数字组合 - New Getter Robot状态
             let hiddenCode5 = "";
-            // 前4位是随机0-1的整数
-            for (let i = 0; i < 4; i++) {
-                hiddenCode5 += Math.floor(Math.random() * 2);
-            }
-            // 第5位是Get_new_getter_robot的值
+            // 第1位是Get_new_getter_robot的值
             hiddenCode5 += Get_new_getter_robot;
-            // 后面5位是随机0-1的整数
-            for (let i = 0; i < 5; i++) {
+            // 后面9位是随机0-1的整数
+            for (let i = 0; i < 9; i++) {
                 hiddenCode5 += Math.floor(Math.random() * 2);
             }
 
             // 生成第六行10位数字组合 - God Gundam状态
             let hiddenCode6 = "";
-            // 前2位是随机0-1的整数
-            for (let i = 0; i < 2; i++) {
+            // 前4位是随机0-1的整数
+            for (let i = 0; i < 4; i++) {
                 hiddenCode6 += Math.floor(Math.random() * 2);
             }
-            // 第3位是Get_god_gundam的值
+            // 第5位是Get_god_gundam的值
             hiddenCode6 += Get_god_gundam;
-            // 后面7位是随机0-1的整数
-            for (let i = 0; i < 7; i++) {
+            // 后面5位是随机0-1的整数
+            for (let i = 0; i < 5; i++) {
                 hiddenCode6 += Math.floor(Math.random() * 2);
             }
-
+            
             // 创建CSV内容，包含第一行标题和六行数据
             const csvContent = "game_code\n" + hiddenCode1 + "\n" + hiddenCode2 + "\n" + hiddenCode3 + "\n" + hiddenCode4 + "\n" + hiddenCode5 + "\n" + hiddenCode6;
 
@@ -2421,7 +2419,7 @@
                         if (!/^\d{10}$/.test(greatMazingerCode)) {
                             console.log("Great Mazinger代码格式错误");
                         } else {
-                            const greatMazingerValue = parseInt(greatMazingerCode.charAt(0), 10);
+                            const greatMazingerValue = parseInt(greatMazingerCode.charAt(1), 10);
                             if (!isNaN(greatMazingerValue)) {
                                 // 设置全局变量Get_great_mazinger
                                 Get_great_mazinger = greatMazingerValue;
@@ -2436,7 +2434,7 @@
                         if (!/^\d{10}$/.test(newGetterRobotCode)) {
                             console.log("New Getter Robot代码格式错误");
                         } else {
-                            const newGetterRobotValue = parseInt(newGetterRobotCode.charAt(4), 10);
+                            const newGetterRobotValue = parseInt(newGetterRobotCode.charAt(0), 10);
                             if (!isNaN(newGetterRobotValue)) {
                                 // 设置全局变量Get_new_getter_robot
                                 Get_new_getter_robot = newGetterRobotValue;
@@ -2451,7 +2449,7 @@
                         if (!/^\d{10}$/.test(godGundamCode)) {
                             console.log("God Gundam代码格式错误");
                         } else {
-                            const godGundamValue = parseInt(godGundamCode.charAt(2), 10);
+                            const godGundamValue = parseInt(godGundamCode.charAt(4), 10);
                             if (!isNaN(godGundamValue)) {
                                 // 设置全局变量Get_god_gundam
                                 Get_god_gundam = godGundamValue;
