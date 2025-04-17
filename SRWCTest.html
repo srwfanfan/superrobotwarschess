@@ -2056,6 +2056,9 @@
                 case 'ShinningGundamS':
                     bgmUrl = './audio/SRWCBGM_ShinningGundamS.mp3';
                     break;
+                case 'GodGundam':
+                    bgmUrl = './audio/SRWCBGM_GodGundam.mp3';
+                    break;
                      
                 default:
                     return; // 沒有匹配的BGM類型，不播放
@@ -5588,7 +5591,7 @@
                 playCombatSound(breastFireSound);
             } else if (crosshairType === 'Trapezoid_Punch') {
                 // 播放石破天驚拳音效 - 可以使用现有的thunder音效
-                playCombatSound(thunderSound);
+                playCombatSound(explosionSound);
             } else {
                 // 播放激光枪音效
                 playCombatSound(beamGunSound);
