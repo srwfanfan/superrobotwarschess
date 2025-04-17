@@ -6765,37 +6765,6 @@
                 }, Math.random() * 400);
             }
     
-            // 创建地面震裂效果
-            setTimeout(() => {
-                const groundCrack = document.createElement('div');
-                groundCrack.style.position = 'absolute';
-                groundCrack.style.left = `${centerX}px`;
-                groundCrack.style.top = `${centerY + 50}px`;
-                groundCrack.style.width = '4px';
-                groundCrack.style.height = `${containerRect.height - centerY - 10}px`;
-                groundCrack.style.background = `linear-gradient(to bottom, ${weaponColor}, transparent)`;
-                groundCrack.style.boxShadow = `0 0 20px ${weaponColor}`;
-                groundCrack.style.transform = 'translateX(-50%)';
-                groundCrack.style.zIndex = '14';
-        
-                // 创建扩展动画
-                groundCrack.animate([
-                    { width: '4px', opacity: 1 },
-                    { width: '100px', opacity: 0 }
-                ], {
-                    duration: 800,
-                    easing: 'ease-out',
-                    fill: 'forwards'
-                });
-        
-                combatContainer.appendChild(groundCrack);
-        
-                // 清理地面效果
-                setTimeout(() => {
-                    if (groundCrack.parentNode) groundCrack.parentNode.removeChild(groundCrack);
-                }, 800);
-            }, 300);
-    
             // 播放音效
             playCombatSound(thunderSound); // 可以使用现有的音效或添加新音效
     
