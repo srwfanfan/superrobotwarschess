@@ -8673,6 +8673,9 @@
                     const card = confirmOverlay.querySelector('.angel-confirm-card');
                     if (card) card.style.opacity = '0';
 
+                    // 重置確認頁面狀態
+                    window.specialPieceConfirmActive = false;
+                    
                     // 恢復遊戲操作
                     enableGameInteraction();
 
@@ -8703,7 +8706,6 @@
                 if (confirmBtn) {
                     confirmBtn.addEventListener('click', handleConfirmClick);
                 }
-                window.specialPieceConfirmActive = false;
             },
 
             // 獲取移動類型的中文名稱
