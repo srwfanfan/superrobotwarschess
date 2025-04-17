@@ -2721,6 +2721,7 @@
                 'Destructive_Thunder': 0.89,   // √(0.79/1.00) ≈ 0.89
                 'Getter_Beam': 0.91,           // √(0.79/0.96) ≈ 0.91
                 'Breast_Fire': 1.98,           // √(0.79/0.2025) ≈ 1.98
+                'Trapezoid_Punch': 1.05,       // 梯形准星，轻微放大
                 'diamond': 1.27,               // √(0.79/0.49) ≈ 1.27
                 'triangle': 1.04,              // √(0.79/0.73) ≈ 1.04
                 'custom': 1                    // 特殊形状，保持不变
@@ -3036,6 +3037,69 @@
                         "></div>
                     `;
                     break;
+
+                case 'Trapezoid_Punch':
+                     // 梯形准星 - 上底:下底 = 1:1.3
+                     const trapTopWidth = Math.round(outerSize * 0.7); // 上底为总宽度的70%
+                     const trapBottomWidth = Math.round(trapTopWidth * 1.3); // 下底是上底的1.3倍
+                     const trapHeight = Math.round(outerSize * 0.8); // 高度为准星大小的80%
+            
+                     container.innerHTML = `
+                        <div class="crosshair-frame" style="
+                            position: absolute;
+                            top: 50%;
+                            left: 50%;
+                            width: 0;
+                            height: 0;
+                            border-left: ${trapTopWidth/2}px solid transparent;
+                            border-right: ${trapTopWidth/2}px solid transparent;
+                            border-bottom: ${trapHeight}px solid transparent;
+                            box-shadow: 0 0 10px ${color};
+                            transform: translate(-50%, -50%);
+                            pointer-events: none;
+                            z-index: 10;
+                        ">
+                            <svg width="${trapBottomWidth}" height="${trapHeight}" viewBox="0 0 ${trapBottomWidth} ${trapHeight}" style="position: absolute; top: 0; left: ${-trapBottomWidth/2}px;">
+                                <path d="M${(trapBottomWidth-trapTopWidth)/2},0 L${trapTopWidth+(trapBottomWidth-trapTopWidth)/2},0 L${trapBottomWidth},${trapHeight} L0,${trapHeight} Z" 
+                                      fill="none" 
+                                      stroke="${rgbaColor}" 
+                                      stroke-width="${borderWidth}"
+                                      stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <div class="crosshair-horizontal" style="
+                            position: absolute;
+                            top: 50%;
+                            left: 0;
+                            width: 100%;
+                            height: ${lineThickness}px;
+                            background: linear-gradient(90deg, ${hexToRgba(color, 0)} 0%, ${rgbaColor} 50%, ${hexToRgba(color, 0)} 100%);
+                            transform: translateY(-50%);
+                            pointer-events: none;
+                        "></div>
+                        <div class="crosshair-vertical" style="
+                            position: absolute;
+                            top: 0;
+                            left: 50%;
+                            width: ${lineThickness}px;
+                            height: 100%;
+                            background: linear-gradient(0deg, ${hexToRgba(color, 0)} 0%, ${rgbaColor} 50%, ${hexToRgba(color, 0)} 100%);
+                            transform: translateX(-50%);
+                            pointer-events: none;
+                        "></div>
+                        <div class="crosshair-dot" style="
+                            position: absolute;
+                            top: 50%;
+                            left: 50%;
+                            width: ${dotSize}px;
+                            height: ${dotSize}px;
+                            background-color: ${rgbaColor};
+                            transform: translate(-50%, -50%);
+                            box-shadow: 0 0 5px ${color};
+                            pointer-events: none;
+                        "></div>
+                   `;
+                   break;
                     
                 case 'diamond':
                     // 菱形外框准星
@@ -3999,6 +4063,7 @@
                                     break;
                                 case "Getter_Beam": crosshairTypeText = "三一死光"; break;
                                 case "Breast_Fire": crosshairTypeText = "高熱火焰"; break;
+                                case "Trapezoid_Punch": crosshairTypeText = "石破天驚拳"; break;
                                 case "diamond": crosshairTypeText = "鑽石光束"; break;
                                 case "triangle": crosshairTypeText = "三角光束"; break;
                                 case "custom": crosshairTypeText = "自定義武器"; break;
@@ -5101,6 +5166,7 @@
                     case "Destructive_Thunder": return pieceId === "great_mazinger" ? "閃電轟擊" : "破壞雷電";
                     case "Getter_Beam": return "三一死光";
                     case "Breast_Fire": return "高熱火焰";
+                    case "Trapezoid_Punch": return "石破天驚拳";
                     case "diamond": return "鑽石光束";
                     case "triangle": return "三角光束";
                     case "custom": return "自定義武器";
@@ -5518,6 +5584,9 @@
             } else if (crosshairType === 'Breast_Fire') {
                 // 播放Breast Fire音效
                 playCombatSound(breastFireSound);
+            } else if (crosshairType === 'Trapezoid_Punch') {
+                // 播放石破天驚拳音效 - 可以使用现有的thunder音效
+                playCombatSound(thunderSound);
             } else {
                 // 播放激光枪音效
                 playCombatSound(beamGunSound);
@@ -5542,6 +5611,9 @@
                     break;
                 case 'Breast_Fire':
                     createBreastFireEffect(weaponColor);
+                    break;
+                case 'Trapezoid_Punch':
+                    createRockCrushingFistEffect(weaponColor);
                     break;
                 case 'diamond':
                     createScatterShotEffect(weaponColor);
@@ -6587,6 +6659,156 @@
                 if (breastfireWave.parentNode) breastfireWave.parentNode.removeChild(breastfireWave);
             }, 800);
         }
+
+        function createRockCrushingFistEffect(weaponColor) {
+            const containerRect = combatContainer.getBoundingClientRect();
+            const centerX = combatMode.mouseX;
+            const centerY = combatMode.mouseY;
+
+            // 添加必要的CSS
+            addCSSIfNeeded(`
+                @keyframes rockFistExpand {
+                    0% { transform: scale(0.1); opacity: 0.9; }
+                    60% { transform: scale(1.0); opacity: 1; }
+                    100% { transform: scale(1.2); opacity: 0; }
+                }
+        
+                @keyframes rockFistShockwave {
+                    0% { transform: scale(0.1); opacity: 0.7; }
+                    100% { transform: scale(3.0); opacity: 0; }
+                }
+        
+                @keyframes rockDebrisFloat {
+                    0% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+                    100% { transform: translate(var(--tx), var(--ty)) rotate(var(--rot)); opacity: 0; }
+                }
+            `);
+
+            // 创建SVG容器
+            const svgContainer = document.createElement('div');
+            svgContainer.style.position = 'absolute';
+            svgContainer.style.left = `${centerX}px`;
+            svgContainer.style.top = `${centerY}px`;
+            svgContainer.style.transform = 'translate(-50%, -50%) scale(0.1)';
+            svgContainer.style.animation = 'rockFistExpand 0.8s forwards';
+            svgContainer.style.zIndex = '17';
+            svgContainer.style.filter = `drop-shadow(0 0 15px ${weaponColor})`;
+    
+            // 添加SVG内容 - 使用提供的拳头SVG，调整为适当大小
+            const svgSize = Math.round(containerRect.width * 0.4); // 拳头大小为容器的40%
+            svgContainer.innerHTML = `
+                <svg width="${svgSize}" height="${svgSize * 0.8}" viewBox="0 0 1280 1028" xmlns="http://www.w3.org/2000/svg">
+                    <g transform="translate(0,1028) scale(0.1,-0.1)" fill="${weaponColor}" stroke="none">
+                        <path d="M5812 10135 c-348 -80 -650 -153 -670 -162 -94 -44 -169 -154 -286 -414 -91 -205 -119 -260 -166 -329 -112 -163 -223 -217 -431 -208 -108 5 -113 6 -444 125 -40 14 -102 27 -145 30 -73 5 -87 1 -580 -141 -278 -81 -518 -152 -535 -158 -136 -52 -232 -198 -375 -573 -122 -321 -188 -444 -284 -533 -56 -51 -111 -78 -204 -97 -92 -20 -177 -19 -350 6 -180 25 -315 23 -382 -7 -41 -19 -772 -493 -849 -551 -81 -62 -105 -200 -105 -608 -1 -354 17 -586 66 -870 16 -96 44 -185 135 -440 63 -176 157 -437 208 -580 107 -298 624 -1740 721 -2010 36 -99 156 -434 267 -745 l203 -565 39 -20 c32 -15 66 -20 165 -23 457 -14 1415 259 1465 418 3 11 -61 268 -145 582 -300 1114 -432 1606 -485 1803 -184 681 -394 1463 -397 1479 -3 17 15 24 157 57 88 21 167 38 176 38 11 1 22 -20 37 -76 11 -43 188 -692 392 -1443 204 -751 461 -1696 571 -2100 273 -1004 261 -961 283 -981 34 -33 118 -42 321 -36 639 18 1736 316 1790 486 3 10 -107 526 -245 1147 -437 1965 -780 3518 -777 3521 9 8 343 79 348 74 4 -3 21 -67 37 -141 17 -74 121 -522 232 -995 245 -1050 353 -1513 430 -1840 32 -137 109 -466 170 -730 62 -264 140 -599 174 -744 69 -298 67 -292 165 -311 173 -32 646 15 1146 115 827 166 1415 379 1415 513 0 14 -211 1083 -470 2376 -258 1294 -470 2359 -470 2368 0 11 23 21 88 36 164 38 252 55 257 51 4 -5 147 -649 800 -3594 142 -641 231 -1026 241 -1036 64 -70 395 -78 804 -18 681 99 1306 306 1385 459 12 24 9 55 -35 301 -27 151 -96 544 -155 874 -58 330 -155 877 -215 1215 -60 338 -123 694 -140 790 -17 96 -80 452 -140 790 -126 713 -139 786 -265 1500 -52 294 -104 564 -116 600 -89 279 -391 830 -623 1135 -82 108 -182 206 -236 232 l-45 22 -155 -24 c-85 -13 -375 -58 -645 -100 -269 -41 -511 -82 -537 -91 -69 -22 -148 -78 -283 -198 -144 -129 -234 -187 -352 -227 -74 -26 -100 -30 -164 -27 -141 6 -262 86 -580 387 -287 272 -400 349 -517 357 -46 3 -181 -25 -690 -141z"/>
+                        <path d="M11440 6642 c0 -10 11 -79 25 -153 13 -74 60 -336 104 -584 44 -247 103 -578 131 -735 28 -157 86 -485 130 -730 44 -245 124 -698 180 -1008 55 -310 103 -587 106 -616 4 -30 1 -85 -5 -122 -45 -259 -308 -461 -794 -608 -86 -26 -662 -171 -1977 -496 -1609 -398 -1520 -375 -1546 -407 -166 -207 -281 -687 -233 -972 15 -85 52 -165 90 -192 l29 -21 393 37 c215 20 532 49 702 65 493 46 2481 225 2955 266 184 15 370 113 561 291 151 142 256 293 304 437 l26 78 39 1017 c22 559 62 1601 90 2315 28 714 49 1300 48 1301 -2 2 -284 179 -627 395 -343 216 -648 408 -677 426 -47 30 -54 32 -54 16z"/>
+                    </g>
+                </svg>
+            `;
+    
+            combatContainer.appendChild(svgContainer);
+    
+            // 添加震荡波效果
+            setTimeout(() => {
+                const shockwave = document.createElement('div');
+                shockwave.style.position = 'absolute';
+                shockwave.style.left = `${centerX}px`;
+                shockwave.style.top = `${centerY}px`;
+                shockwave.style.width = '40px';
+                shockwave.style.height = '40px';
+                shockwave.style.borderRadius = '50%';
+                shockwave.style.border = `4px solid ${weaponColor}`;
+                shockwave.style.transform = 'translate(-50%, -50%) scale(0.1)';
+                shockwave.style.animation = 'rockFistShockwave 0.8s forwards';
+                shockwave.style.zIndex = '16';
+                combatContainer.appendChild(shockwave);
+        
+                // 清理震荡波
+                setTimeout(() => {
+                    if (shockwave.parentNode) shockwave.parentNode.removeChild(shockwave);
+                }, 800);
+            }, 200);
+    
+            // 创建碎石效果
+            for (let i = 0; i < 20; i++) {
+                setTimeout(() => {
+                    const debrisSize = 5 + Math.random() * 15;
+                    const debris = document.createElement('div');
+                    debris.style.position = 'absolute';
+                    debris.style.left = `${centerX}px`;
+                    debris.style.top = `${centerY}px`;
+                    debris.style.width = `${debrisSize}px`;
+                    debris.style.height = `${debrisSize}px`;
+                    debris.style.backgroundColor = weaponColor;
+                    debris.style.borderRadius = '50%';
+                    debris.style.boxShadow = `0 0 10px ${weaponColor}`;
+                    debris.style.zIndex = '15';
+            
+                    // 随机方向和旋转
+                    const angle = Math.random() * Math.PI * 2;
+                    const distance = 100 + Math.random() * 200;
+                    const tx = Math.cos(angle) * distance;
+                    const ty = Math.sin(angle) * distance;
+                    const rot = Math.random() * 360;
+            
+                    debris.style.setProperty('--tx', `${tx}px`);
+                    debris.style.setProperty('--ty', `${ty}px`);
+                    debris.style.setProperty('--rot', `${rot}deg`);
+            
+                    debris.style.animation = `rockDebrisFloat ${0.5 + Math.random() * 0.5}s forwards`;
+            
+                    combatContainer.appendChild(debris);
+            
+                    // 清理碎石
+                    setTimeout(() => {
+                        if (debris.parentNode) debris.parentNode.removeChild(debris);
+                    }, 1000);
+                }, Math.random() * 400);
+            }
+    
+            // 创建地面震裂效果
+            setTimeout(() => {
+                const groundCrack = document.createElement('div');
+                groundCrack.style.position = 'absolute';
+                groundCrack.style.left = `${centerX}px`;
+                groundCrack.style.top = `${centerY + 50}px`;
+                groundCrack.style.width = '4px';
+                groundCrack.style.height = `${containerRect.height - centerY - 10}px`;
+                groundCrack.style.background = `linear-gradient(to bottom, ${weaponColor}, transparent)`;
+                groundCrack.style.boxShadow = `0 0 20px ${weaponColor}`;
+                groundCrack.style.transform = 'translateX(-50%)';
+                groundCrack.style.zIndex = '14';
+        
+                // 创建扩展动画
+                groundCrack.animate([
+                    { width: '4px', opacity: 1 },
+                    { width: '100px', opacity: 0 }
+                ], {
+                    duration: 800,
+                    easing: 'ease-out',
+                    fill: 'forwards'
+                });
+        
+                combatContainer.appendChild(groundCrack);
+        
+                // 清理地面效果
+                setTimeout(() => {
+                    if (groundCrack.parentNode) groundCrack.parentNode.removeChild(groundCrack);
+                }, 800);
+            }, 300);
+    
+            // 播放音效
+            playCombatSound(thunderSound); // 可以使用现有的音效或添加新音效
+    
+            // 清理主SVG
+            setTimeout(() => {
+                if (svgContainer.parentNode) svgContainer.parentNode.removeChild(svgContainer);
+            }, 800);
+    
+            // 延迟检查命中
+            setTimeout(() => {
+                checkHit();
+            }, 300);
+        }
         
         function createSpiralBeamEffect(weaponColor) {
             const containerRect = combatContainer.getBoundingClientRect();
@@ -6783,6 +7005,21 @@
                             {x: -breastfireSize, y: -breastfireSize/2},
                             {x: breastfireSize, y: -breastfireSize/2},
                             {x: 0, y: breastfireSize/2}
+                        ];
+                        break;
+
+                    // 在相应的代码部分添加梯形准星处理
+                    case 'Trapezoid_Punch':
+                        // 创建梯形准星的碰撞多边形
+                        const trapTopWidth = crosshairRadius * 0.7;  // 上底为总宽度的70%
+                        const trapBottomWidth = trapTopWidth * 1.3; // 下底是上底的1.3倍
+                        const trapHeight = crosshairRadius * 0.8;  // 高度为准星大小的80%
+    
+                        crosshairPoints = [
+                            {x: -trapTopWidth/2, y: -trapHeight/2},   // 左上
+                            {x: trapTopWidth/2, y: -trapHeight/2},    // 右上
+                            {x: trapBottomWidth/2, y: trapHeight/2},  // 右下
+                            {x: -trapBottomWidth/2, y: trapHeight/2}  // 左下
                         ];
                         break;
                         
