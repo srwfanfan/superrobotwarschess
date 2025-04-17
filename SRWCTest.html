@@ -8679,9 +8679,21 @@
                     // 恢復遊戲操作
                     enableGameInteraction();
 
+                    // 如果現在是AI回合，觸發AI移動
+                    if (gameState.gameMode === 'single-player' && gameState.currentTurn === RED && !gameState.gameOver) {
+                        console.log('確認後觸發AI移動');
+                        // 清除任何可能存在的之前的計時器
+                        if (aiMoveTimer) {
+                            clearTimeout(aiMoveTimer);
+                            aiMoveTimer = null;
+                        }
+                        // 設置新的計時器並延遲執行AI移動
+                        aiMoveTimer = setTimeout(makeAIMove, 500);
+                    }
+
                     // 實際生成棋子
                     this.spawnPiece(pieceId, position, context);
-
+                    
                     // 如果設置了確認後的動作，執行它
                     if (action.onConfirm) {
                         try {
