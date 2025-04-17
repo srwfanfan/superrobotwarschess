@@ -1995,6 +1995,9 @@
         // 隱藏要素相關代碼
         let Get_fa_gundam = 0;
         let Get_shinning_gundam_s = 0;
+        let Get_great_mazinger = 0;
+        let Get_new_getter_robot = 0;
+        let Get_god_gundam = 0;
         
         // 添加BGM及SE相關代碼
         let battleBgmPlayer = null;
@@ -2264,8 +2267,43 @@
             // 最后一位是Get_shinning_gundam_s的值
             hiddenCode3 += Get_shinning_gundam_s;
 
-            // 创建CSV内容，包含第一行标题和三行数据
-            const csvContent = "game_code\n" + hiddenCode1 + "\n" + hiddenCode2 + "\n" + hiddenCode3;
+            // 生成第四行10位数字组合 - Great Mazinger状态
+            let hiddenCode4 = "";
+            // 第一位是Get_great_mazinger的值
+            hiddenCode4 += Get_great_mazinger;
+            // 后面9位是随机0-1的整数
+            for (let i = 0; i < 9; i++) {
+                hiddenCode4 += Math.floor(Math.random() * 2);
+            }
+
+            // 生成第五行10位数字组合 - New Getter Robot状态
+            let hiddenCode5 = "";
+            // 前4位是随机0-1的整数
+            for (let i = 0; i < 4; i++) {
+                hiddenCode5 += Math.floor(Math.random() * 2);
+            }
+            // 第5位是Get_new_getter_robot的值
+            hiddenCode5 += Get_new_getter_robot;
+            // 后面5位是随机0-1的整数
+            for (let i = 0; i < 5; i++) {
+                hiddenCode5 += Math.floor(Math.random() * 2);
+            }
+
+            // 生成第六行10位数字组合 - God Gundam状态
+            let hiddenCode6 = "";
+            // 前2位是随机0-1的整数
+            for (let i = 0; i < 2; i++) {
+                hiddenCode6 += Math.floor(Math.random() * 2);
+            }
+            // 第3位是Get_god_gundam的值
+            hiddenCode6 += Get_god_gundam;
+            // 后面7位是随机0-1的整数
+            for (let i = 0; i < 7; i++) {
+                hiddenCode6 += Math.floor(Math.random() * 2);
+            }
+
+            // 创建CSV内容，包含第一行标题和六行数据
+            const csvContent = "game_code\n" + hiddenCode1 + "\n" + hiddenCode2 + "\n" + hiddenCode3 + "\n" + hiddenCode4 + "\n" + hiddenCode5 + "\n" + hiddenCode6;
 
             // 创建Blob对象
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
@@ -2376,6 +2414,51 @@
                             console.log("从存档读取Shinning Gundam S状态:", Get_shinning_gundam_s);
                         }
                     }
+
+                    // 提取Great Mazinger状态 - 如果第四行存在
+                    if (lines.length > 4) {
+                        const greatMazingerCode = lines[4].trim();
+                        if (!/^\d{10}$/.test(greatMazingerCode)) {
+                            console.log("Great Mazinger代码格式错误");
+                        } else {
+                            const greatMazingerValue = parseInt(greatMazingerCode.charAt(0), 10);
+                            if (!isNaN(greatMazingerValue)) {
+                                // 设置全局变量Get_great_mazinger
+                                Get_great_mazinger = greatMazingerValue;
+                                console.log("从存档读取Great Mazinger状态:", Get_great_mazinger);
+                            }
+                        }
+                    }
+
+                    // 提取New Getter Robot状态 - 如果第五行存在
+                    if (lines.length > 5) {
+                        const newGetterRobotCode = lines[5].trim();
+                        if (!/^\d{10}$/.test(newGetterRobotCode)) {
+                            console.log("New Getter Robot代码格式错误");
+                        } else {
+                            const newGetterRobotValue = parseInt(newGetterRobotCode.charAt(4), 10);
+                            if (!isNaN(newGetterRobotValue)) {
+                                // 设置全局变量Get_new_getter_robot
+                                Get_new_getter_robot = newGetterRobotValue;
+                                console.log("从存档读取New Getter Robot状态:", Get_new_getter_robot);
+                            }
+                        }
+                    }
+
+                    // 提取God Gundam状态 - 如果第六行存在
+                    if (lines.length > 6) {
+                        const godGundamCode = lines[6].trim();
+                        if (!/^\d{10}$/.test(godGundamCode)) {
+                            console.log("God Gundam代码格式错误");
+                        } else {
+                            const godGundamValue = parseInt(godGundamCode.charAt(2), 10);
+                            if (!isNaN(godGundamValue)) {
+                                // 设置全局变量Get_god_gundam
+                                Get_god_gundam = godGundamValue;
+                                console.log("从存档读取God Gundam状态:", Get_god_gundam);
+                            }
+                        }
+                    }            
                     
                     // 检查是否已完成所有可用关卡
                     if (completedLevel < 5) {
@@ -7851,6 +7934,21 @@
                         actualPieceId = 'shinning_gundam_s';
                         console.log(`Replacing shinning_gundam with shinning_gundam_s at position [${row},${col}]`);
                     }
+
+                    if (Get_great_mazinger === 1 && id === 'mazinger_z') {
+                        actualPieceId = 'great_mazinger';
+                        console.log(`Replacing mazinger_z with great_mazinger at position [${row},${col}]`);
+                    }
+
+                    if (Get_new_getter_robot === 1 && id === 'getter_robot') {
+                        actualPieceId = 'new_getter_robot';
+                        console.log(`Replacing getter_robot with new_getter_robot at position [${row},${col}]`);
+                    }
+
+                    if (Get_god_gundam === 1 && id === 'shinning_gundam') {
+                        actualPieceId = 'god_gundam';
+                        console.log(`Replacing shinning_gundam with god_gundam at position [${row},${col}]`);
+                    }
                         
                     if (row < 0 || row >= BOARD_SIZE || col < 0 || col >= BOARD_SIZE) {
                         console.error(`棋子位置超出範圍: [${row},${col}]`);
@@ -8696,6 +8794,15 @@
                 } else if (action.pieceId === 'shinning_gundam_s') {
                     console.log("Super Shinning Gundam has been unlocked!");
                     Get_shinning_gundam_s = 1;
+                } else if (action.pieceId === 'great_mazinger_blue') {
+                    console.log("Great Mazinger has been unlocked!");
+                    Get_great_mazinger = 1;
+                } else if (action.pieceId === 'new_getter_robot_blue') {
+                    console.log("New Getter Robot has been unlocked!");
+                    Get_new_getter_robot = 1;
+                } else if (action.pieceId === 'god_gundam') {
+                    console.log("God Gundam has been unlocked!");
+                    Get_god_gundam = 1;
                 }
 
                 // 更新棋盘显示
