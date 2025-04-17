@@ -10,6 +10,7 @@
     <script>
         // 添加全局計時器，記錄頁面加載開始時間
         window.gameLoadStartTime = Date.now();
+        window.specialPieceConfirmActive = false;
 
         // 全局錯誤處理函數
         window.onerror = function(message, source, lineno, colno, error) {
@@ -4796,7 +4797,7 @@
             }
 
             // If single player mode and it's AI's turn
-            if (gameState.gameMode === 'single-player' && gameState.currentTurn === RED && !gameState.gameOver) {
+            if (gameState.gameMode === 'single-player' && gameState.currentTurn === RED && !gameState.gameOver && !window.specialPieceConfirmActive) {
                 console.log(`準備安排AI移動，當前回合: ${gameState.currentTurn}`);
                 // 清除任何可能存在的之前的計時器
                 if (aiMoveTimer) {
@@ -7225,7 +7226,7 @@
                 }
 
                 // If AI's turn after combat, schedule its move
-                if (gameState.gameMode === 'single-player' && gameState.currentTurn === RED && !gameState.gameOver) {
+                if (gameState.gameMode === 'single-player' && gameState.currentTurn === RED && !gameState.gameOver && !window.specialPieceConfirmActive) {
                     aiMoveTimer = setTimeout(makeAIMove, 500);
                 }
             }, 1500);
@@ -7234,7 +7235,7 @@
         // AI Move Logic
         function makeAIMove() {
             // 確保是AI的回合再執行移動 - 新增檢查以防止錯誤回合移動
-            if (gameState.gameOver || combatMode.active || gameState.currentTurn !== RED) {
+            if (gameState.gameOver || combatMode.active || gameState.currentTurn !== RED || window.specialPieceConfirmActive) {
                 return;
             }
 
@@ -8633,6 +8634,7 @@
                 const tempDiv = document.createElement('div');
                 tempDiv.innerHTML = specialEffectHTML;
                 document.body.appendChild(tempDiv.firstElementChild);
+                window.specialPieceConfirmActive = true;
 
                 // 獲取確認視窗元素
                 const confirmOverlay = document.getElementById('special-piece-confirm-overlay');
@@ -8701,6 +8703,7 @@
                 if (confirmBtn) {
                     confirmBtn.addEventListener('click', handleConfirmClick);
                 }
+                window.specialPieceConfirmActive = false;
             },
 
             // 獲取移動類型的中文名稱
