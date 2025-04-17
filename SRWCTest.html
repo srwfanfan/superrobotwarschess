@@ -4074,7 +4074,7 @@
                                 case "custom": crosshairTypeText = "自定義武器"; break;
                                 default: crosshairTypeText = pieceInfo.crosshairType;
                             }
-                            pieceInfoCrosshair.textContent = `武器類型: ${crosshairTypeText}`;
+                            pieceInfoCrosshair.textContent = `武器類型: ${getWeaponTypeText(pieceInfo.crosshairType, pieceInfo.id)}`;
                             pieceInfoCrosshair.style.display = "block";
                         } else {
                             pieceInfoCrosshair.style.display = "none";
@@ -5163,7 +5163,7 @@
                 }
             }
 
-            function getWeaponTypeText(crosshairType) {
+            function getWeaponTypeText(crosshairType, pieceId) {
                 switch(crosshairType) {
                     case "Beam_Rifie": return "光束步槍";
                     case "Beam_Saber": return "光束劍";
@@ -5186,7 +5186,7 @@
             document.getElementById('intro-attacker-img').src = attackerPiece.imgUrl;
             document.getElementById('intro-attacker-name').textContent = attackerPiece.type;
             document.getElementById('intro-attacker-type').textContent = `移動類型: ${getMoveTypeText(attackerPiece.moveType)}`;
-            document.getElementById('intro-attacker-weapon').textContent = `武器類型: ${getWeaponTypeText(attackerPiece.crosshairType)}`;
+            document.getElementById('intro-attacker-weapon').textContent = `武器類型: ${getWeaponTypeText(attackerPiece.crosshairType, attackerPiece.id)}`;
             document.getElementById('intro-attacker-hit').textContent = attackerPiece.hit;
             document.getElementById('intro-attacker-dodge').textContent = attackerPiece.dodge;
             document.getElementById('intro-attacker-hit-bar').style.width = `${(attackerPiece.hit / maxValue) * 100}%`;
@@ -5196,7 +5196,7 @@
             document.getElementById('intro-defender-img').src = defenderPiece.imgUrl;
             document.getElementById('intro-defender-name').textContent = defenderPiece.type;
             document.getElementById('intro-defender-type').textContent = `移動類型: ${getMoveTypeText(defenderPiece.moveType)}`;
-            document.getElementById('intro-defender-weapon').textContent = `武器類型: ${getWeaponTypeText(defenderPiece.crosshairType)}`;
+            document.getElementById('intro-defender-weapon').textContent = `武器類型: ${getWeaponTypeText(defenderPiece.crosshairType, defenderPiece.id)}`;
             document.getElementById('intro-defender-hit').textContent = defenderPiece.hit;
             document.getElementById('intro-defender-dodge').textContent = defenderPiece.dodge;
             document.getElementById('intro-defender-hit-bar').style.width = `${(defenderPiece.hit / maxValue) * 100}%`;
