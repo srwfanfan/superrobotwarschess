@@ -10,6 +10,7 @@
     <script>
         // 添加全局計時器，記錄頁面加載開始時間
         window.gameLoadStartTime = Date.now();
+        window.specialPieceConfirmActive = false;
 
         // 全局錯誤處理函數
         window.onerror = function(message, source, lineno, colno, error) {
@@ -1565,6 +1566,46 @@
             }
         }
 
+        /* 将军警告样式 */
+        #check-warning.show {
+          opacity: 1;
+          visibility: visible;
+          animation: pulse-warning 2s infinite;
+          pointer-events: all;
+        }
+
+        @keyframes pulse-warning {
+           0%, 100% {
+            transform: translateX(-50%) scale(1);
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.7);
+          }
+          50% {
+            transform: translateX(-50%) scale(1.05);
+            box-shadow: 0 0 50px rgba(255, 0, 0, 0.9);
+          }
+        }
+
+        /* 將 fire-particle 改為 breastfire-particle */
+        .breastfire-particle {
+            position: absolute;
+            border-radius: 50%;
+            z-index: 16;
+            pointer-events: none;
+        }
+
+        @keyframes breastfireParticle {
+            0% { transform: translate(0, 0) scale(1); opacity: 1; }
+            100% { transform: translate(var(--tx), var(--ty)) scale(0.2); opacity: 0; }
+        }
+        @keyframes breastfireWave {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0.8; }
+            100% { transform: translate(-50%, -50%) scale(2.0); opacity: 0; }
+        }
+        @keyframes breastfireWaveExpand {
+            0% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
+            100% { transform: translate(-50%, -50%) scale(20); opacity: 0; }
+        }
+
     </style>
 </head>
 <body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-white min-h-screen p-4">
@@ -1828,6 +1869,12 @@
         </div>
     </div>
 
+    <!-- 将军警告消息 -->
+    <div id="check-warning" class="fixed top-[10%] left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-red-600 to-red-800 text-white py-4 px-6 rounded-lg shadow-lg z-[1000] flex items-center justify-center text-2xl font-bold opacity-0 invisible transition-all duration-500 pointer-events-none">
+        <div class="text-3xl mr-3">⚠️</div>
+        <div class="check-warning-text">您被將軍了！請立即應對！</div>
+    </div>
+    
     <!-- Event Dialog -->
     <div id="event-dialog" class="event-dialog">
         <div id="dialog-character" class="dialog-character">キャラクター</div>
@@ -1930,6 +1977,7 @@
 
         // 隱藏要素相關代碼
         let Get_fa_gundam = 0;
+        let Get_shinning_gundam_s = 0;
         
         // 添加BGM及SE相關代碼
         let battleBgmPlayer = null;
@@ -1938,6 +1986,11 @@
         let currentBattleBgmType = null;
 
         let beamGunSound = null;
+        let beamSaberSound = null;
+        let cosmoNovaSound = null;
+        let thunderSound = null;
+        let GetterBeamSound = null;
+        let breastFireSound = null;
         let explosionSound = null;
         let soundsLoaded = false;
 
@@ -1988,6 +2041,22 @@
                 case 'Wingzero':
                     bgmUrl = './audio/SRWCBGM_Wingzero.mp3';
                     break;
+                case 'Cybuster':
+                    bgmUrl = './audio/SRWCBGM_Cybuster.mp3';
+                    break;
+                case 'GetterRobot':
+                    bgmUrl = './audio/SRWCBGM_GetterRobot.mp3';
+                    break;
+                case 'MazingerZ':
+                    bgmUrl = './audio/SRWCBGM_MazingerZ.mp3';
+                    break;
+                case 'ShinningGundam':
+                    bgmUrl = './audio/SRWCBGM_ShinningGundam.mp3';
+                    break;
+                case 'ShinningGundamS':
+                    bgmUrl = './audio/SRWCBGM_ShinningGundamS.mp3';
+                    break;
+                     
                 default:
                     return; // 沒有匹配的BGM類型，不播放
             }
@@ -2107,6 +2176,18 @@
             beamSaberSound = new Audio('./soundeffects/SRWCSE_BeamSaber.mp3');
             beamSaberSound.load();
 
+            cosmoNovaSound = new Audio('./soundeffects/SRWCSE_CosmoNova.mp3');
+            cosmoNovaSound.load();
+
+            thunderSound = new Audio('./soundeffects/SRWCSE_Thunder.mp3');
+            thunderSound.load();
+
+            GetterBeamSound = new Audio('./soundeffects/SRWCSE_GetterBeam.mp3');
+            GetterBeamSound.load();
+
+            breastFireSound = new Audio('./soundeffects/SRWCSE_BreastFire.mp3');
+            breastFireSound.load();
+
             // 设置加载完成标志
             soundsLoaded = true;
 
@@ -2133,7 +2214,7 @@
         function saveProgress() {
             // 获取当前通关的关卡数
             const completedLevel = levelManager ? levelManager.currentLevel : 0;
-    
+
             // 生成第一行10位数字组合 - 关卡进度
             let hiddenCode1 = "";
             // 第一位是随机数字
@@ -2144,7 +2225,7 @@
             for (let i = 0; i < 8; i++) {
                 hiddenCode1 += Math.floor(Math.random() * 10);
             }
-    
+
             // 生成第二行10位数字组合 - FA Gundam状态
             let hiddenCode2 = "";
             // 前9位是0-1的随机整数
@@ -2153,29 +2234,38 @@
             }
             // 最后一位是Get_fa_gundam的值
             hiddenCode2 += Get_fa_gundam;
-    
-            // 创建CSV内容，包含两行数据
-            const csvContent = "game_code\n" + hiddenCode1 + "\n" + hiddenCode2;
-    
+
+            // 生成第三行10位数字组合 - Shinning Gundam S状态
+            let hiddenCode3 = "";
+            // 前9位是0-1的随机整数
+            for (let i = 0; i < 9; i++) {
+                hiddenCode3 += Math.floor(Math.random() * 2);
+            }
+            // 最后一位是Get_shinning_gundam_s的值
+            hiddenCode3 += Get_shinning_gundam_s;
+
+            // 创建CSV内容，包含第一行标题和三行数据
+            const csvContent = "game_code\n" + hiddenCode1 + "\n" + hiddenCode2 + "\n" + hiddenCode3;
+
             // 创建Blob对象
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    
+
             // 创建下载链接
             const link = document.createElement("a");
             const url = URL.createObjectURL(blob);
-    
+
             // 设置链接属性
             link.setAttribute("href", url);
             link.setAttribute("download", "srwcsave.csv");
             link.style.visibility = 'hidden';
-    
+
             // 添加到文档并触发点击
             document.body.appendChild(link);
             link.click();
-    
+
             // 清理
             document.body.removeChild(link);
-    
+
             // 显示提示
             showToast("進度已保存");
         }
@@ -2224,7 +2314,7 @@
                     const gundamCode = lines[2].trim();
                 
                     // 验证存档代码格式 - 应该都是10位数字
-                    if (!/^\d{10}$/.test(levelCode) || !/^\d{10}$/.test(gundamCode)) {
+                   if (!/^\d{10}$/.test(levelCode) || !/^\d{10}$/.test(gundamCode) || (lines.length > 3 && !/^\d{10}$/.test(lines[3].trim()))) {
                         document.getElementById('csv-loading-message').textContent = "進度檔案內容錯誤";
                         setTimeout(() => {
                             loadingOverlay.style.display = 'none';
@@ -2255,9 +2345,20 @@
                     // 设置全局变量Get_fa_gundam
                     Get_fa_gundam = faGundamValue;
                     console.log("从存档读取FA Gundam状态:", Get_fa_gundam);
-            
+
+                    // 提取Shinning Gundam S状态 - 如果第四行存在
+                    if (lines.length > 3) {
+                        const shinningGundamSCode = lines[3].trim();
+                        const shinningGundamSValue = parseInt(shinningGundamSCode.charAt(9), 10);
+                        if (!isNaN(shinningGundamSValue)) {
+                            // 设置全局变量Get_shinning_gundam_s
+                            Get_shinning_gundam_s = shinningGundamSValue;
+                            console.log("从存档读取Shinning Gundam S状态:", Get_shinning_gundam_s);
+                        }
+                    }
+                    
                     // 检查是否已完成所有可用关卡
-                    if (completedLevel < 3) {
+                    if (completedLevel < 5) {
                         // 根据完成的关卡数加载下一关
                         let nextLevelId = completedLevel + 1;
                         loadLevelById(nextLevelId, loadingOverlay);
@@ -2298,6 +2399,10 @@
                 csvUrl = "./stages/SRWCStage01.csv"; // 第一关
             } else if (levelId === 2) {
                 csvUrl = "./stages/SRWCStage02.csv"; // 第二关
+            } else if (levelId === 3) {
+                csvUrl = "./stages/SRWCStage03.csv"; // 第三关
+            } else if (levelId === 4) {
+                csvUrl = "./stages/SRWCStage04.csv"; // 第四关
             } else {
                 // 默认或未来关卡
                 document.getElementById('csv-loading-message').textContent = "未找到對應關卡或關卡開發中";
@@ -2608,6 +2713,25 @@
             const borderWidth = Math.max(2, Math.floor(size / 40)); // 边框宽度最小2px
             const dotSize = Math.max(4, Math.floor(size / 15)); // 中心点大小
 
+            // 所有形状的面积均等化系数
+            const areaEqualizationFactors = {
+                'Beam_Rifie': 1,               // 圆形，基准值
+                'Beam_Saber': 0.91,            // √(0.79/0.96) ≈ 0.91
+                'Cosmo_Nova': 1.27,            // √(0.79/0.49) ≈ 1.27
+                'Destructive_Thunder': 0.89,   // √(0.79/1.00) ≈ 0.89
+                'Getter_Beam': 0.91,           // √(0.79/0.96) ≈ 0.91
+                'Breast_Fire': 1.98,           // √(0.79/0.2025) ≈ 1.98
+                'diamond': 1.27,               // √(0.79/0.49) ≈ 1.27
+                'triangle': 1.04,              // √(0.79/0.73) ≈ 1.04
+                'custom': 1                    // 特殊形状，保持不变
+            };
+    
+            // 获取当前形状的面积均等化系数
+            const equalizer = areaEqualizationFactors[type] || 1;
+    
+            // 应用均等化系数
+            const adjustedOuterSize = outerSize * equalizer;
+            
             switch (type) {
                 case 'Beam_Rifie':
                     // 圆形外框准星
@@ -2661,7 +2785,7 @@
 
                 case 'Beam_Saber':
                     // 垂直长方形准星 (宽:高 = 1:6)
-                    const frameWidth = Math.round(outerSize * 0.4); // 减小宽度以保持合理比例
+                    const frameWidth = Math.round(adjustedOuterSize * 0.4); // 减小宽度以保持合理比例
                     const frameHeight = frameWidth * 6; // 高度是宽度的6倍
 
                     container.innerHTML = `
@@ -2710,6 +2834,209 @@
                     `;
                     break;
 
+                case 'Cosmo_Nova':
+                    // 菱形外框准星
+                    container.innerHTML = `
+                        <div class="crosshair-frame" style="
+                            position: absolute;
+                            top: 50%;
+                            left: 50%;
+                            width: ${adjustedOuterSize * 0.7}px;
+                            height: ${adjustedOuterSize * 0.7}px;
+                            border: ${borderWidth}px solid ${rgbaColor};
+                            transform: translate(-50%, -50%) rotate(45deg);
+                            box-shadow: 0 0 10px ${color};
+                            pointer-events: none;
+                        "></div>
+                        <div class="crosshair-horizontal" style="
+                            position: absolute;
+                            top: 50%;
+                            left: 0;
+                            width: 100%;
+                            height: ${lineThickness}px;
+                            background: linear-gradient(90deg, ${hexToRgba(color, 0)} 0%, ${rgbaColor} 50%, ${hexToRgba(color, 0)} 100%);
+                            transform: translateY(-50%);
+                            pointer-events: none;
+                        "></div>
+                        <div class="crosshair-vertical" style="
+                            position: absolute;
+                            top: 0;
+                            left: 50%;
+                            width: ${lineThickness}px;
+                            height: 100%;
+                            background: linear-gradient(0deg, ${hexToRgba(color, 0)} 0%, ${rgbaColor} 50%, ${hexToRgba(color, 0)} 100%);
+                            transform: translateX(-50%);
+                            pointer-events: none;
+                        "></div>
+                        <div class="crosshair-dot" style="
+                            position: absolute;
+                            top: 50%;
+                            left: 50%;
+                            width: ${dotSize}px;
+                            height: ${dotSize}px;
+                            background-color: ${rgbaColor};
+                            transform: translate(-50%, -50%) rotate(45deg);
+                            box-shadow: 0 0 5px ${color};
+                            pointer-events: none;
+                        "></div>
+                    `;
+                    break;
+
+                case 'Destructive_Thunder':
+                    const thunderSquareSize = Math.round(adjustedOuterSize * 1); // 使用100%的外框大小
+                    
+                    container.innerHTML = `
+                        <div class="crosshair-frame" style="
+                            position: absolute;
+                            top: 50%;
+                            left: 50%;
+                            width: ${thunderSquareSize}px;
+                            height: ${thunderSquareSize}px;
+                            border: ${borderWidth}px solid ${rgbaColor};
+                            transform: translate(-50%, -50%);
+                            box-shadow: 0 0 10px ${color};
+                            pointer-events: none;
+                        "></div>
+                        <div class="crosshair-horizontal" style="
+                            position: absolute;
+                            top: 50%;
+                            left: 0;
+                            width: 100%;
+                            height: ${lineThickness}px;
+                            background: linear-gradient(90deg, ${hexToRgba(color, 0)} 0%, ${rgbaColor} 50%, ${hexToRgba(color, 0)} 100%);
+                            transform: translateY(-50%);
+                            pointer-events: none;
+                        "></div>
+                        <div class="crosshair-vertical" style="
+                            position: absolute;
+                            top: 0;
+                            left: 50%;
+                            width: ${lineThickness}px;
+                            height: 100%;
+                            background: linear-gradient(0deg, ${hexToRgba(color, 0)} 0%, ${rgbaColor} 50%, ${hexToRgba(color, 0)} 100%);
+                            transform: translateX(-50%);
+                            pointer-events: none;
+                        "></div>
+                        <div class="crosshair-dot" style="
+                            position: absolute;
+                            top: 50%;
+                            left: 50%;
+                            width: ${dotSize}px;
+                            height: ${dotSize}px;
+                            background-color: ${rgbaColor};
+                            transform: translate(-50%, -50%);
+                            box-shadow: 0 0 5px ${color}, 0 0 10px ${color};
+                            animation: pulse 1s infinite alternate;
+                            pointer-events: none;
+                        "></div>
+                    `;
+                    break;
+
+                // 添加Getter_Beam准星类型
+                case 'Getter_Beam':
+                    const getterBeamHeight = Math.round(adjustedOuterSize * 0.4); // 较短的高度
+                    const getterBeamWidth = getterBeamHeight * 6; // 宽度是高度的6倍
+            
+                    container.innerHTML = `
+                        <div class="crosshair-frame" style="
+                            position: absolute;
+                            top: 50%;
+                            left: 50%;
+                            width: ${getterBeamWidth}px;
+                            height: ${getterBeamHeight}px;
+                            border: ${borderWidth}px solid ${rgbaColor};
+                            transform: translate(-50%, -50%);
+                            box-shadow: 0 0 10px ${color};
+                            pointer-events: none;
+                        "></div>
+                        <div class="crosshair-horizontal" style="
+                            position: absolute;
+                            top: 50%;
+                            left: 0;
+                            width: 100%;
+                            height: ${lineThickness}px;
+                            background: linear-gradient(90deg, ${hexToRgba(color, 0)} 0%, ${rgbaColor} 50%, ${hexToRgba(color, 0)} 100%);
+                            transform: translateY(-50%);
+                            pointer-events: none;
+                        "></div>
+                        <div class="crosshair-vertical" style="
+                            position: absolute;
+                            top: 0;
+                            left: 50%;
+                            width: ${lineThickness}px;
+                            height: 100%;
+                            background: linear-gradient(0deg, ${hexToRgba(color, 0)} 0%, ${rgbaColor} 50%, ${hexToRgba(color, 0)} 100%);
+                            transform: translateX(-50%);
+                            pointer-events: none;
+                        "></div>
+                        <div class="crosshair-dot" style="
+                            position: absolute;
+                            top: 50%;
+                            left: 50%;
+                            width: ${dotSize}px;
+                            height: ${dotSize}px;
+                            background-color: ${rgbaColor};
+                            transform: translate(-50%, -50%);
+                            box-shadow: 0 0 5px ${color};
+                            pointer-events: none;
+                        "></div>
+                    `;
+                    break;
+
+                case 'Breast_Fire':
+                    // 正三角形准星(底：高 = 2:1)，尖端朝下
+                    const breastfireWidth = Math.round(adjustedOuterSize * 0.9); // 三角形底部寬度
+                    const breastfireHeight = breastfireWidth / 2; // 高度為寬度的一半
+    
+                    container.innerHTML = `
+                        <div class="crosshair-triangle" style="
+                            position: absolute;
+                            top: 50%;
+                            left: 50%;
+                            width: ${breastfireWidth}px;
+                            height: ${breastfireHeight}px;
+                            transform: translate(-50%, -50%);
+                            pointer-events: none;
+                            z-index: 10;
+                        ">
+                            <svg width="${breastfireWidth}" height="${breastfireHeight}" viewBox="0 0 ${breastfireWidth} ${breastfireHeight}">
+                                <polygon 
+                                    points="0,0 ${breastfireWidth},0 ${breastfireWidth/2},${breastfireHeight}"
+                                    fill="none"
+                                    stroke="${rgbaColor}"
+                                    stroke-width="${borderWidth}"
+                                    stroke-linejoin="round"
+                                    style="filter: drop-shadow(0 0 5px ${color});"
+                                />
+                                <polygon 
+                                    points="0,0 ${breastfireWidth},0 ${breastfireWidth/2},${breastfireHeight}"
+                                    fill="url(#fireGradient)"
+                                    opacity="0.3"
+                                />
+                                 <defs>
+                                    <linearGradient id="fireGradient" x1="0.5" y1="0" x2="0.5" y2="1">
+                                    <stop offset="0%" stop-color="yellow" />
+                                    <stop offset="70%" stop-color="${rgbaColor}" />
+                                    <stop offset="100%" stop-color="red" />
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                        </div>
+                        <div class="crosshair-dot" style="
+                            position: absolute;
+                            top: 50%;
+                            left: 50%;
+                            width: ${dotSize}px;
+                            height: ${dotSize}px;
+                            background-color: ${rgbaColor};
+                            transform: translate(-50%, -50%);
+                            box-shadow: 0 0 5px ${color};
+                            pointer-events: none;
+                            z-index: 11;
+                        "></div>
+                    `;
+                    break;
+                    
                 case 'diamond':
                     // 菱形外框准星
                     container.innerHTML = `
@@ -2908,6 +3235,15 @@
                                 type: entry.condition_type,
                                 description: entry.description
                             };
+
+                            // 处理特定类型的条件
+                            if (entry.condition_type === 'surviveNTurns') {
+                                // 从描述中提取数字
+                                const matches = entry.description.match(/\d+/);
+                                const turns = matches ? parseInt(matches[0], 10) : 10; // 默认值为3，以防提取失败
+                                conditionObj.turns = turns;
+                                console.log(`从描述 "${entry.description}" 中提取到回合数: ${turns}`);
+                            }
 
                             if (entry.id === 'victory') {
                                 currentLevel.victoryCondition = conditionObj;
@@ -3321,6 +3657,8 @@
             stopBattleBGM();
             stopIntroMusic();
             stopBoardBGM();
+            showCheckWarning(false);
+            Get_fa_gundam = 0;
             resetRequestSent = false;
             resetRequestReceived = false;
 
@@ -3504,6 +3842,12 @@
             } catch (error) {
                 console.error(`更新棋盤顯示時發生嚴重錯誤，時間: ${Date.now() - window.gameLoadStartTime}ms`, error);
             }
+
+            // 如果是玩家回合，检查将军状态
+            if (gameState.currentTurn === BLUE && !gameState.gameOver) {
+                checkPlayerKingInCheck();
+            }
+            
         }
 
         // Update turn indicator
@@ -3647,6 +3991,10 @@
                             switch(pieceInfo.crosshairType) {
                                 case "Beam_Rifie": crosshairTypeText = "光束步槍"; break;
                                 case "Beam_Saber": crosshairTypeText = "光束劍"; break;
+                                case "Cosmo_Nova": crosshairTypeText = "宇宙新星"; break;
+                                case "Destructive_Thunder": crosshairTypeText = "破壞雷電"; break;
+                                case "Getter_Beam": crosshairTypeText = "三一死光"; break;
+                                case "Breast_Fire": crosshairTypeText = "高熱火焰"; break;
                                 case "diamond": crosshairTypeText = "鑽石光束"; break;
                                 case "triangle": crosshairTypeText = "三角光束"; break;
                                 case "custom": crosshairTypeText = "自定義武器"; break;
@@ -3700,7 +4048,7 @@
             if (winnerTeam === BLUE) {
                 victoryCard.className = "victory-card blue-victory";
                 victoryTitle.textContent = "勝利！";
-                victoryMessage.textContent = "您成功擊敗了敵人！可以進入下一話了！";
+                victoryMessage.textContent = "您成功達到勝利條件！可以進入下一話了！";
                 victoryIcon.textContent = "🏆";
             } else {
                 victoryCard.className = "victory-card red-victory";
@@ -3833,6 +4181,12 @@
                 gameState.validMoves = calculateValidMoves(row, col);
                 updateBoardDisplay();
             }
+
+            // 在移动完成后，如果游戏没有结束，检查将军状态
+            if (!gameState.gameOver && gameState.currentTurn === BLUE) {
+                checkPlayerKingInCheck();
+            }
+            
         }
 
         // Calculate valid moves for a piece
@@ -3936,6 +4290,53 @@
             return false;
         }
 
+        // 显示将军警告
+        function showCheckWarning(isShown) {
+          const warningElement = document.getElementById('check-warning');
+          if (!warningElement) return;
+  
+          if (isShown) {
+            warningElement.classList.add('show');
+    
+            if ('vibrate' in navigator) {
+              navigator.vibrate([200, 100, 200]);
+            }
+            // 添加1秒后自动隐藏
+            setTimeout(() => {
+              warningElement.classList.remove('show');
+            }, 1000); // 1秒 = 1000毫秒  
+          } else {
+            warningElement.classList.remove('show');
+          }
+        }
+
+        // 检查玩家国王是否被将军
+        function checkPlayerKingInCheck() {
+          // 找到玩家国王位置
+          let kingPos = null;
+          for (let r = 0; r < BOARD_SIZE; r++) {
+            for (let c = 0; c < BOARD_SIZE; c++) {
+              const piece = gameState.board[r][c];
+              if (piece && piece.team === BLUE && piece.moveType === KING) {
+                kingPos = { row: r, col: c };
+                break;
+              }
+            }
+            if (kingPos) break;
+          }
+  
+          // 如果找不到国王，返回false
+          if (!kingPos) return false;
+  
+          // 检查国王是否被将军
+          const inCheck = isInCheck(gameState.board, kingPos.row, kingPos.col, BLUE);
+  
+          // 显示或隐藏警告
+          showCheckWarning(inCheck);
+  
+          return inCheck;
+        }
+        
         // Calculate pawn moves
         function calculatePawnMoves(row, col, piece) {
             const moves = [];
@@ -4236,78 +4637,91 @@
                 }
             }
 
-            // If capturing a piece, add to captured list
+            // 1. 保存捕獲棋子的信息
+            let capturedPieceInfo = null;
             if (capturedPiece) {
+                capturedPieceInfo = { ...capturedPiece };
+        
+                // 添加到捕獲列表
                 if (capturedPiece.team === BLUE) {
                     gameState.blueCaptured.push(capturedPiece);
                 } else {
                     gameState.redCaptured.push(capturedPiece);
                 }
 
-                // Check if captured piece is a king (game over)
+                // 檢查是否為國王（遊戲結束條件）
                 if (capturedPiece.moveType === KING) {
-                    // 只有在没有自定义胜利条件或胜利条件是'captureKing'时才立即结束游戏
                     if (!gameState.victoryCondition || gameState.victoryCondition.type === 'captureKing') {
                         gameState.gameOver = true;
                         gameState.winner = piece.team;
                     }
                 }
-
-                // 在这里触发 pieceCaptured 事件
-                if (typeof eventSystem !== 'undefined') {
-                    console.log(`触发pieceCaptured事件，捕获者: ${piece.id}，被捕获: ${capturedPiece.id}`);
-                    eventSystem.triggerEvent('pieceCaptured', {
-                        capturedPiece: capturedPiece,
-                        capturingPiece: piece
-                    });
-                }
             }
 
-            // Move the piece in the game state
+            // 2. 先更新棋盤狀態
             gameState.board[toRow][toCol] = piece;
             gameState.board[fromRow][fromCol] = null;
 
-            // 如果是車王易位，還需要移動車子
+            // 如果是車王易位，移動車子
             if (isCastling && castlingRookCol !== null && castlingRookNewCol !== null) {
-                // 獲取車子
                 const rook = gameState.board[toRow][castlingRookCol];
                 if (rook) {
-                    // 移動車子到新位置
                     gameState.board[toRow][castlingRookNewCol] = rook;
                     gameState.board[toRow][castlingRookCol] = null;
-
-                    // 標記車子已經移動
                     rook.hasMoved = true;
-
                     console.log(`執行車王易位：國王從(${fromRow},${fromCol})到(${toRow},${toCol})，車子從(${toRow},${castlingRookCol})到(${toRow},${castlingRookNewCol})`);
                 }
             }
 
-            // Mark the piece as moved (important for pawns)
+            // 標記棋子已移動
             piece.hasMoved = true;
 
-            // Clear selection and valid moves
+            // 3. 然後在棋盤更新後觸發捕獲事件
+            if (capturedPieceInfo && typeof eventSystem !== 'undefined') {
+                console.log(`觸發pieceCaptured事件，捕獲者: ${piece.id}，被捕獲: ${capturedPieceInfo.id}`);
+                eventSystem.triggerEvent('pieceCaptured', {
+                    capturedPiece: capturedPieceInfo,
+                    capturingPiece: piece,
+                    row: toRow,    // 提供新位置信息
+                    col: toCol
+                });
+            }
+
+            // 觸發棋子移動事件
+            if (typeof eventSystem !== 'undefined') {
+                console.log(`触发pieceMove事件，从[${fromRow},${fromCol}]到[${toRow},${toCol}]`);
+                eventSystem.triggerEvent('pieceMove', {
+                    piece: piece,
+                    fromRow: fromRow,
+                    fromCol: fromCol,
+                    row: toRow,
+                    col: toCol
+                });
+            }
+
+            // 清除選擇和有效移動
             gameState.selectedPiece = null;
             gameState.validMoves = [];
 
-            // Switch turns
+            // 以下部分保持不變...
+            // 切換回合
             gameState.currentTurn = gameState.currentTurn === BLUE ? RED : BLUE;
 
             // 當輪到藍方回合時增加回合數計數（每完成一個完整回合增加一）
             if (gameState.currentTurn === BLUE) {
                 gameState.turnCount++;
                 console.log(`回合數增加到: ${gameState.turnCount}`);
-
-                // 添加此行显示回合过渡
+    
+                // 顯示回合過渡
                 showTurnTransition(BLUE, gameState.turnCount);
 
-                // 检查是否正在播放战斗BGM
+                // 檢查是否正在播放戰鬥BGM
                 const wasBattleBgmPlaying = battleBgmPlayer !== null;
                 stopBattleBGM();
-
-                // 只有在之前正在播放战斗BGM时才从头播放boardbgm
+        
+                // 只有在之前正在播放戰鬥BGM時才從頭播放boardbgm
                 if (wasBattleBgmPlaying && levelManager && levelManager.currentLevel) {
-                    // 从头播放关卡BGM
+                    // 從頭播放關卡BGM
                     const currentLevelData = window.levelData.find(level => level.id === levelManager.currentLevel);
                     if (currentLevelData && currentLevelData.boardbgm) {
                         playBoardBGM(currentLevelData.boardbgm);
@@ -4331,21 +4745,9 @@
                         turn: gameState.turnCount
                     });
                 }
-
-             if (typeof eventSystem !== 'undefined') {
-                    console.log(`触发pieceMove事件，从[${fromRow},${fromCol}]到[${toRow},${toCol}]`);
-                    eventSystem.triggerEvent('pieceMove', {
-                        piece: piece,
-                        fromRow: fromRow,
-                        fromCol: fromCol,
-                        row: toRow,  // 注意这里使用toRow作为row
-                        col: toCol   // 注意这里使用toCol作为col
-                    });
-                }
-
             }
 
-            // Update UI
+            // 更新UI
             updateBoardDisplay();
             updateTurnIndicator();
             updateCapturedPieces();
@@ -4395,7 +4797,7 @@
             }
 
             // If single player mode and it's AI's turn
-            if (gameState.gameMode === 'single-player' && gameState.currentTurn === RED && !gameState.gameOver) {
+            if (gameState.gameMode === 'single-player' && gameState.currentTurn === RED && !gameState.gameOver && !window.specialPieceConfirmActive) {
                 console.log(`準備安排AI移動，當前回合: ${gameState.currentTurn}`);
                 // 清除任何可能存在的之前的計時器
                 if (aiMoveTimer) {
@@ -4403,9 +4805,16 @@
                     aiMoveTimer = null;
                 }
 
-                const aiDelay = 500;
+                const aiDelay = 2000;
                 aiMoveTimer = setTimeout(makeAIMove, aiDelay);
             }
+            
+            // 在交换回合后，如果现在是玩家回合，检查玩家国王是否被将军
+            if (gameState.currentTurn === BLUE && !gameState.gameOver) {
+                // AI刚刚移动完，现在是玩家回合，检查将军状态
+                setTimeout(checkPlayerKingInCheck, 300); // 短暂延迟确保UI已更新
+            }
+            
         }
 
         // 更新回合數顯示
@@ -4684,6 +5093,10 @@
                 switch(crosshairType) {
                     case "Beam_Rifie": return "光束步槍";
                     case "Beam_Saber": return "光束劍";
+                    case "Cosmo_Nova": return "宇宙新星";
+                    case "Destructive_Thunder": return "破壞雷電";
+                    case "Getter_Beam": return "三一死光";
+                    case "Breast_Fire": return "高熱火焰";
                     case "diamond": return "鑽石光束";
                     case "triangle": return "三角光束";
                     case "custom": return "自定義武器";
@@ -4784,7 +5197,7 @@
                         // 計算百分比尺寸：(100% + (命中值-2)*35%) * (20% 的容器寬度)
                         const containerWidth = containerRect.width;
                         const baseSizePercent = 20; // 基礎大小為容器的20%
-                        const hitMultiplier = 1 + (attackerPiece.hit - 2) * 0.35; // 命中值修正因子
+                        const hitMultiplier = attackerPiece.hit / 2.5; // 3为中等命中值
                         const crosshairSizePercent = hitMultiplier * baseSizePercent;
                         combatMode.crosshairSize = containerWidth * (crosshairSizePercent / 100);
                         crosshair.style.width = `${crosshairSizePercent}%`;
@@ -5089,10 +5502,22 @@
             if (crosshairType === 'Beam_Saber') {
                 // 播放光束剑音效
                 playCombatSound(beamSaberSound);
+            } else if (crosshairType === 'Cosmo_Nova') {
+                // 播放宇宙新星音效
+                playCombatSound(cosmoNovaSound);
+            } else if (crosshairType === 'Destructive_Thunder') {
+                // 播放雷电音效
+                playCombatSound(thunderSound);
+            } else if (crosshairType === 'Getter_Beam') {
+                // 播放Getter Beam音效
+                playCombatSound(GetterBeamSound);
+            } else if (crosshairType === 'Breast_Fire') {
+                // 播放Breast Fire音效
+                playCombatSound(breastFireSound);
             } else {
                 // 播放激光枪音效
                 playCombatSound(beamGunSound);
-            }
+            }   
 
             // 根据准星类型使用不同的攻击效果
             switch(crosshairType) {
@@ -5101,6 +5526,18 @@
                     break;
                 case 'Beam_Saber':
                     createEnergyPulseEffect(weaponColor);
+                    break;
+                case 'Cosmo_Nova':
+                    createConvergeShotEffect(weaponColor);
+                    break;
+                case 'Destructive_Thunder':
+                    createThunderConvergenceEffect(weaponColor);
+                    break;
+                case 'Getter_Beam':
+                    createGetterBeamEffect(weaponColor);
+                    break;
+                case 'Breast_Fire':
+                    createBreastFireEffect(weaponColor);
                     break;
                 case 'diamond':
                     createScatterShotEffect(weaponColor);
@@ -5309,6 +5746,450 @@
             }, 800);
         }
 
+        function createConvergeShotEffect(weaponColor) {
+            const containerRect = combatContainer.getBoundingClientRect();
+
+            // 添加必要的CSS
+            addCSSIfNeeded(`
+                @keyframes convergeShot {
+                    0% { transform: translate(-50%, -50%) scale(1.5); opacity: 0; }
+                    50% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.3; }
+                    90% { transform: translate(-50%, -50%) scale(0.4); opacity: 0.8; }
+                    100% { transform: translate(-50%, -50%) scale(0.2); opacity: 1; }
+                }
+        
+                @keyframes centralExplosion {
+                    0% { transform: translate(-50%, -50%) scale(0.2); opacity: 1; }
+                    50% { opacity: 1; }
+                    100% { transform: translate(-50%, -50%) scale(2); opacity: 0; }
+                }
+
+                @keyframes convergeParticle {
+                    0% { transform: translate(var(--tx), var(--ty)) scale(1); opacity: 1; }
+                    90% { transform: translate(0, 0) scale(0.6); opacity: 0.8; }
+                    100% { transform: translate(0, 0) scale(0.2); opacity: 0; }
+                }
+            `);
+
+            // 创建中心汇聚区域
+            const convergeZone = document.createElement('div');
+            convergeZone.style.position = 'absolute';
+            convergeZone.style.left = `${combatMode.mouseX}px`;
+            convergeZone.style.top = `${combatMode.mouseY}px`;
+            convergeZone.style.width = `${containerRect.width * 0.05}px`; // 初始较小
+            convergeZone.style.height = `${containerRect.width * 0.05}px`;
+            convergeZone.style.borderRadius = '50%';
+            convergeZone.style.background = `radial-gradient(circle, ${hexToRgba(weaponColor, 0.7)} 0%, ${hexToRgba(weaponColor, 0.3)} 70%, transparent 100%)`;
+            convergeZone.style.boxShadow = `0 0 10px ${weaponColor}`;
+            convergeZone.style.zIndex = '16';
+            convergeZone.style.animation = 'convergeShot 0.7s forwards';
+            convergeZone.style.transform = 'translate(-50%, -50%) scale(1.5)';
+            combatContainer.appendChild(convergeZone);
+
+            // 创建汇聚粒子
+            for (let i = 0; i < 12; i++) {
+                const angle = (i * 30) + (Math.random() * 20 - 10); // 将360度分成12份
+                const radian = (angle * Math.PI) / 180;
+                const distance = containerRect.width * (0.2 + Math.random() * 0.3); // 20%-50%的容器宽度
+
+                const tx = Math.cos(radian) * distance;
+                const ty = Math.sin(radian) * distance;
+
+                const particle = document.createElement('div');
+                particle.style.position = 'absolute';
+                particle.style.left = `${combatMode.mouseX}px`;
+                particle.style.top = `${combatMode.mouseY}px`;
+                particle.style.width = `${8 + Math.random() * 7}px`; // 8-15px
+                particle.style.height = `${8 + Math.random() * 7}px`;
+                particle.style.borderRadius = '50%';
+                particle.style.background = `${hexToRgba(weaponColor, 0.9)}`;
+                particle.style.boxShadow = `0 0 10px ${weaponColor}`;
+                particle.style.zIndex = '17';
+
+                // 使用CSS变量传递不同的起始位置（与散射相反）
+                particle.style.setProperty('--tx', `${tx}px`);
+                particle.style.setProperty('--ty', `${ty}px`);
+                // 初始位置设置在外围
+                particle.style.transform = `translate(${tx}px, ${ty}px)`;
+                particle.style.animation = 'convergeParticle 0.7s forwards';
+
+                combatContainer.appendChild(particle);
+
+                // 清理粒子
+                setTimeout(() => {
+                    if (particle.parentNode) particle.parentNode.removeChild(particle);
+                }, 700);
+            }
+
+            // 粒子汇聚后，创建中心爆炸效果
+            setTimeout(() => {
+                const centerExplosion = document.createElement('div');
+                centerExplosion.style.position = 'absolute';
+                centerExplosion.style.left = `${combatMode.mouseX}px`;
+                centerExplosion.style.top = `${combatMode.mouseY}px`;
+                centerExplosion.style.width = `${containerRect.width * 0.15}px`; // 比初始区域大
+                centerExplosion.style.height = `${containerRect.width * 0.15}px`;
+                centerExplosion.style.borderRadius = '50%';
+                centerExplosion.style.background = `radial-gradient(circle, white 0%, ${hexToRgba(weaponColor, 0.9)} 30%, ${hexToRgba(weaponColor, 0.2)} 70%, transparent 100%)`;
+                centerExplosion.style.boxShadow = `0 0 30px ${weaponColor}, 0 0 50px ${weaponColor}`;
+                centerExplosion.style.zIndex = '18';
+                centerExplosion.style.animation = 'centralExplosion 0.5s forwards';
+                centerExplosion.style.transform = 'translate(-50%, -50%) scale(0.2)';
+                combatContainer.appendChild(centerExplosion);
+
+                // 添加光晕波纹
+                for (let i = 0; i < 3; i++) {
+                    setTimeout(() => {
+                        const ripple = document.createElement('div');
+                        ripple.style.position = 'absolute';
+                        ripple.style.left = `${combatMode.mouseX}px`;
+                        ripple.style.top = `${combatMode.mouseY}px`;
+                        ripple.style.width = `${containerRect.width * 0.1 * (i+1)}px`;
+                        ripple.style.height = `${containerRect.width * 0.1 * (i+1)}px`;
+                        ripple.style.borderRadius = '50%';
+                        ripple.style.border = `2px solid ${hexToRgba(weaponColor, 0.8 - i*0.2)}`;
+                        ripple.style.boxShadow = `0 0 15px ${weaponColor}`;
+                        ripple.style.zIndex = '17';
+                        ripple.style.transform = 'translate(-50%, -50%) scale(0)';
+                        ripple.style.animation = 'centralExplosion 0.4s forwards';
+                        combatContainer.appendChild(ripple);
+
+                        // 清理波纹
+                        setTimeout(() => {
+                            if (ripple.parentNode) ripple.parentNode.removeChild(ripple);
+                        }, 400);
+                    }, i * 100); // 依次产生波纹
+                }
+
+                // 清理中心爆炸
+                setTimeout(() => {
+                    if (centerExplosion.parentNode) centerExplosion.parentNode.removeChild(centerExplosion);
+                }, 500);
+            }, 650); // 在粒子快要汇聚完成时触发爆炸
+
+            // 清理汇聚区域
+            setTimeout(() => {
+                if (convergeZone.parentNode) convergeZone.parentNode.removeChild(convergeZone);
+            }, 700);
+        }
+
+        function createThunderConvergenceEffect(weaponColor) {
+            const containerRect = combatContainer.getBoundingClientRect();
+            const centerX = combatMode.mouseX;
+            const centerY = combatMode.mouseY;
+    
+            // 添加必要的CSS - 简化动画定义
+            addCSSIfNeeded(`
+                @keyframes thunderBolt {
+                    0% { stroke-dashoffset: 2000; opacity: 0; }
+                    15% { opacity: 1; }
+                    40% { stroke-dashoffset: 0; opacity: 1; }
+                    100% { opacity: 0; }
+                }
+
+                @keyframes thunderPulse {
+                    0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.5; }
+                    50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+                    100% { transform: translate(-50%, -50%) scale(1.5); opacity: 0; }
+                }
+
+                @keyframes thunderRipple {
+                    0% { transform: translate(-50%, -50%) scale(0); opacity: 0.8; stroke-width: 8px; }
+                    100% { transform: translate(-50%, -50%) scale(3); opacity: 0; stroke-width: 1px; }
+                }
+            `);
+
+            // 闪电颜色：主色和高亮色
+            const baseColor = weaponColor;
+            const highlightColor = '#FFFFFF'; // 白色高亮部分
+
+            // 中心爆发效果
+            const centerEffect = document.createElement('div');
+            centerEffect.style.position = 'absolute';
+            centerEffect.style.left = `${centerX}px`;
+            centerEffect.style.top = `${centerY}px`;
+            centerEffect.style.width = `${containerRect.width * 0.15}px`;
+            centerEffect.style.height = `${containerRect.width * 0.15}px`;
+            centerEffect.style.borderRadius = '50%';
+            centerEffect.style.background = `radial-gradient(circle, ${highlightColor} 0%, ${hexToRgba(baseColor, 0.9)} 30%, ${hexToRgba(baseColor, 0.2)} 70%, transparent 100%)`;
+            centerEffect.style.boxShadow = `0 0 30px ${baseColor}, 0 0 50px ${baseColor}`;
+            centerEffect.style.zIndex = '19';
+            centerEffect.style.transform = 'translate(-50%, -50%) scale(0.8)';
+            centerEffect.style.animation = 'thunderPulse 0.8s forwards';
+            combatContainer.appendChild(centerEffect);
+    
+            // 优化点1: 从四个方向创建汇聚的闪电，但减少每个方向的闪电数量
+            const directions = [
+                { angle: 45, label: 'rightDown'}, // 右下
+                { angle: 135, label: 'leftDown'}, // 左下
+                { angle: 225, label: 'leftUp'},   // 左上
+                { angle: 315, label: 'rightUp'}   // 右上
+            ];
+
+            // 优化点1: 减少闪电数量 - 从2-4条减少到1-2条
+            directions.forEach((dir, i) => {
+                // 减少闪电数量
+                const boltCount = 1 + Math.floor(Math.random() * 2);
+        
+                for (let j = 0; j < boltCount; j++) {
+                    setTimeout(() => {
+                        createLightningBolt(dir.angle, i * 80 + j * 60, j);
+                }, i * 80 + j * 60);
+                }
+            });
+
+            // 优化点4: 减少漣漪效果 - 只保留1个涟漪
+            setTimeout(() => {
+                const ripple = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                ripple.style.position = 'absolute';
+                ripple.style.left = '0';
+                ripple.style.top = '0';
+                ripple.style.width = '100%';
+                ripple.style.height = '100%';
+                ripple.style.zIndex = '17';
+                ripple.setAttribute('viewBox', `0 0 ${containerRect.width} ${containerRect.height}`);
+        
+                const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                circle.setAttribute('cx', centerX);
+                circle.setAttribute('cy', centerY);
+                circle.setAttribute('r', containerRect.width * 0.1);
+                circle.setAttribute('fill', 'none');
+                circle.setAttribute('stroke', baseColor);
+                circle.setAttribute('stroke-width', '3');
+                circle.style.animation = 'thunderRipple 0.8s forwards';
+                circle.style.transformOrigin = `${centerX}px ${centerY}px`;
+                circle.style.filter = `drop-shadow(0 0 5px ${baseColor})`;
+        
+                ripple.appendChild(circle);
+                combatContainer.appendChild(ripple);
+        
+                setTimeout(() => {
+                    if (ripple.parentNode) ripple.parentNode.removeChild(ripple);
+                }, 1000);
+            }, 800);
+
+            // 创建中心爆发光圈效果
+            setTimeout(() => {
+                // 中心爆发光圈
+                const burstEffect = document.createElement('div');
+                burstEffect.style.position = 'absolute';
+                burstEffect.style.left = `${centerX}px`;
+                burstEffect.style.top = `${centerY}px`;
+                burstEffect.style.width = `${containerRect.width * 0.35}px`; // 稍微减小爆发范围
+                burstEffect.style.height = `${containerRect.width * 0.35}px`;
+                burstEffect.style.borderRadius = '50%';
+                burstEffect.style.background = `radial-gradient(circle, ${highlightColor} 0%, ${hexToRgba(baseColor, 0.5)} 40%, transparent 70%)`;
+                burstEffect.style.boxShadow = `0 0 60px ${baseColor}`; // 减少阴影层级
+                burstEffect.style.zIndex = '20';
+                burstEffect.style.transform = 'translate(-50%, -50%) scale(0.1)';
+                burstEffect.style.animation = 'thunderPulse 0.8s forwards';
+                burstEffect.style.opacity = '0.9';
+                combatContainer.appendChild(burstEffect);
+
+                setTimeout(() => {
+                    if (burstEffect.parentNode) burstEffect.parentNode.removeChild(burstEffect);
+                }, 800);
+        
+                // 优化点4: 减少散射效果 - 从12条减少到6条
+                for (let i = 0; i < 6; i++) {
+                    const angle = (i * 60); // 改为每60度一条
+                    setTimeout(() => {
+                        const scatter = document.createElement('div');
+                        scatter.style.position = 'absolute';
+                        scatter.style.left = `${centerX}px`;
+                        scatter.style.top = `${centerY}px`;
+                        scatter.style.width = '4px';
+                        scatter.style.height = `${30 + Math.random() * 20}px`;
+                        scatter.style.background = baseColor;
+                        scatter.style.boxShadow = `0 0 8px ${baseColor}`; // 减少阴影强度
+                        scatter.style.zIndex = '16';
+                        scatter.style.transformOrigin = 'center bottom';
+                        scatter.style.transform = `translate(-50%, -100%) rotate(${angle}deg)`;
+                
+                        // 创建动画
+                        const keyframes = `
+                            @keyframes scatterAnim${i} {
+                                0% { transform: translate(-50%, -100%) rotate(${angle}deg) scaleY(0.1); opacity: 1; }
+                                100% { transform: translate(-50%, -100%) rotate(${angle}deg) scaleY(${3 + Math.random() * 2}); opacity: 0; }
+                            }
+                        `;
+                        addCSSIfNeeded(keyframes);
+                        scatter.style.animation = `scatterAnim${i} 0.5s forwards`;
+                    
+                        combatContainer.appendChild(scatter);
+                        setTimeout(() => {
+                            if (scatter.parentNode) scatter.parentNode.removeChild(scatter);
+                        }, 500);
+                    }, Math.random() * 150);
+                }
+            }, 850); // 当所有闪电汇聚到中心后
+
+            // 清理中心效果
+            setTimeout(() => {
+                if (centerEffect.parentNode) centerEffect.parentNode.removeChild(centerEffect);
+            }, 1000);
+    
+            // 创建闪电效果函数
+            function createLightningBolt(angle, delay, index) {
+                // 使用 SVG 创建闪电路径
+                const svgNS = "http://www.w3.org/2000/svg";
+                const svg = document.createElementNS(svgNS, "svg");
+                svg.style.position = 'absolute';
+                svg.style.left = '0';
+                svg.style.top = '0';
+                svg.style.width = '100%';
+                svg.style.height = '100%';
+                svg.style.pointerEvents = 'none';
+                svg.style.zIndex = '18';
+                svg.setAttribute('viewBox', `0 0 ${containerRect.width} ${containerRect.height}`);
+
+                // 计算起点和终点
+                const distance = Math.max(containerRect.width, containerRect.height) * 0.8;
+
+                // 根据角度计算起点（从边缘开始）
+                const startX = centerX + Math.cos(angle * Math.PI / 180) * distance;
+                const startY = centerY + Math.sin(angle * Math.PI / 180) * distance;
+
+                // 设定主闪电的宽度 - 保持闪电粗细但更高效
+                const mainWidth = 5 + Math.floor(Math.random() * 3); // 5-7px
+        
+                // 生成闪电的路径
+                const paths = [];
+        
+                // 主闪电路径
+                const mainPath = generateLightningPath(startX, startY, centerX, centerY, 0.3, 5, index);
+                const mainLightning = createLightningPathElement(mainPath, baseColor, mainWidth, 0.9, delay);
+                paths.push(mainLightning);
+        
+                // 闪电内发光效果
+                const innerGlow = createLightningPathElement(mainPath, highlightColor, mainWidth * 0.6, 0.7, delay);
+                paths.push(innerGlow);
+        
+                // 优化点3: 减少模糊效果 - 只保留一层外发光，减少模糊半径
+                const outerGlow = createLightningPathElement(mainPath, baseColor, mainWidth * 2, 0.3, delay);
+                outerGlow.setAttribute('filter', `blur(3px)`); // 减少模糊半径
+                paths.push(outerGlow);
+        
+                // 优化点2: 减少分支闪电 - 控制在0-1个分支
+                const branchCount = Math.floor(Math.random() * 2); // 0或1个分支
+            
+                for (let i = 0; i < branchCount; i++) {
+                    const segmentIndex = Math.floor(Math.random() * 3) + 1;
+                    const segmentRatio = (segmentIndex / 5) + Math.random() * 0.15;
+            
+                    const branchStartX = startX * (1 - segmentRatio) + centerX * segmentRatio;
+                    const branchStartY = startY * (1 - segmentRatio) + centerY * segmentRatio;
+            
+                    // 随机分支角度偏移
+                    const branchAngleOffset = (Math.random() * 60 - 30);
+                    const branchAngle = angle + branchAngleOffset;
+            
+                    // 计算分支终点 - 缩短分支长度
+                    const branchLength = distance * (1 - segmentRatio) * (0.3 + Math.random() * 0.2);
+                    const branchEndX = branchStartX - Math.cos(branchAngle * Math.PI / 180) * branchLength;
+                    const branchEndY = branchStartY - Math.sin(branchAngle * Math.PI / 180) * branchLength;
+            
+                    // 生成分支路径
+                    const branchPath = generateLightningPath(
+                        branchStartX, branchStartY, branchEndX, branchEndY, 
+                        0.4, 2, index + i + 10 // 减少分支段数
+                    );
+            
+                    // 分支宽度较主闪电细
+                    const branchWidth = mainWidth * 0.5;
+            
+                    // 创建分支及其发光效果
+                    const branch = createLightningPathElement(branchPath, baseColor, branchWidth, 0.8, delay + 100);
+                    paths.push(branch);
+            
+                    // 优化点3: 分支不加模糊效果
+                }
+        
+                // 将所有路径添加到SVG
+                paths.forEach(path => svg.appendChild(path));
+
+                // 添加到容器
+                combatContainer.appendChild(svg);
+
+                // 定时清理
+                setTimeout(() => {
+                    if (svg.parentNode) svg.parentNode.removeChild(svg);
+                }, delay + 1000); // 缩短清理时间
+            }
+    
+            // 创建闪电路径元素
+            function createLightningPathElement(pathData, color, width, opacity, delay) {
+                const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                path.setAttribute('d', pathData);
+                path.setAttribute('stroke', color);
+                path.setAttribute('stroke-width', width);
+                path.setAttribute('fill', 'none');
+                path.setAttribute('stroke-linecap', 'round');
+                path.setAttribute('stroke-linejoin', 'round');
+                path.setAttribute('opacity', opacity);
+        
+                // 简化发光效果
+                path.setAttribute('filter', `drop-shadow(0 0 2px ${color})`);
+        
+                // 添加闪电动画
+                path.style.strokeDasharray = 2000;
+                path.style.strokeDashoffset = 2000;
+                path.style.animation = `thunderBolt 0.8s ${delay}ms forwards`; // 缩短动画时间
+        
+                return path;
+            }
+    
+            // 生成闪电路径数据 - 使用更简单的算法
+            function generateLightningPath(startX, startY, endX, endY, displacementFactor, segments, seed) {
+                let pathData = `M${startX},${startY} `;
+        
+                // 简化计算
+                const dx = (endX - startX) / segments;
+                const dy = (endY - startY) / segments;
+                const segmentLength = Math.sqrt(dx * dx + dy * dy);
+        
+                // 使用简化的伪随机函数
+                const seededRandom = function(min, max) {
+                 const x = Math.sin(seed * 9999 + arguments.callee.count++) * 10000;
+                    return (x - Math.floor(x)) * (max - min) + min;
+                };
+        seededRandom.count = 0;
+        
+        let currentX = startX;
+        let currentY = startY;
+
+        for (let i = 1; i <= segments; i++) {
+            // 向终点移动一段
+            const ratio = i / segments;
+            const targetX = startX + dx * i;
+            const targetY = startY + dy * i;
+    
+            // 添加随机偏移（除了最后一段直接连到中心）
+            if (i < segments) {
+                // 随着接近终点减小偏移
+                const maxDeviation = segmentLength * displacementFactor * (1 - ratio * 0.5);
+                
+                // 添加随机偏移
+                const perpAngle = Math.atan2(endY - startY, endX - startX) + Math.PI / 2;
+                const randomDeviation = seededRandom(-1, 1) * maxDeviation;
+                const deviationX = Math.cos(perpAngle) * randomDeviation;
+                const deviationY = Math.sin(perpAngle) * randomDeviation;
+        
+                currentX = targetX + deviationX;
+                currentY = targetY + deviationY;
+            } else {
+                // 最后一段直接连到中心
+                currentX = endX;
+                currentY = endY;
+            }
+            
+            pathData += `L${currentX},${currentY} `;
+        }
+        
+        return pathData;
+    }
+}
+        
         function createScatterShotEffect(weaponColor) {
             const containerRect = combatContainer.getBoundingClientRect();
 
@@ -5461,6 +6342,248 @@
             }, 400);
         }
 
+        function createGetterBeamEffect(weaponColor) {
+            const containerRect = combatContainer.getBoundingClientRect();
+            const centerX = combatMode.mouseX;
+            const centerY = combatMode.mouseY;
+
+            // 添加必要的CSS
+            addCSSIfNeeded(`
+                @keyframes getterScanLine {
+                    0% { opacity: 0.8; }
+                    50% { opacity: 1; }
+                    100% { opacity: 0; }
+                }
+            `);
+
+            // 水平长方形准星的参数计算
+            const outerSize = combatMode.crosshairSize * 0.8; // 外框大小为容器大小的80%
+            const rectHeight = Math.round(outerSize * 0.4); // 较短的高度
+            const rectWidth = rectHeight * 6; // 宽度是高度的6倍
+
+            // 预先计算扫描线数量和时间参数
+            const scanCount = 7; // 创建7条扫描线
+            const scanDuration = 100; // 每条线的持续时间(毫秒)
+            const scanDelay = 50; // 线之间的延迟(毫秒)
+        
+            // 播放光束音效
+            playCombatSound(GetterBeamSound);
+
+            // 创建扫描线动画
+            for (let i = 0; i < scanCount; i++) {
+                setTimeout(() => {
+                    // 在长方形内随机高度创建扫描线
+                    const randomOffset = (Math.random() - 0.5) * rectHeight;
+                    const scanY = centerY + randomOffset;
+    
+                    // 创建扫描线
+                    const scanLine = document.createElement('div');
+                    scanLine.style.position = 'absolute';
+                    scanLine.style.height = '5px'; // 加粗扫描线
+                    scanLine.style.width = `${rectWidth}px`;
+                    scanLine.style.left = `${centerX - rectWidth/2}px`;
+                    scanLine.style.top = `${scanY}px`;
+                    scanLine.style.background = `linear-gradient(90deg, ${hexToRgba(weaponColor, 0.3)} 0%, ${hexToRgba(weaponColor, 1)} 50%, ${hexToRgba(weaponColor, 0.3)} 100%)`;
+                    scanLine.style.boxShadow = `0 0 10px ${weaponColor}, 0 0 20px ${weaponColor}`;
+                    scanLine.style.zIndex = '9';
+                    scanLine.style.animation = 'getterScanLine 0.3s forwards';
+    
+                    // 添加到容器
+                    combatContainer.appendChild(scanLine);
+    
+                    // 清理扫描线
+                    setTimeout(() => {
+                        if (scanLine.parentNode) scanLine.parentNode.removeChild(scanLine);
+                    }, 300);
+                }, i * scanDelay);
+            }
+
+            // 延迟检查命中 - 在最后一条扫描线后
+            setTimeout(() => {
+                checkHit();
+            }, scanCount * scanDelay + 150);
+        }
+
+        function createBreastFireEffect(weaponColor) {
+            const containerRect = combatContainer.getBoundingClientRect();
+            const centerX = combatMode.mouseX;
+            const centerY = combatMode.mouseY;
+
+            // 添加必要的CSS
+            addCSSIfNeeded(`
+                @keyframes breastfireParticle {
+                    0% { transform: translate(0, 0) scale(1); opacity: 1; }
+                    100% { transform: translate(var(--tx), var(--ty)) scale(0.2); opacity: 0; }
+                }
+        
+                @keyframes breastfireWave {
+                    0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0.9; }
+                    100% { transform: translate(-50%, -50%) scale(1.5); opacity: 0; }
+                }
+            `);
+    
+            // 火焰的基本顏色
+            const baseColor = weaponColor || '#FF4500';
+
+            // 应用相同的放大系数(1.98)
+            const sizeMultiplier = 1.98;
+            
+            // 創建主火焰區域 - 正三角形，尖端朝下
+            const baseBrfWidth = containerRect.width * 0.2; // 原始尺寸
+            const breastfireWidth = baseBrfWidth * sizeMultiplier; // 放大后的尺寸
+            const breastfireHeight = breastfireWidth / 2;
+    
+            // 火焰三角形元素
+            const breastfireElement = document.createElement('div');
+            breastfireElement.style.position = 'absolute';
+            breastfireElement.style.left = `${centerX}px`;
+            breastfireElement.style.top = `${centerY}px`;
+            breastfireElement.style.width = `${breastfireWidth}px`;
+            breastfireElement.style.height = `${breastfireHeight}px`;
+            breastfireElement.style.zIndex = '15';
+            breastfireElement.style.transform = 'translate(-50%, -50%)';
+    
+            breastfireElement.innerHTML = `
+                <svg width="${breastfireWidth}" height="${breastfireHeight}" viewBox="0 0 ${breastfireWidth} ${breastfireHeight}">
+                    <polygon 
+                        points="0,0 ${breastfireWidth},0 ${breastfireWidth/2},${breastfireHeight}"
+                        fill="url(#breastFireGradient)"
+                        style="filter: drop-shadow(0 0 15px ${baseColor});"
+                    />
+                    <defs>
+                        <linearGradient id="breastFireGradient" x1="0.5" y1="0" x2="0.5" y2="1">
+                            <stop offset="0%" stop-color="white" />
+                            <stop offset="60%" stop-color="${baseColor}" />
+                            <stop offset="100%" stop-color="red" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+            `;
+    
+            combatContainer.appendChild(breastfireElement);
+    
+            // 添加火焰粒子效果 - 向下噴射
+            for (let i = 0; i < 40; i++) {
+                setTimeout(() => {
+                    const particle = document.createElement('div');
+                    particle.className = 'breastfire-particle';
+                    
+                    // 所有粒子从中心点生成
+                    const particleX = centerX;
+                    const particleY = centerY;
+            
+                    particle.style.position = 'absolute';
+                    particle.style.left = `${particleX}px`;
+                    particle.style.top = `${particleY}px`;
+            
+                    // 随机大小 - 稍微放大
+                    const size = (5 + Math.random() * 10) * (sizeMultiplier * 0.6);
+                    particle.style.width = `${size}px`;
+                    particle.style.height = `${size}px`;
+                    particle.style.borderRadius = '50%';
+            
+                    // 隨機顏色 - 從黃色到橙色到紅色
+                    const colors = ['#FFFF00', '#FFA500', '#FF4500', '#FF0000'];
+                    const randColor = colors[Math.floor(Math.random() * colors.length)];
+                    particle.style.backgroundColor = randColor;
+                    particle.style.boxShadow = `0 0 ${size/2}px ${randColor}`;
+                    particle.style.zIndex = '16';
+            
+                    // 360度随机方向扩散
+                    const angle = Math.random() * Math.PI * 2; // 0-2π，覆盖360度
+                    const distance = (30 + Math.random() * 80) * sizeMultiplier * 0.7; // 随机距离
+                        
+                    // 计算目标位置
+                    const tx = Math.cos(angle) * distance;
+                    const ty = Math.sin(angle) * distance;
+            
+                    particle.style.setProperty('--tx', `${tx}px`);
+                    particle.style.setProperty('--ty', `${ty}px`);
+            
+                    // 添加動畫
+                    const duration = 0.5 + Math.random() * 0.7;
+                    particle.style.animation = `breastfireParticle ${duration}s forwards ease-out`;
+            
+                    combatContainer.appendChild(particle);
+                
+                    // 動畫結束後移除粒子
+                    setTimeout(() => {
+                        if (particle.parentNode) particle.parentNode.removeChild(particle);
+                    }, duration * 1000);
+                }, i * 15); // 逐漸添加粒子
+            }
+
+            // 创建中心爆发点 - 明亮闪光
+            const flashPoint = document.createElement('div');
+            flashPoint.style.position = 'absolute';
+            flashPoint.style.left = `${centerX}px`;
+            flashPoint.style.top = `${centerY}px`;
+            flashPoint.style.width = `20px`;
+            flashPoint.style.height = `20px`;
+            flashPoint.style.borderRadius = '50%';
+            flashPoint.style.backgroundColor = 'white';
+            flashPoint.style.boxShadow = `0 0 30px white`;
+            flashPoint.style.transform = 'translate(-50%, -50%)';
+            flashPoint.style.zIndex = '17';
+            flashPoint.style.opacity = '1';
+            flashPoint.style.transition = 'all 0.3s';
+
+            combatContainer.appendChild(flashPoint);
+
+            // 闪光消失
+            setTimeout(() => {
+                flashPoint.style.opacity = '0';
+                flashPoint.style.width = '40px';
+                flashPoint.style.height = '40px';
+                setTimeout(() => {
+                    if (flashPoint.parentNode) flashPoint.parentNode.removeChild(flashPoint);
+                }, 300);
+            }, 100);
+    
+            // 添加擴散波效果
+            const breastfireWave = document.createElement('div');
+            breastfireWave.style.position = 'absolute';
+            breastfireWave.style.left = `${centerX}px`;
+            breastfireWave.style.top = `${centerY}px`;
+            breastfireWave.style.width = `10px`; // 改为小尺寸开始
+            breastfireWave.style.height = `10px`; // 改为小尺寸开始
+            breastfireWave.style.borderRadius = '50%';
+            breastfireWave.style.background = `radial-gradient(circle, ${hexToRgba(baseColor, 0.7)} 0%, ${hexToRgba(baseColor, 0.1)} 70%, transparent 100%)`;
+            breastfireWave.style.transform = 'translate(-50%, -50%)'; // 移除初始缩放
+            breastfireWave.style.animation = 'breastfireWaveExpand 0.8s forwards'; // 更改动画名称
+            breastfireWave.style.zIndex = '14';
+    
+            combatContainer.appendChild(breastfireWave);
+            
+            // 添加第二波擴散 - 使用调整后尺寸
+            setTimeout(() => {
+                const secondWave = document.createElement('div');
+                secondWave.style.position = 'absolute';
+                secondWave.style.left = `${centerX}px`;
+                secondWave.style.top = `${centerY}px`;
+                secondWave.style.width = `20px`; // 固定小尺寸开始
+                secondWave.style.height = `20px`; // 固定小尺寸开始
+                secondWave.style.borderRadius = '50%';
+                secondWave.style.background = `radial-gradient(circle, white 0%, ${hexToRgba(baseColor, 0.6)} 40%, transparent 100%)`;
+                secondWave.style.transform = 'translate(-50%, -50%)'; // 移除初始缩放
+                secondWave.style.animation = 'breastfireWaveExpand 1.2s forwards'; // 更改动画和持续时间
+                secondWave.style.zIndex = '13';
+        
+                combatContainer.appendChild(secondWave);
+        
+                // 動畫結束後移除
+                setTimeout(() => {
+                    if (secondWave.parentNode) secondWave.parentNode.removeChild(secondWave);
+                }, 1200);
+            }, 200);
+    
+            // 結束時移除三角形和波紋
+            setTimeout(() => {
+                if (breastfireElement.parentNode) breastfireElement.parentNode.removeChild(breastfireElement);
+                if (breastfireWave.parentNode) breastfireWave.parentNode.removeChild(breastfireWave);
+            }, 800);
+        }
+        
         function createSpiralBeamEffect(weaponColor) {
             const containerRect = combatContainer.getBoundingClientRect();
 
@@ -5610,6 +6733,55 @@
                         ];
                         break;
 
+                    case 'Cosmo_Nova':
+                        // 创建菱形准星
+                        const Cosmo_NovaSize = crosshairRadius * 1.2;
+                        crosshairPoints = [
+                            {x: 0, y: -Cosmo_NovaSize},
+                            {x: Cosmo_NovaSize, y: 0},
+                            {x: 0, y: Cosmo_NovaSize},
+                            {x: -Cosmo_NovaSize, y: 0}
+                        ];
+                        break;
+
+                    case 'Destructive_Thunder':
+                        // 使用与 Beam_Saber 相同的方形碰撞检测，但使用不同的变量名
+                        const thunderSize = crosshairRadius * 0.8; // 稍微缩小以匹配视觉大小
+                        crosshairPoints = [
+                            {x: -thunderSize, y: -thunderSize},
+                            {x: thunderSize, y: -thunderSize},
+                            {x: thunderSize, y: thunderSize},
+                            {x: -thunderSize, y: thunderSize}
+                        ];
+                        break;
+
+                    // 添加Getter_Beam形状
+                    case 'Getter_Beam':
+                        // 水平长方形准星，宽:高 = 6:1
+                        const getterBeamHeight = crosshairRadius * 0.4; // 高度较小
+                        const getterBeamWidth = getterBeamHeight * 6; // 宽度是高度的6倍
+                        crosshairPoints = [
+                            {x: -getterBeamWidth/2, y: -getterBeamHeight/2},
+                            {x: getterBeamWidth/2, y: -getterBeamHeight/2},
+                            {x: getterBeamWidth/2, y: getterBeamHeight/2},
+                            {x: -getterBeamWidth/2, y: getterBeamHeight/2}
+                        ];
+                        break;
+
+                    case 'Breast_Fire':
+                        // 使用正三角形碰撞检测，应用放大系数
+                        const sizeMultiplier = 1.98;
+                        const baseBrfSize = crosshairRadius * 1.2;
+                        const breastfireSize = baseBrfSize * sizeMultiplier;
+    
+                        // 可以保持三角形检测不变，或者考虑改为圆形检测以匹配视觉效果
+                        crosshairPoints = [
+                            {x: -breastfireSize, y: -breastfireSize/2},
+                            {x: breastfireSize, y: -breastfireSize/2},
+                            {x: 0, y: breastfireSize/2}
+                        ];
+                        break;
+                        
                     case 'diamond':
                         // 创建菱形准星
                         const diamondSize = crosshairRadius * 1.2;
@@ -6054,7 +7226,7 @@
                 }
 
                 // If AI's turn after combat, schedule its move
-                if (gameState.gameMode === 'single-player' && gameState.currentTurn === RED && !gameState.gameOver) {
+                if (gameState.gameMode === 'single-player' && gameState.currentTurn === RED && !gameState.gameOver && !window.specialPieceConfirmActive) {
                     aiMoveTimer = setTimeout(makeAIMove, 500);
                 }
             }, 1500);
@@ -6063,7 +7235,7 @@
         // AI Move Logic
         function makeAIMove() {
             // 確保是AI的回合再執行移動 - 新增檢查以防止錯誤回合移動
-            if (gameState.gameOver || combatMode.active || gameState.currentTurn !== RED) {
+            if (gameState.gameOver || combatMode.active || gameState.currentTurn !== RED || window.specialPieceConfirmActive) {
                 return;
             }
 
@@ -6443,7 +7615,11 @@
                         actualPieceId = 'fa_gundam';
                         console.log(`Replacing gundam with fa_gundam at position [${row},${col}]`);
                     }
-
+                    if (Get_shinning_gundam_s === 1 && id === 'shinning_gundam') {
+                        actualPieceId = 'shinning_gundam_s';
+                        console.log(`Replacing shinning_gundam with shinning_gundam_s at position [${row},${col}]`);
+                    }
+                        
                     if (row < 0 || row >= BOARD_SIZE || col < 0 || col >= BOARD_SIZE) {
                         console.error(`棋子位置超出範圍: [${row},${col}]`);
                         return;
@@ -6694,8 +7870,14 @@
                 if (this.currentLevel === 1) {
                     // 從第一關到第二關
                     nextCsvUrl = "./stages/SRWCStage02.csv";
+                } else if (this.currentLevel === 2) {
+                    // 从第二关到第三关
+                    nextCsvUrl = "./stages/SRWCStage03.csv";
+                } else if (this.currentLevel === 3) {
+                    // 从第三关到第四关
+                    nextCsvUrl = "./stages/SRWCStage04.csv";
                 } else {
-                    // 其他情況（未來可能的第三關等）
+                    // 其他情況（未來可能的第五關等）
                     this.showComingSoonMessage();
                     return;
                 }
@@ -7034,12 +8216,12 @@
                         // 檢查各種可能的棋子ID位置
                         let pieceIdMatched = false;
                         if (context) {
-                            if (context.piece && context.piece.id === condition.pieceId) {
-                                pieceIdMatched = true;
-                            } else if (context.capturedPiece && context.capturedPiece.id === condition.pieceId) {
-                                pieceIdMatched = true;
-                            } else if (context.capturingPiece && context.capturingPiece.id === condition.pieceId) {
-                                pieceIdMatched = true;
+                           // 对于 pieceCaptured 事件，只检查 capturedPiece
+                            if (event.type === 'pieceCaptured') {
+                                // 只检查被捕获的棋子ID，不检查攻击方ID
+                                if (context.capturedPiece && context.capturedPiece.id === condition.pieceId) {
+                                    pieceIdMatched = true;
+                                }
                             }
                         }
 
@@ -7184,12 +8366,37 @@
             handleReplacePieceAction: function(action, context) {
                 console.log("执行替换棋子动作:", action);
                 const { position, pieceId, row, col, targetPieceId, special } = action;
-                
+    
+                // 只有当上下文包含捕获信息时才进行捕获者检查
+                if (targetPieceId && context && context.capturedPiece && context.capturingPiece) {
+                    // 检查是否指定的捕获者（targetPieceId）击败了指定的被捕获棋子
+                    if (context.capturingPiece.id !== targetPieceId) {
+                        console.log(`替换棋子动作未执行: 期望捕获者ID=${targetPieceId}，实际捕获者ID=${context.capturingPiece.id}`);
+                        return; // 若捕获者不匹配，不执行替换
+                    }
+                    console.log(`捕获者检查通过: ${targetPieceId} 击败了棋子`);
+                } else if (targetPieceId) {
+                    // 如果指定了targetPieceId但事件不是捕获事件，仍使用targetPieceId找位置，但不执行捕获者检查
+                    console.log(`事件不是捕获事件或缺少必要上下文，跳过捕获者检查，使用targetPieceId=${targetPieceId}定位`);
+                }
+
                 // 确定要替换的棋子位置
                 let targetRow, targetCol;
 
+                // 优先使用targetPieceId查找棋子的当前位置
+                if (targetPieceId) {
+                    const foundPosition = this.findPiecePosition(targetPieceId);
+                    if (foundPosition) {
+                        [targetRow, targetCol] = foundPosition;
+                        console.log(`通过ID ${targetPieceId} 找到棋子当前位置: [${targetRow},${targetCol}]`);
+                    } else {
+                        console.error(`未找到ID为 ${targetPieceId} 的棋子，无法执行替换`);
+                        return;
+                    }
+                }
+                // 如果没有提供targetPieceId或找不到棋子，才使用其他位置参数
                 // 如果直接提供了位置
-                if (position && Array.isArray(position) && position.length === 2) {
+                else if (position && Array.isArray(position) && position.length === 2) {
                     [targetRow, targetCol] = position;
                 }
                 // 如果提供了行列
@@ -7201,21 +8408,11 @@
                 else if (context && typeof context.row === 'number' && typeof context.col === 'number') {
                     targetRow = context.row;
                     targetCol = context.col;
-                }
-                // 搜索棋子ID
-                else if (targetPieceId) {
-                    const foundPosition = this.findPiecePosition(targetPieceId);
-                    if (foundPosition) {
-                        [targetRow, targetCol] = foundPosition;
-                    } else {
-                        console.error(`未找到ID为 ${targetPieceId} 的棋子，无法执行替换`);
-                        return;
-                    }
                 } else {
                     console.error("替换棋子动作缺少有效位置参数:", action);
                     return;
                 }
-
+    
                 // 验证位置有效性
                 if (targetRow < 0 || targetRow >= BOARD_SIZE || targetCol < 0 || targetCol >= BOARD_SIZE) {
                     console.error(`无效的替换位置: [${targetRow},${targetCol}]`);
@@ -7232,8 +8429,8 @@
                     } else {
                         this.spawnPiece(pieceId, [targetRow, targetCol], context);
                     }
-                    return;
-                }
+                        return;
+                 }
 
                 // 从棋盘上移除原棋子
                 gameState.board[targetRow][targetCol] = null;
@@ -7247,7 +8444,7 @@
 
                 // 生成新棋子到同一位置
                 if (special) {
-                // 使用特效生成
+                    // 使用特效生成
                     const replacementAction = {
                         ...action,
                         originalPiece: originalPiece // 传递原棋子信息
@@ -7261,8 +8458,11 @@
                 if (action.pieceId === 'fa_gundam') {
                     console.log("FA Gundam has been unlocked!");
                     Get_fa_gundam = 1;
+                } else if (action.pieceId === 'shinning_gundam_s') {
+                    console.log("Super Shinning Gundam has been unlocked!");
+                    Get_shinning_gundam_s = 1;
                 }
-                
+
                 // 更新棋盘显示
                 updateBoardDisplay();
             },
@@ -7434,6 +8634,7 @@
                 const tempDiv = document.createElement('div');
                 tempDiv.innerHTML = specialEffectHTML;
                 document.body.appendChild(tempDiv.firstElementChild);
+                window.specialPieceConfirmActive = true;
 
                 // 獲取確認視窗元素
                 const confirmOverlay = document.getElementById('special-piece-confirm-overlay');
@@ -7472,12 +8673,27 @@
                     const card = confirmOverlay.querySelector('.angel-confirm-card');
                     if (card) card.style.opacity = '0';
 
+                    // 重置確認頁面狀態
+                    window.specialPieceConfirmActive = false;
+                    
                     // 恢復遊戲操作
                     enableGameInteraction();
 
+                    // 如果現在是AI回合，觸發AI移動
+                    if (gameState.gameMode === 'single-player' && gameState.currentTurn === RED && !gameState.gameOver) {
+                        console.log('確認後觸發AI移動');
+                        // 清除任何可能存在的之前的計時器
+                        if (aiMoveTimer) {
+                            clearTimeout(aiMoveTimer);
+                            aiMoveTimer = null;
+                        }
+                        // 設置新的計時器並延遲執行AI移動
+                        aiMoveTimer = setTimeout(makeAIMove, 500);
+                    }
+
                     // 實際生成棋子
                     this.spawnPiece(pieceId, position, context);
-
+                    
                     // 如果設置了確認後的動作，執行它
                     if (action.onConfirm) {
                         try {
