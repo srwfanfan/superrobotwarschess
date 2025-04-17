@@ -67,4 +67,4 @@ initial_position,taurus_2,,,,,,,,,,,,,,,,0,7,,,,,,,,,,,,,,,,,,,,,,,,,,,
 initial_position,tallgeese_Ⅲ,,,,,,,,,,,,,,,,0,5,,,,,,,,,,,,,,,,,,,,,,,,,,,
 condition,victory,,,,,,,,,,,,,,,,,,captureAllPieces,消滅所有敵方機體,,,,,,,,,,,,,,,,,,,,,,,,,
 condition,defeat,,,,,,,,,,,,,,,,,,kingCaptured,我方旗艦「勞·卡拉姆號」被摧毀,,,,,,,,,,,,,,,,,,,,,,,,,
-event,,,,,,,,,,,,,,,,,,,,,pieceMove,,blue,gundam,0,0,replacePiece,fa_gundam,,,fa_gundam,TRUE,TRUE,高達重裝升級！,高達從殖民衛星拾到了重裝零件，現在升級成為重裝甲高達！,確定,,,,,,,,,TRUE
+event,,,,,,,,,,,,,,,,,,,,,pieceMove,,blue,gundam,0,0,replacePiece,fa_gundam,,,gundam,TRUE,TRUE,高達重裝升級！,高達從殖民衛星拾到了重裝零件，現在升級成為重裝甲高達！,確定,,,,,,,,,TRUE
