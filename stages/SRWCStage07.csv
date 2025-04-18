@@ -2,7 +2,7 @@ data_type,id,title,subtitle,storyImage,storyDesc,boardImage,boardbgm,team,type,m
 level_info,7,第七話,決戰阿古捷斯,./images/cover/cover07.png,英雄們擊敗魔鬼高達並順利逃出崩毀的基地後，漸漸掌握了這場衝突背後的真相。他們推測，宇宙聯合軍之所以宣佈獨立，很可能是機械人遭到某種力量控制所致。而幕後策劃者，則是被皮克多倫稱為「神」的神秘存在，並非基爾基爾鋼或闘神·諾亞。真正的敵人究竟潛藏何處？為了查明真相，英雄們決定重返當初被基爾基爾鋼重創的戰場——阿古捷斯，因為這裡，或許隱藏著解開真相的關鍵……,./images/map/map07.png,./audio/SRWCBGM_Map01.mp3,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 piece_definition,gilgilgun_II,,,,,,,red,基爾基爾鋼II,rook,./images/unit/gilgilgun_II.png,4,3,,#BF40BF,Destructive_Thunder,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 piece_definition,wing_zero_gundam_powered,,,,,,,blue,飛翼零式高達 (零系統),knight,./images/unit/wing_zero_gundam_powered.png,5,5,Winggundam,#FF69B4,Beam_Rifie,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-piece_definition,nu_gundam_powered,,,,,,,blue,Nu高達 (精神感應骨架),queen,./images/unit/nu_gundam_powered.png,5,5,Gundam,#66FF66,Beam_Rifie,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+piece_definition,nu_gundam_powered,,,,,,,blue,Nu高達 (精神感應骨架),queen,./images/unit/nu_gundam_powered.png,5,5,NuGundam,#66FF66,Beam_Rifie,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 piece_definition,cybuster_powered,,,,,,,blue,塞巴斯塔 (精靈憑依),rook,./images/unit/cybuster_powered.png,5,5,Cybuster,#E6E8FA,Cosmo_Nova,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 piece_definition,tallgeese_Ⅲ,,,,,,,red,多魯基斯Ⅲ,knight,./images/unit/tallgeese_Ⅲ.png,3,5,,#FFD700,Beam_Rifie,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 piece_definition,sazabi,,,,,,,red,沙薩比,knight,./images/unit/sazabi.png,4,4,Gundam,#FFD700,Beam_Saber,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
