@@ -1999,6 +1999,7 @@
         let Get_new_getter_robot = 0;
         let Get_god_gundam = 0;
         let Get_gp03_gundam = 0;
+        let Get_final_upgrade = 0;
         
         // 添加BGM及SE相關代碼
         let battleBgmPlayer = null;
@@ -2313,9 +2314,18 @@
             for (let i = 0; i < 7; i++) {
             hiddenCode7 += Math.floor(Math.random() * 2);
             }
+
+            // 生成第八行10位数字组合 - Final Upgrade状态
+            let hiddenCode8 = "";
+            // 第1位是Get_final_upgrade的值
+            hiddenCode8 += Get_final_upgrade;
+            // 后面9位是随机0-3的整数
+            for (let i = 0; i < 9; i++) {
+                hiddenCode5 += Math.floor(Math.random() * 4);
+            }
             
-            // 创建CSV内容，包含第一行标题和七行数据
-            const csvContent = "game_code\n" + hiddenCode1 + "\n" + hiddenCode2 + "\n" + hiddenCode3 + "\n" + hiddenCode4 + "\n" + hiddenCode5 + "\n" + hiddenCode6 + "\n" + hiddenCode7;
+            // 创建CSV内容，包含标题和八行数据
+            const csvContent = "game_code\n" + hiddenCode1 + "\n" + hiddenCode2 + "\n" + hiddenCode3 + "\n" + hiddenCode4 + "\n" + hiddenCode5 + "\n" + hiddenCode6 + "\n" + hiddenCode7 + "\n" + hiddenCode8;
             // 创建Blob对象
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
 
@@ -2482,6 +2492,21 @@
                                 // 设置全局变量Get_gp03_gundam
                                 Get_gp03_gundam = gp03GundamValue;
                                 console.log("从存档读取GP03 Gundam状态:", Get_gp03_gundam);
+                            }
+                        }
+                    }
+
+                    // 提取Final Upgrade状态 - 如果第八行存在
+                    if (lines.length > 8) {
+                        const finalUpgradeCode = lines[8].trim();
+                        if (!/^\d{10}$/.test(finalUpgradeCode)) {
+                            console.log("Final Upgrade代码格式错误");
+                        } else {
+                            const finalUpgradeValue = parseInt(finalUpgradeCode.charAt(0), 10);
+                            if (!isNaN(finalUpgradeValue)) {
+                                // 设置全局变量Get_final_upgrade
+                                Get_final_upgrade = finalUpgradeValue;
+                                console.log("从存档读取Final Upgrade状态:", Get_final_upgrade);
                             }
                         }
                     }
@@ -7990,6 +8015,21 @@
                         actualPieceId = 'gp03_gundam';
                         console.log(`Replacing gundam_alex with gp03_gundam at position [${row},${col}]`);
                     }
+
+                    if (Get_final_upgrade === 1 && id === 'nu_gundam') {
+                        actualPieceId = 'nu_gundam_powered';
+                        console.log(`Replacing nu_gundam with nu_gundam_powered at position [${row},${col}]`);
+                    }
+
+                    if (Get_final_upgrade === 2 && id === 'wing_zero_gundam') {
+                        actualPieceId = 'wing_zero_gundam_powered';
+                        console.log(`Replacing wing_zero_gundam with wing_zero_gundam_powered at position [${row},${col}]`);
+                    }                    
+
+                    if (Get_final_upgrade === 3 && id === 'cybuster') {
+                        actualPieceId = 'cybuster_powered';
+                        console.log(`Replacing cybuster with cybuster_powered at position [${row},${col}]`);
+                    }       
                         
                     if (row < 0 || row >= BOARD_SIZE || col < 0 || col >= BOARD_SIZE) {
                         console.error(`棋子位置超出範圍: [${row},${col}]`);
@@ -8871,6 +8911,15 @@
                 } else if (action.pieceId === 'gp03_gundam') {
                     console.log("GP03 Gundam has been unlocked!");
                     Get_gp03_gundam = 1;
+                } else if (action.pieceId === 'nu_gundam_powered') {
+                    console.log("Final Upgrade has been unlocked!");
+                    Get_final_upgrade = 1;
+                } else if (action.pieceId === 'wing_zero_gundam_powered') {
+                    console.log("Final Upgrade has been unlocked!");
+                    Get_final_upgrade = 2;
+                } else if (action.pieceId === 'cybuster_powered') {
+                    console.log("Final Upgrade has been unlocked!");
+                    Get_final_upgrade = 3;
                 }
 
                 // 更新棋盘显示
