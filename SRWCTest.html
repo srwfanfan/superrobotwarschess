@@ -2292,13 +2292,13 @@
             let hiddenCode6 = "";
             // 前4位是随机0-1的整数
             for (let i = 0; i < 4; i++) {
-                hiddenCode6 += Math.floor(Math.random() * 2);
+                hiddenCode6 += Math.floor(Math.random() * 3);
             }
             // 第5位是Get_god_gundam的值
             hiddenCode6 += Get_god_gundam;
             // 后面5位是随机0-1的整数
             for (let i = 0; i < 5; i++) {
-                hiddenCode6 += Math.floor(Math.random() * 2);
+                hiddenCode6 += Math.floor(Math.random() * 3);
             }
 
             // 生成第七行10位数字组合 - GP03 Gundam状态
@@ -2469,7 +2469,22 @@
                                 console.log("从存档读取God Gundam状态:", Get_god_gundam);
                             }
                         }
-                    }            
+                    }
+
+                    // 提取GP03 Gundam状态 - 如果第七行存在
+                    if (lines.length > 7) {
+                        const gp03GundamCode = lines[7].trim();
+                        if (!/^\d{10}$/.test(gp03GundamCode)) {
+                            console.log("GP03 Gundam代码格式错误");
+                        } else {
+                            const gp03GundamValue = parseInt(gp03GundamCode.charAt(2), 10);
+                            if (!isNaN(gp03GundamValue)) {
+                                // 设置全局变量Get_gp03_gundam
+                                Get_gp03_gundam = gp03GundamValue;
+                                console.log("从存档读取GP03 Gundam状态:", Get_gp03_gundam);
+                            }
+                        }
+                    }
                     
                     // 检查是否已完成所有可用关卡
                     if (completedLevel < 6) {
@@ -7962,6 +7977,11 @@
                         console.log(`Replacing shinning_gundam with god_gundam at position [${row},${col}]`);
                     }
 
+                    if (Get_god_gundam === 2 && id === 'god_gundam') {
+                        actualPieceId = 'god_gundam2';
+                        console.log(`Replacing god_gundam with god_gundam2 at position [${row},${col}]`);
+                    }
+
                     if (Get_gp03_gundam === 1 && id === 'gp01_gundam') {
                         actualPieceId = 'gp03_gundam';
                         console.log(`Replacing gundam_alex with gp03_gundam at position [${row},${col}]`);
@@ -8835,6 +8855,9 @@
                 } else if (action.pieceId === 'god_gundam') {
                     console.log("God Gundam has been unlocked!");
                     Get_god_gundam = 1;
+                } else if (action.pieceId === 'god_gundam2') {
+                    console.log("God Gundam 2 has been unlocked!");
+                    Get_god_gundam = 2;
                 } else if (action.pieceId === 'gp03_gundam') {
                     console.log("GP03 Gundam has been unlocked!");
                     Get_gp03_gundam = 1;
