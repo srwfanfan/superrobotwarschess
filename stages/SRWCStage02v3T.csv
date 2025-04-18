@@ -1,9 +1,0 @@
-data_type,id,title,subtitle,storyImage,storyDesc,boardImage,boardbgm,team,type,moveType,imgUrl,hit,dodge,bgmtype,weapon_colour,crosshairType,position_row,position_col,condition_type,description,event_type,condition_turn,condition_team,condition_pieceId,condition_row,condition_col,action_type,action_pieceId,aim_row,aim_col,action_targetPieceId,action_findBestPosition,action_special,action_title,action_description,action_buttonText,action_character,action_text,action_from_row,action_from_col,action_to_row,action_to_col,action_position_row,action_position_col,once
-level_info,2,第二話,突擊！托爾吉斯Ⅲ！,https://i.imgur.com/ebgBZ2I.png,英雄們與沙撒比的部隊交戰，雙方陷入膠著狀態。飛翼零式改的加入，憑藉其強大的火力和機動性，壓制了宇宙聯合軍的先頭部隊，讓英雄們幾乎取得壓倒性的優勢。然而，就在此時，宇宙聯合軍的王牌托爾吉斯Ⅲ突然出現在戰場上。他的出現不僅讓沙撒比軍重整旗鼓，還一舉扭轉了戰局。托爾吉斯Ⅲ的強大性能與特列斯的冷靜指揮，令雙方陷入長時間的拉鋸戰...,https://i.imgur.com/Bz9qsiH.jpeg,https://cdn.jsdelivr.net/gh/jasonpang1030/srw.github.io@main/SRWCBGM_Map01.mp3,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-piece_definition,fa_gundam,,,,,,,blue,FA高達,rook,https://i.imgur.com/SAf7S6T.pngWingzero,3,3,Gundam,#FF1493,Beam_Rifie,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-piece_definition,gundam,,,,,,,blue,高達,rook,https://i.imgur.com/ma9ZzPs.png,2,3,Gundam,#FF1493,Beam_Rifie,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-piece_definition,zaku_ii_3,,,,,,,red,扎古II 3,pawn,https://i.imgur.com/lMflnaQ.png,2,2,Gundam,#FFD700,Beam_Rifie,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-initial_position,gundam,,,,,,,,,,,,,,,,7,4,,,,,,,,,,,,,,,,,,,,,,,,,,,
-initial_position,zaku_ii_3,,,,,,,,,,,,,,,,1,4,,,,,,,,,,,,,,,,,,,,,,,,,,,
-condition,victory,,,,,,,,,,,,,,,,,,captureAllPieces,消滅所有敵方機體,,,,,,,,,,,,,,,,,,,,,,,,,
-condition,defeat,,,,,,,,,,,,,,,,,,kingCaptured,我方旗艦「勞·卡拉姆號」被摧毀,,,,,,,,,,,,,,,,,,,,,,,,,
