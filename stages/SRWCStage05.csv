@@ -17,7 +17,7 @@ piece_definition,death_army_4,,,,,,,red,死亡軍團 4,pawn,./images/unit/death_
 piece_definition,death_army_3,,,,,,,red,死亡軍團 3,pawn,./images/unit/death_army.png,3,3,,#FFD700,Beam_Rifie,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 piece_definition,death_army_2,,,,,,,red,死亡軍團 2,pawn,./images/unit/death_army.png,3,3,,#FFD700,Beam_Saber,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 piece_definition,death_army_1,,,,,,,red,死亡軍團 1,pawn,./images/unit/death_army.png,3,3,,#FFD700,Beam_Rifie,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-piece_definition,master_gundam,,,,,,,red,盟主高達,knight,./images/unit/master_gundam.png,4,4,,#BF40BF,Beam_Saber,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+piece_definition,master_gundam,,,,,,,red,盟主高達,knight,./images/unit/master_gundam.png,4,4,,#BF40BF,Trapezoid_Punch,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 piece_definition,gp01_gundam,,,,,,,red,高達GP01-Fb,rook,./images/unit/gp01_gundam.png,3,2,Gundam,#FF1493,Beam_Rifie,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 piece_definition,devil_gundam_ii,,,,,,,red,魔鬼高達 第二型態,queen,./images/unit/devil_gundam_ii.png,4,4,,#E6E8FA,Cosmo_Nova,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 piece_definition,pigdoron,,,,,,,red,皮克多倫,queen,./images/unit/pigdoron.png,4,4,,#FFD700,Cosmo_Nova,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
