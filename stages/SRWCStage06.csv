@@ -81,5 +81,5 @@ condition,defeat,,,,,,,,,,,,,,,,,,kingCaptured,我方旗艦「勞·卡拉姆號�
 event,,,,,,,,,,,,,,,,,,,,,pieceCaptured,,,devil_gundam_iii,,,spawnPiece,devil_gundam_iii_reborn_1,0,4,,TRUE,TRUE,魔鬼高達 第三型態復活！,別以為要擊到我是一件容易的事！,確定,,,,,,,,,TRUE
 event,,,,,,,,,,,,,,,,,,,,,pieceCaptured,,,devil_gundam_iii_reborn_1,,,spawnPiece,devil_gundam_iii_reborn_2,0,4,,TRUE,TRUE,魔鬼高達 第三型態復活！,看我的全力一擊！,確定,,,,,,,,,TRUE
 event,,,,,,,,,,,,,,,,,,,,,pieceCaptured,,,master_gundam2,,,replacePiece,god_gundam2,,,god_gundam,TRUE,TRUE,風雲再起前來支援！,風雲再起以飛行器形式前來支援！,確定,,,,,,,,,TRUE
-event,,,,,,,,,,,,,,,,,,,,,pieceMove,,,gp01_gundam,5,3,replacePiece,gp03_gundam,,,gp01_gundam,TRUE,TRUE,高達GP01-Fb升級！,高達GP01-Fb從秘密基地拾到了升級零件，現在升級成為高達GP03！,確定,,,,,,,,,TRUE
+event,,,,,,,,,,,,,,,,,,,,,pieceMove,,,gp01_gundam,5,2,replacePiece,gp03_gundam,,,gp01_gundam,TRUE,TRUE,高達GP01-Fb升級！,高達GP01-Fb從秘密基地拾到了升級零件，現在升級成為高達GP03！,確定,,,,,,,,,TRUE
 event,,,,,,,,,,,,,,,,,,,,,pieceCaptured,,,devil_gundam_iii_reborn_2,,,spawnPiece,great_master_gundam,0,3,,TRUE,TRUE,盟主高達以大盟主高達姿態重生了！,看看DG細胞終極進化的威力吧！,確定,,,,,,,,,TRUE
