@@ -2487,7 +2487,7 @@
                     }
                     
                     // 检查是否已完成所有可用关卡
-                    if (completedLevel < 6) {
+                    if (completedLevel < 8) {
                         // 根据完成的关卡数加载下一关
                         let nextLevelId = completedLevel + 1;
                         loadLevelById(nextLevelId, loadingOverlay);
@@ -2536,6 +2536,10 @@
                 csvUrl = "./stages/SRWCStage05.csv"; // 第五关
             } else if (levelId === 6) {
                 csvUrl = "./stages/SRWCStage06.csv"; // 第六关
+            } else if (levelId === 7) {
+                csvUrl = "./stages/SRWCStage07.csv"; // 第七关
+            } else if (levelId === 8) {
+                csvUrl = "./stages/SRWCStage08.csv"; // 最终关
             } else {
                 // 默认或未来关卡
                 document.getElementById('csv-loading-message').textContent = "未找到對應關卡或關卡開發中";
@@ -8249,6 +8253,12 @@
                 } else if (this.currentLevel === 5) {
                     // 从第五关到第六关
                     nextCsvUrl = "./stages/SRWCStage06.csv";
+                } else if (this.currentLevel === 6) {
+                    // 从第六关到第七关
+                    nextCsvUrl = "./stages/SRWCStage07.csv";
+                } else if (this.currentLevel === 7) {
+                    // 从第七关到最终关
+                    nextCsvUrl = "./stages/SRWCStage08.csv";
                 } else {
                     // 其他情況（未來可能的第七關等）
                     this.showComingSoonMessage();
