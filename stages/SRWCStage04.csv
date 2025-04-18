@@ -2,7 +2,7 @@ data_type,id,title,subtitle,storyImage,storyDesc,boardImage,boardbgm,team,type,m
 level_info,4,第四話,大地上的英雄們,./images/cover/cover04.png,Nu高達率領的部隊在宇宙中遭到基爾基爾鋼與宇宙聯合軍重創，陷入絕境之際，風之魔裝機神塞巴斯塔及時出現救援，使存活的英雄們順利撤回藍色星球。另一邊，留守大地的英雄們遭受突如其來的魔鬼高達與盟主高達襲擊，陷入苦戰。當得知Nu高達等人回歸後，他們迅速重振士氣，展開支援與救援行動。,./images/map/map04.png,./audio/SRWCBGM_Map02.mp3,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 piece_definition,death_army_5,,,,,,,red,死亡軍團 5,bishop,./images/unit/death_army.png,3,3,,#FFD700,Beam_Rifie,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 piece_definition,devil_gundam,,,,,,,red,魔鬼高達,king,./images/unit/devil_gundam.png,4,4,,#FFD700,Beam_Rifie,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-piece_definition,master_gundam,,,,,,,red,盟主高達,queen,./images/unit/master_gundam.png,4,4,,#BF40BF,Beam_Saber,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+piece_definition,master_gundam,,,,,,,red,盟主高達,queen,./images/unit/master_gundam.png,4,4,,#BF40BF,Trapezoid_Punch,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 piece_definition,death_army_6,,,,,,,red,死亡軍團 6,bishop,./images/unit/death_army.png,3,3,,#FFD700,Beam_Saber,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 piece_definition,death_army_4,,,,,,,red,死亡軍團 4,knight,./images/unit/death_army.png,3,3,,#FFD700,Beam_Saber,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 piece_definition,death_army_3,,,,,,,red,死亡軍團 3,knight,./images/unit/death_army.png,3,3,,#FFD700,Beam_Saber,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
