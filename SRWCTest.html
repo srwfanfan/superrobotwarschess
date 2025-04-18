@@ -6771,14 +6771,14 @@
             // 添加必要的CSS
             addCSSIfNeeded(`
                 @keyframes rockFistExpand {
-                    0% { transform: scale(0.1); opacity: 0.9; }
-                    60% { transform: scale(1.0); opacity: 1; }
-                    100% { transform: scale(1.2); opacity: 0; }
+                    0% { transform: translate(-50%, -50%) scale(0.1); opacity: 0.9; }
+                    60% { transform: translate(-50%, -50%) scale(1.0); opacity: 1; }
+                    100% { transform: translate(-50%, -50%) scale(1.2); opacity: 0; }
                 }
         
                 @keyframes rockFistShockwave {
-                    0% { transform: scale(0.1); opacity: 0.7; }
-                    100% { transform: scale(3.0); opacity: 0; }
+                    0% { transform: translate(-50%, -50%) scale(0.1); opacity: 0.7; }
+                    100% { transform: translate(-50%, -50%) scale(3.0); opacity: 0; }
                 }
         
                 @keyframes rockDebrisFloat {
@@ -6792,7 +6792,6 @@
             svgContainer.style.position = 'absolute';
             svgContainer.style.left = `${centerX}px`;
             svgContainer.style.top = `${centerY}px`;
-            svgContainer.style.transform = 'translate(-50%, -50%) scale(0.1)';
             svgContainer.style.animation = 'rockFistExpand 0.8s forwards';
             svgContainer.style.zIndex = '17';
             svgContainer.style.filter = `drop-shadow(0 0 15px ${weaponColor})`;
