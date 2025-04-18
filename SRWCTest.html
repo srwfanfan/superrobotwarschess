@@ -8557,6 +8557,18 @@
                                 if (context.capturedPiece && context.capturedPiece.id === condition.pieceId) {
                                     pieceIdMatched = true;
                                 }
+                            } else if (event.type === 'pieceMove') {
+                                // 对于移动事件，检查移动的棋子ID
+                                if (context.piece && context.piece.id === condition.pieceId) {
+                                    pieceIdMatched = true;
+                                }
+                            } else {
+                                // 其他事件，检查所有可能的棋子ID位置
+                                if ((context.piece && context.piece.id === condition.pieceId) ||
+                                    (context.capturedPiece && context.capturedPiece.id === condition.pieceId) ||
+                                    (context.capturingPiece && context.capturingPiece.id === condition.pieceId)) {
+                                    pieceIdMatched = true;
+                                 }
                             }
                         }
 
