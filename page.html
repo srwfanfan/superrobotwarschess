@@ -7,12 +7,11 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
-        // 检测暗黑模式
-        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            document.documentElement.classList.add('dark');
-        }
+        // 默认使用暗黑模式
+        document.documentElement.classList.add('dark');
         
-        // 监听系统暗黑模式变化
+        // 监听系统暗黑模式变化（如果需要跟随系统设置可以取消注释以下代码）
+        /*
         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
             if (event.matches) {
                 document.documentElement.classList.add('dark');
@@ -20,6 +19,7 @@
                 document.documentElement.classList.remove('dark');
             }
         });
+        */
 
         tailwind.config = {
             darkMode: 'class',
