@@ -29,7 +29,13 @@
                         'primary': '#5D5CDE',
                         'primary-dark': '#4A49B0',
                         'space-blue': '#000428',
-                        'space-navy': '#004e92'
+                        'space-navy': '#004e92',
+                        'weapon-pink': '#FF1493',
+                        'weapon-light-blue': '#E6E8FA',
+                        'weapon-orange-red': '#FF4500',
+                        'weapon-gold': '#FFD700',
+                        'weapon-green': '#66FF66',
+                        'weapon-purple': '#BF40BF'
                     },
                     animation: {
                         'float': 'float 3s ease-in-out infinite',
@@ -217,6 +223,26 @@
         .stat-value {
             height: 100%;
             border-radius: 3px;
+        }
+        
+        /* 武器颜色 */
+        .weapon-nu-gundam { color: #FF1493; }
+        .weapon-cybuster { color: #E6E8FA; }
+        .weapon-god-gundam { color: #FF4500; }
+        .weapon-mazinger { color: #FF4500; }
+        .weapon-wing-zero { color: #FFD700; }
+        .weapon-shinning { color: #66FF66; }
+        .weapon-sazabi { color: #FFD700; }
+        .weapon-tallgeese { color: #FFD700; }
+        .weapon-gilgilgun { color: #BF40BF; }
+        .weapon-devil { color: #E6E8FA; }
+        .weapon-master { color: #BF40BF; }
+        .weapon-devil-iii { color: #FFD700; }
+        
+        .dark .weapon-cybuster,
+        .dark .weapon-devil { 
+            color: #E6E8FA; 
+            text-shadow: 0 0 2px rgba(0,0,0,0.5);
         }
     </style>
 </head>
@@ -479,7 +505,7 @@
                             <td class="py-3 px-4 text-center">
                                 <span class="font-semibold text-yellow-500">皇后型</span>
                             </td>
-                            <td class="py-3 px-4 text-center text-purple-600 dark:text-purple-400 font-semibold">光束步槍</td>
+                            <td class="py-3 px-4 text-center font-semibold weapon-nu-gundam">光束步槍</td>
                         </tr>
                         
                         <!-- 賽巴斯塔 -->
@@ -509,7 +535,7 @@
                             <td class="py-3 px-4 text-center">
                                 <span class="font-semibold text-yellow-500">城堡型</span>
                             </td>
-                            <td class="py-3 px-4 text-center text-purple-600 dark:text-purple-400 font-semibold">宇宙新星</td>
+                            <td class="py-3 px-4 text-center font-semibold weapon-cybuster">宇宙新星</td>
                         </tr>
                         
                         <!-- 神高達 -->
@@ -539,7 +565,7 @@
                             <td class="py-3 px-4 text-center">
                                 <span class="font-semibold text-yellow-500">騎士型</span>
                             </td>
-                            <td class="py-3 px-4 text-center text-purple-600 dark:text-purple-400 font-semibold">石破天驚拳</td>
+                            <td class="py-3 px-4 text-center font-semibold weapon-god-gundam">石破天驚拳</td>
                         </tr>
                         
                         <!-- 鐵甲萬能俠 -->
@@ -569,7 +595,7 @@
                             <td class="py-3 px-4 text-center">
                                 <span class="font-semibold text-yellow-500">主教型</span>
                             </td>
-                            <td class="py-3 px-4 text-center text-purple-600 dark:text-purple-400 font-semibold">高熱火焰</td>
+                            <td class="py-3 px-4 text-center font-semibold weapon-mazinger">高熱火焰</td>
                         </tr>
                         
                         <!-- 飛翼零式高達 -->
@@ -599,7 +625,7 @@
                             <td class="py-3 px-4 text-center">
                                 <span class="font-semibold text-yellow-500">騎士型</span>
                             </td>
-                            <td class="py-3 px-4 text-center text-purple-600 dark:text-purple-400 font-semibold">光束步槍</td>
+                            <td class="py-3 px-4 text-center font-semibold weapon-wing-zero">光束步槍</td>
                         </tr>
                         
                         <!-- 閃光高達(S) -->
@@ -629,7 +655,7 @@
                             <td class="py-3 px-4 text-center">
                                 <span class="font-semibold text-yellow-500">騎士型</span>
                             </td>
-                            <td class="py-3 px-4 text-center text-purple-600 dark:text-purple-400 font-semibold">光束劍</td>
+                            <td class="py-3 px-4 text-center font-semibold weapon-shinning">光束劍</td>
                         </tr>
                     </tbody>
                 </table>
@@ -676,7 +702,7 @@
                             <td class="py-3 px-4 text-center">
                                 <span class="font-semibold text-yellow-500">皇后型</span>
                             </td>
-                            <td class="py-3 px-4 text-center text-purple-600 dark:text-purple-400 font-semibold">光束劍</td>
+                            <td class="py-3 px-4 text-center font-semibold weapon-sazabi">光束劍</td>
                         </tr>
                         
                         <!-- 多魯基斯Ⅲ -->
@@ -706,7 +732,7 @@
                             <td class="py-3 px-4 text-center">
                                 <span class="font-semibold text-yellow-500">騎士型</span>
                             </td>
-                            <td class="py-3 px-4 text-center text-purple-600 dark:text-purple-400 font-semibold">光束步槍</td>
+                            <td class="py-3 px-4 text-center font-semibold weapon-tallgeese">光束步槍</td>
                         </tr>
                         
                         <!-- 基爾基爾鋼III -->
@@ -736,7 +762,7 @@
                             <td class="py-3 px-4 text-center">
                                 <span class="font-semibold text-yellow-500">皇后型</span>
                             </td>
-                            <td class="py-3 px-4 text-center text-purple-600 dark:text-purple-400 font-semibold">毀滅雷電</td>
+                            <td class="py-3 px-4 text-center font-semibold weapon-gilgilgun">毀滅雷電</td>
                         </tr>
                         
                         <!-- 魔鬼高達 -->
@@ -766,7 +792,7 @@
                             <td class="py-3 px-4 text-center">
                                 <span class="font-semibold text-yellow-500">國王型</span>
                             </td>
-                            <td class="py-3 px-4 text-center text-purple-600 dark:text-purple-400 font-semibold">光束步槍</td>
+                            <td class="py-3 px-4 text-center font-semibold weapon-devil">光束步槍</td>
                         </tr>
                         
                         <!-- 盟主高達 -->
@@ -796,7 +822,7 @@
                             <td class="py-3 px-4 text-center">
                                 <span class="font-semibold text-yellow-500">皇后型</span>
                             </td>
-                            <td class="py-3 px-4 text-center text-purple-600 dark:text-purple-400 font-semibold">石破天驚拳</td>
+                            <td class="py-3 px-4 text-center font-semibold weapon-master">石破天驚拳</td>
                         </tr>
                         
                         <!-- 魔鬼高達 第三型態 -->
@@ -826,7 +852,7 @@
                             <td class="py-3 px-4 text-center">
                                 <span class="font-semibold text-yellow-500">皇后型</span>
                             </td>
-                            <td class="py-3 px-4 text-center text-purple-600 dark:text-purple-400 font-semibold">宇宙新星</td>
+                            <td class="py-3 px-4 text-center font-semibold weapon-devil-iii">宇宙新星</td>
                         </tr>
                     </tbody>
                 </table>
