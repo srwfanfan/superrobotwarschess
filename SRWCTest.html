@@ -8252,6 +8252,23 @@
             // 關卡完成處理
             levelComplete: function() {
                 console.log("關卡完成");
+        
+                // 检查是否是最终关卡（第8关）
+                if (this.currentLevel === 8) {
+                    // 如果是最终关卡，显示结局画面
+                    console.log("完成最終關卡，顯示結局畫面");
+        
+                    // 隱藏勝利畫面
+                    if (victoryOverlay) {
+                        victoryOverlay.classList.remove('show');
+                    }
+        
+                    // 顯示結局畫面
+                    showEnding();
+                    return;
+                }
+    
+                // 如果不是最终关卡，正常处理
                 // 在勝利畫面顯示後，提供進入下一關的選項
                 // 修改勝利畫面的按鈕文本
                 const victoryResetBtn = document.getElementById('victory-reset');
@@ -9364,6 +9381,78 @@
                         }
                     }, 500);
                 });
+            }
+
+            // 顯示結局畫面
+            function showEnding() {
+                // 停止所有現有背景音樂
+                stopBattleBGM();
+                stopBoardBGM();
+    
+                // 播放序章/結局音樂
+                playIntroMusic();
+    
+                // 創建結局頁面HTML
+                const endingHTML = `
+                <div id="ending-overlay" class="fixed inset-0 bg-black bg-opacity-90 z-[400] flex items-start justify-center opacity-0 transition-opacity duration-500">
+                    <div class="relative max-w-3xl w-full mx-4 md:mx-auto bg-gradient-to-b from-gray-900 to-black rounded-lg overflow-hidden shadow-2xl transform transition-transform duration-500 scale-95" style="margin-top: 5vh;">
+                        <div class="absolute inset-0 overflow-hidden opacity-20">
+                            <div class="stars-bg absolute inset-0"></div>
+                        </div>
+
+                        <div class="relative p-6 md:p-8">
+                            <div class="text-center mb-6">
+                                <h2 class="text-2xl md:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600 inline-block">英雄的歸途</h2>
+                            </div>
+
+                            <div class="space-y-4 text-gray-300 leading-relaxed mb-8 md:text-lg">
+                                <p>經過一番艱苦卓絕的激戰，英雄們終於聯手擊敗了來自異次元的「奪權者」。隨著敵人的倒下，被他控制的衛星基地也逐漸崩解，英雄們及時撤離，成功返回藍色星球。</p>
+                                <p>奪權者的敗亡使得各個被控制的機體恢復了原本的狀態，宇宙聯合軍的混亂也得以平息。戰爭結束後，英雄們回到各自的家園，紛紛展開重建工作，恢復了往日的和平與安寧。</p>
+                                <p>儘管和平已然回歸，但這場跨越宇宙與次元的戰鬥卻讓所有人深刻體認到：只要宇宙尚存，威脅便不會完全消失。為了守護未來，英雄們各自踏上新的旅程，時刻準備著，迎接下一次挑戰的到來。</p>
+                            </div>
+
+                            <div class="flex justify-center">
+                                <button id="ending-continue-btn" class="px-8 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-full font-semibold transition transform hover:scale-105 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                    返回標題畫面
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                `;
+
+                // 添加結局頁面到DOM
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = endingHTML;
+                const endingOverlay = tempDiv.firstElementChild;
+                document.body.appendChild(endingOverlay);
+
+                // 設置繼續按鈕事件
+                const endingContinueBtn = document.getElementById('ending-continue-btn');
+                if (endingContinueBtn) {
+                    endingContinueBtn.addEventListener('click', () => {
+                        // 淡出結局畫面
+                        endingOverlay.style.opacity = '0';
+
+                        // 延遲後移除結局畫面並返回標題畫面
+                        setTimeout(() => {
+                            if (endingOverlay.parentNode) {
+                                endingOverlay.parentNode.removeChild(endingOverlay);
+                            }
+                
+                            // 返回標題畫面
+                            resetGame();
+                            showCoverPage();
+                        }, 500);
+                    });
+                }
+
+                // 顯示結局畫面（淡入效果）
+                setTimeout(() => {
+                    endingOverlay.style.opacity = '1';
+                    const card = endingOverlay.querySelector('div[class*="scale-95"]');
+                    if (card) card.classList.remove('scale-95');
+                }, 50);
             }
 
             // 顯示序章（淡入效果）
