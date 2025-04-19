@@ -8167,8 +8167,23 @@
                 // 根據不同的戰敗條件類型進行檢查
                 switch (gameState.defeatCondition.type) {
                     case 'kingCaptured':
-                        // 這個在movePiece函數中已經處理了
-                        break;
+                        // 检查蓝方国王是否已经被吃掉
+                        let blueKingExists = false;
+            
+                        // 在棋盘上搜索蓝方国王
+                        for (let row = 0; row < BOARD_SIZE; row++) {
+                            for (let col = 0; col < BOARD_SIZE; col++) {
+                                const piece = gameState.board[row][col];
+                                if (piece && piece.team === BLUE && piece.moveType === KING) {
+                                    blueKingExists = true;
+                                    break;
+                                }
+                            }
+                            if (blueKingExists) break;
+                        }
+            
+                        // 如果找不到蓝方国王，表示它已被吃掉
+                        return !blueKingExists;
 
                     case 'turnLimit':
                         // 檢查是否超過了回合限制
