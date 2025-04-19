@@ -7643,12 +7643,34 @@
                 }
             }
 
-            // If no moves, game over - but we don't show victory screen for this case
+            // If no moves, skip AI turn and give turn back to player
             if (allPossibleMoves.length === 0) {
-                gameState.gameOver = true;
-                gameState.winner = BLUE;
-                statusMessage.textContent = `遊戲結束！藍方通過將軍獲勝！`;
-                // 移除勝利畫面的顯示，只改變遊戲狀態和訊息
+                // 切换回合给蓝方
+                gameState.currentTurn = BLUE;
+    
+                // 增加回合计数
+                gameState.turnCount++;
+    
+                // 显示回合转换动画
+                showTurnTransition(BLUE, gameState.turnCount);
+    
+                // 更新UI状态
+                statusMessage.textContent = `藍方回合。`;
+                updateTurnIndicator();
+                updateTurnCountDisplay();
+    
+                // 显示提示消息
+                showToast("敵方無可用移動，回合轉為藍方");
+    
+                // 触发回合开始事件
+                if (typeof eventSystem !== 'undefined') {
+                    console.log(`AI無法移動，觸發藍方回合開始事件，回合數: ${gameState.turnCount}`);
+                    eventSystem.triggerEvent('turnStart', {
+                        team: BLUE,
+                        turn: gameState.turnCount
+                    });
+                }
+    
                 return;
             }
 
