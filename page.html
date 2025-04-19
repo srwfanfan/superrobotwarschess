@@ -147,23 +147,35 @@
             100% { opacity: 0; }
         }
         
-        /* 视频容器样式 */
+        /* 视频容器样式 - 修改为响应式设计 */
         .feature-video {
             aspect-ratio: 1 / 1;
             width: 100%;
             background-color: rgba(0, 0, 0, 0.2);
             border-radius: 0.5rem;
             overflow: hidden;
-            margin: 1rem 0;
-            max-width: 200px;
-            margin-left: auto;
-            margin-right: auto;
+            margin: 1rem auto;
+            max-width: min(100%, 400px); /* 最大宽度为400px (2倍的原始200px)，但不超过容器宽度 */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
         
         .feature-video video {
             width: 100%;
             height: 100%;
             object-fit: cover;
+        }
+        
+        /* 媒体查询，在不同屏幕尺寸下自动调整视频大小 */
+        @media (max-width: 768px) {
+            .feature-video {
+                max-width: min(100%, 300px); /* 中等屏幕最大宽度 */
+            }
+        }
+        
+        @media (max-width: 640px) {
+            .feature-video {
+                max-width: min(100%, 240px); /* 小屏幕最大宽度 */
+            }
         }
     </style>
 </head>
