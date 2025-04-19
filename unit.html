@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>超級機械人大戰C - 機體資料庫</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        // 默认使用暗黑模式
+        document.documentElement.classList.add('dark');
+        
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#5D5CDE',
+                        'primary-dark': '#4A49B0',
+                        'space-blue': '#000428',
+                        'space-navy': '#004e92',
+                        'weapon-pink': '#FF1493',
+                        'weapon-light-blue': '#E6E8FA',
+                        'weapon-orange-red': '#FF4500',
+                        'weapon-gold': '#FFD700',
+                        'weapon-green': '#66FF66',
+                        'weapon-purple': '#BF40BF'
+                    },
+                    animation: {
+                        'float': 'float 3s ease-in-out infinite',
+                        'pulse-glow': 'pulseGlow 2s infinite'
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' }
+                        },
+                        pulseGlow: {
+                            '0%, 100%': { 
+                                opacity: 1,
+                                filter: 'drop-shadow(0 0 10px rgba(93, 92, 222, 0.5))'
+                            },
+                            '50%': { 
+                                opacity: 0.8,
+                                filter: 'drop-shadow(0 0 20px rgba(93, 92, 222, 0.8))'
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* 星空背景样式 */
+        .space-bg {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            overflow: hidden;
+            background: linear-gradient(135deg, #000428, #004e92);
+        }
+
+        .star {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            background: white;
+            border-radius: 50%;
+        }
+
+        .shooting-star {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 50%, rgba(255,255,255,0) 100%);
+            opacity: 0;
+            transform-origin: right center;
+            animation: shoot 3s ease-out infinite;
+        }
+
+        @keyframes shoot {
+            0% {
+                opacity: 0;
+                transform: translateX(0) rotate(0deg);
+            }
+            15% {
+                opacity: 1;
+            }
+            30% {
+                opacity: 0;
+                transform: translateX(-200px) rotate(0deg);
+            }
+            100% {
+                opacity: 0;
+                transform: translateX(-200px) rotate(0deg);
+            }
+        }
+
+        /* 特殊效果样式 */
+        .gradient-text {
+            background: linear-gradient(to right, #5D5CDE, #FF69B4);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        /* 机体列表样式 */
+        .mecha-list-container {
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .mecha-list-header {
+            font-weight: bold;
+            color: white;
+        }
+        
+        .mecha-img-compact {
+            transition: transform 0.3s ease;
+        }
+        
+        .mecha-row:hover .mecha-img-compact {
+            transform: scale(1.1);
+        }
+        
+        .mecha-row {
+            transition: all 0.3s ease;
+        }
+        
+        .mecha-row:hover {
+            transform: translateY(-3px);
+            background-color: rgba(93, 92, 222, 0.1);
+        }
+        
+        .stat-bar {
+            height: 6px;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .stat-value {
+            height: 100%;
+            border-radius: 3px;
+        }
+        
+        /* 武器颜色 */
+        .weapon-pink { color: #FF1493; }
+        .weapon-light-blue { color: #E6E8FA; }
+        .weapon-orange-red { color: #FF4500; }
+        .weapon-gold { color: #FFD700; }
+        .weapon-green { color: #66FF66; }
+        .weapon-purple { color: #BF40BF; }
+        
+        .dark .weapon-light-blue { 
+            color: #E6E8FA; 
+            text-shadow: 0 0 2px rgba(0,0,0,0.5);
+        }
+
+        /* 滚动条美化 */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 4px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(93, 92, 222, 0.5);
+            border-radius: 4px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(93, 92, 222, 0.7);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white min-h-screen overflow-x-hidden">
+    <!-- 星空背景 -->
+    <div class="space-bg" id="space-bg">
+        <img src="./images/BluePlanet.png" alt="超級機械人的故鄉--藍色星球" class="absolute w-48 h-48 md:w-64 md:h-64 object-contain bottom-10 right-5 md:right-20 opacity-60 animate-float">
+    </div>
+
+    <!-- 导航栏 -->
+    <nav class="relative z-10 py-4 px-6 backdrop-blur-md bg-white/10 dark:bg-black/20">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="flex items-center">
+                <img src="./images/SRWCLogo.png" alt="超級機械人大戰Chess" class="h-8 md:h-10">
+                <div class="ml-4 text-white text-lg md:text-xl font-bold">機體資料庫</div>
+            </div>
+            <div class="hidden md:flex space-x-6">
+                <a href="#" class="text-white hover:text-primary transition">首頁</a>
+                <a href="#" class="text-white hover:text-primary transition">機體介紹</a>
+                <a href="#" class="text-white hover:text-primary transition">資料庫</a>
+                <a href="#" class="text-white hover:text-primary transition">關卡介紹</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4 py-8 relative z-10">
+        <!-- 标题 -->
+        <div class="mb-10 text-center">
+            <h1 class="text-3xl md:text-4xl font-bold mb-4 gradient-text">超級機械人大戰C - 完整機體資料</h1>
+            <p class="text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">所有機體按照能力值總和(命中+迴避)排列，能力值總和相同則按英文ID排序。</p>
+        </div>
+
+        <!-- 搜索和筛选工具 -->
+        <div class="mb-8 bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md">
+            <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
+                <div class="flex-1">
+                    <div class="relative">
+                        <input type="text" id="search-input" placeholder="搜索機體名稱..." class="w-full px-4 py-2 pl-10 border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary">
+                        <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                    </div>
+                </div>
+                <div class="flex space-x-2">
+                    <select id="team-filter" class="px-4 py-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary">
+                        <option value="all">所有陣營</option>
+                        <option value="blue">友方機體</option>
+                        <option value="red">敵方機體</option>
+                    </select>
+                    <select id="type-filter" class="px-4 py-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary">
+                        <option value="all">所有移動類型</option>
+                        <option value="步兵型">步兵型</option>
+                        <option value="城堡型">城堡型</option>
+                        <option value="騎士型">騎士型</option>
+                        <option value="主教型">主教型</option>
+                        <option value="皇后型">皇后型</option>
+                        <option value="國王型">國王型</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- 机体列表表格 -->
+        <div class="mecha-list-container bg-white dark:bg-gray-800 overflow-x-auto custom-scrollbar">
+            <table class="w-full min-w-full table-auto">
+                <thead>
+                    <tr class="mecha-list-header bg-gradient-to-r from-primary to-purple-600">
+                        <th class="py-4 px-6 text-left">機體圖片</th>
+                        <th class="py-4 px-6">名稱</th>
+                        <th class="py-4 px-6">陣營</th>
+                        <th class="py-4 px-6">移動類型</th>
+                        <th class="py-4 px-6 text-center">命中值</th>
+                        <th class="py-4 px-6 text-center">迴避值</th>
+                        <th class="py-4 px-6 text-center">能力合計</th>
+                        <th class="py-4 px-6">武器類型</th>
+                    </tr>
+                </thead>
+                <tbody id="mecha-table-body" class="divide-y divide-gray-200 dark:divide-gray-700">
+                    <!-- 机体数据将由JavaScript动态填充 -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 分页控制 -->
+        <div class="mt-6 flex justify-between items-center">
+            <div class="text-gray-600 dark:text-gray-400">
+                <span id="showing-info">顯示 1-10 共 50 項</span>
+            </div>
+            <div class="flex space-x-2">
+                <button id="prev-page" class="px-4 py-2 border rounded-lg bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50">
+                    <i class="fas fa-chevron-left mr-2"></i> 上一頁
+                </button>
+                <div id="page-numbers" class="flex space-x-1">
+                    <!-- 页码将由JavaScript动态填充 -->
+                </div>
+                <button id="next-page" class="px-4 py-2 border rounded-lg bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50">
+                    下一頁 <i class="fas fa-chevron-right ml-2"></i>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="py-8 bg-gray-900 text-white mt-16">
+        <div class="container mx-auto px-6 text-center">
+            <p class="text-gray-400 text-sm">超級機械人大戰Chess - 機體資料庫</p>
+        </div>
+    </footer>
+
+    <script>
+        // 机体数据
+        const mechas = [
+            { id: "guncannon", team: "blue", type: "雷射大炮", moveType: "步兵型", imgUrl: "./images/unit/guncannon.png", hit: 2, dodge: 2, weaponText: "光束步槍", weapon_colour: "#FF1493" },
+            { id: "g_sky", team: "blue", type: "G-SKY", moveType: "步兵型", imgUrl: "./images/unit/g_sky.png", hit: 2, dodge: 2, weaponText: "光束步槍", weapon_colour: "#FF1493" },
+            { id: "gundam", team: "blue", type: "高達", moveType: "城堡型", imgUrl: "./images/unit/gundam.png", hit: 2, dodge: 3, weaponText: "光束步槍", weapon_colour: "#FF1493" },
+            { id: "gp01_gundam", team: "blue", type: "高達GP01-Fb", moveType: "城堡型", imgUrl: "./images/unit/gp01_gundam.png", hit: 3, dodge: 2, weaponText: "光束步槍", weapon_colour: "#FF1493" },
+            { id: "gundam_mk_ii", team: "blue", type: "高達Mk-II", moveType: "騎士型", imgUrl: "./images/unit/gundam_mk_ii.png", hit: 3, dodge: 3, weaponText: "光束劍", weapon_colour: "#FF1493" },
+            { id: "hyaku_shiki", team: "blue", type: "百式", moveType: "騎士型", imgUrl: "./images/unit/hyaku_shiki.png", hit: 3, dodge: 3, weaponText: "光束步槍", weapon_colour: "#FF1493" },
+            { id: "zeta_gundam", team: "blue", type: "Z高達", moveType: "主教型", imgUrl: "./images/unit/zeta_gundam.png", hit: 3, dodge: 4, weaponText: "光束步槍", weapon_colour: "#FF1493" },
+            { id: "zz_gundam", team: "blue", type: "ZZ高達", moveType: "主教型", imgUrl: "./images/unit/zz_gundam.png", hit: 4, dodge: 3, weaponText: "光束劍", weapon_colour: "#FF1493" },
+            { id: "ra_cailum", team: "blue", type: "勞·卡拉姆號", moveType: "國王型", imgUrl: "./images/unit/ra_cailum.png", hit: 5, dodge: 2, weaponText: "光束步槍", weapon_colour: "#FF1493" },
+            { id: "nu_gundam", team: "blue", type: "Nu高達", moveType: "皇后型", imgUrl: "./images/unit/nu_gundam.png", hit: 4, dodge: 4, weaponText: "光束步槍", weapon_colour: "#FF1493" },
+            { id: "wing_zero_gundam", team: "blue", type: "飛翼零式高達", moveType: "騎士型", imgUrl: "./images/unit/wing_zero_gundam.png", hit: 5, dodge: 3, weaponText: "光束步槍", weapon_colour: "#FFD700" },
+            { id: "zaku_ii", team: "red", type: "扎古II", moveType: "步兵型", imgUrl: "./images/unit/zaku_ii.png", hit: 2, dodge: 2, weaponText: "光束步槍", weapon_colour: "#FFD700" },
+            { id: "gerbera_tetra", team: "red", type: "嘉貝拉四式", moveType: "城堡型", imgUrl: "./images/unit/gerbera_tetra.png", hit: 2, dodge: 3, weaponText: "光束劍", weapon_colour: "#FFD700" },
+            { id: "dom", team: "red", type: "德姆", moveType: "城堡型", imgUrl: "./images/unit/dom.png", hit: 3, dodge: 2, weaponText: "光束步槍", weapon_colour: "#FFD700" },
+            { id: "gp02a_gundam", team: "red", type: "高達GP02A", moveType: "騎士型", imgUrl: "./images/unit/gp02a_gundam.png", hit: 3, dodge: 3, weaponText: "光束步槍", weapon_colour: "#FFD700" },
+            { id: "gelgoog_char", team: "red", type: "夏亞專用勇士", moveType: "騎士型", imgUrl: "./images/unit/gelgoog_char.png", hit: 3, dodge: 3, weaponText: "光束劍", weapon_colour: "#FFD700" },
+            { id: "hamma_hamma", team: "red", type: "漢馬漢馬", moveType: "主教型", imgUrl: "./images/unit/hamma_hamma.png", hit: 3, dodge: 4, weaponText: "光束步槍", weapon_colour: "#FFD700" },
+            { id: "doven_wolf", team: "red", type: "多芬狼", moveType: "主教型", imgUrl: "./images/unit/doven_wolf.png", hit: 4, dodge: 3, weaponText: "光束步槍", weapon_colour: "#FFD700" },
+            { id: "sadalahn", team: "red", type: "沙達拉恩號", moveType: "國王型", imgUrl: "./images/unit/sadalahn.png", hit: 5, dodge: 2, weaponText: "光束步槍", weapon_colour: "#FFD700" },
+            { id: "sazabi", team: "red", type: "沙薩比", moveType: "皇后型", imgUrl: "./images/unit/sazabi.png", hit: 4, dodge: 4, weaponText: "光束劍", weapon_colour: "#FFD700" },
+            { id: "fa_gundam", team: "blue", type: "FA高達", moveType: "城堡型", imgUrl: "./images/unit/fa_gundam.png", hit: 3, dodge: 3, weaponText: "光束步槍", weapon_colour: "#FF1493" },
+            { id: "taurus", team: "red", type: "陶拉斯(白)", moveType: "城堡型", imgUrl: "./images/unit/taurus.png", hit: 3, dodge: 3, weaponText: "光束步槍", weapon_colour: "#FFD700" },
+            { id: "tallgeese_Ⅲ", team: "red", type: "多魯基斯Ⅲ", moveType: "騎士型", imgUrl: "./images/unit/tallgeese_Ⅲ.png", hit: 3, dodge: 5, weaponText: "光束步槍", weapon_colour: "#FFD700" },
+            { id: "taurus_black", team: "red", type: "陶拉斯(黑)", moveType: "步兵型", imgUrl: "./images/unit/taurus_black.png", hit: 2, dodge: 3, weaponText: "光束劍", weapon_colour: "#FFD700" },
+            { id: "gilgilgun_III", team: "red", type: "基爾基爾鋼III", moveType: "皇后型", imgUrl: "./images/unit/gilgilgun_III.png", hit: 4, dodge: 4, weaponText: "毀滅雷電", weapon_colour: "#BF40BF" },
+            { id: "gilgilgun_II", team: "red", type: "基爾基爾鋼II", moveType: "主教型", imgUrl: "./images/unit/gilgilgun_II.png", hit: 4, dodge: 3, weaponText: "毀滅雷電", weapon_colour: "#BF40BF" },
+            { id: "gilgilgun_I", team: "red", type: "基爾基爾鋼I", moveType: "步兵型", imgUrl: "./images/unit/gilgilgun_I.png", hit: 3, dodge: 3, weaponText: "毀滅雷電", weapon_colour: "#BF40BF" },
+            { id: "cybuster", team: "blue", type: "賽巴斯塔", moveType: "城堡型", imgUrl: "./images/unit/cybuster.png", hit: 3, dodge: 5, weaponText: "宇宙新星", weapon_colour: "#E6E8FA" },
+            { id: "death_army", team: "red", type: "死亡軍團", moveType: "步兵型", imgUrl: "./images/unit/death_army.png", hit: 3, dodge: 3, weaponText: "光束步槍", weapon_colour: "#FFD700" },
+            { id: "devil_gundam", team: "red", type: "魔鬼高達", moveType: "國王型", imgUrl: "./images/unit/devil_gundam.png", hit: 4, dodge: 4, weaponText: "光束步槍", weapon_colour: "#FFD700" },
+            { id: "master_gundam", team: "red", type: "盟主高達", moveType: "皇后型", imgUrl: "./images/unit/master_gundam.png", hit: 4, dodge: 4, weaponText: "石破天驚拳", weapon_colour: "#BF40BF" },
+            { id: "garada_k7", team: "red", type: "卡拉達K7", moveType: "步兵型", imgUrl: "./images/unit/garada_k7.png", hit: 2, dodge: 2, weaponText: "光束劍", weapon_colour: "#FFD700" },
+            { id: "doublas_m2", team: "red", type: "多拉斯M2", moveType: "步兵型", imgUrl: "./images/unit/doublas_m2.png", hit: 2, dodge: 2, weaponText: "光束步槍", weapon_colour: "#FFD700" },
+            { id: "getter_q", team: "blue", type: "三一萬能俠Q", moveType: "步兵型", imgUrl: "./images/unit/getter_q.png", hit: 2, dodge: 2, weaponText: "三一死光", weapon_colour: "#FF69B4" },
+            { id: "minerva_x", team: "blue", type: "米涅瓦X", moveType: "步兵型", imgUrl: "./images/unit/minerva_x.png", hit: 1, dodge: 3, weaponText: "高熱火焰", weapon_colour: "#FF4500" },
+            { id: "shinning_gundam_s", team: "blue", type: "閃光高達(S)", moveType: "騎士型", imgUrl: "./images/unit/shinning_gundam_s.png", hit: 5, dodge: 3, weaponText: "光束劍", weapon_colour: "#66FF66" },
+            { id: "shinning_gundam", team: "blue", type: "閃光高達", moveType: "騎士型", imgUrl: "./images/unit/shinning_gundam.png", hit: 4, dodge: 2, weaponText: "光束劍", weapon_colour: "#66FF66" },
+            { id: "mazinger_z", team: "blue", type: "鐵甲萬能俠", moveType: "主教型", imgUrl: "./images/unit/mazinger_z.png", hit: 4, dodge: 2, weaponText: "高熱火焰", weapon_colour: "#FF4500" },
+            { id: "getter_robot", team: "blue", type: "三一萬能俠", moveType: "主教型", imgUrl: "./images/unit/getter_robot.png", hit: 3, dodge: 3, weaponText: "三一死光", weapon_colour: "#FF69B4" },
+            { id: "god_gundam", team: "blue", type: "神高達", moveType: "騎士型", imgUrl: "./images/unit/god_gundam.png", hit: 4, dodge: 3, weaponText: "石破天驚拳", weapon_colour: "#FF4500" },
+            { id: "pigdoron", team: "red", type: "皮克多倫", moveType: "皇后型", imgUrl: "./images/unit/pigdoron.png", hit: 4, dodge: 4, weaponText: "會聚光波", weapon_colour: "#FFD700" },
+            { id: "great_mazinger", team: "blue", type: "鐵甲萬能俠2號", moveType: "主教型", imgUrl: "./images/unit/great_mazinger.png", hit: 5, dodge: 3, weaponText: "閃電轟擊", weapon_colour: "#E6E8FA" },
+            { id: "new_getter_robot", team: "blue", type: "新三一萬能俠", moveType: "主教型", imgUrl: "./images/unit/new_getter_robot.png", hit: 4, dodge: 4, weaponText: "三一死光", weapon_colour: "#FF69B4" },
+            { id: "devil_gundam_ii", team: "red", type: "魔鬼高達 第二型態", moveType: "皇后型", imgUrl: "./images/unit/devil_gundam_ii.png", hit: 4, dodge: 4, weaponText: "會聚光波", weapon_colour: "#FFD700" },
+            { id: "gp03_gundam", team: "blue", type: "高達GP03", moveType: "城堡型", imgUrl: "./images/unit/gp03_gundam.png", hit: 4, dodge: 3, weaponText: "光束步槍", weapon_colour: "#FF1493" },
+            { id: "master_gundam2", team: "red", type: "盟主高達 風雲再起", moveType: "皇后型", imgUrl: "./images/unit/master_gundam2.png", hit: 4, dodge: 4, weaponText: "石破天驚拳", weapon_colour: "#BF40BF" },
+            { id: "god_gundam2", team: "blue", type: "神高達 風雲再起", moveType: "騎士型", imgUrl: "./images/unit/god_gundam2.png", hit: 5, dodge: 4, weaponText: "石破天驚拳", weapon_colour: "#FF4500" },
+            { id: "great_master_gundam", team: "red", type: "大盟主高達", moveType: "皇后型", imgUrl: "./images/unit/great_master_gundam.png", hit: 4, dodge: 5, weaponText: "毀滅雷電", weapon_colour: "#BF40BF" },
+            { id: "devil_gundam_iii", team: "red", type: "魔鬼高達 第三型態", moveType: "皇后型", imgUrl: "./images/unit/devil_gundam_iii.png", hit: 5, dodge: 4, weaponText: "會聚光波", weapon_colour: "#FFD700" },
+            { id: "death_army_ii", team: "red", type: "死亡軍團 DG細胞強化", moveType: "騎士型", imgUrl: "./images/unit/death_army_ii.png", hit: 4, dodge: 3, weaponText: "光束步槍", weapon_colour: "#FFD700" },
+            { id: "gp03d_gundam", team: "blue", type: "高達GP03D", moveType: "城堡型", imgUrl: "./images/unit/gp03d_gundam.png", hit: 5, dodge: 4, weaponText: "光束步槍", weapon_colour: "#FF1493" }
+        ];
+
+        // 计算能力值总和并排序
+        mechas.forEach(mecha => {
+            mecha.totalPower = mecha.hit + mecha.dodge;
+        });
+
+        mechas.sort((a, b) => {
+            if (b.totalPower !== a.totalPower) {
+                return b.totalPower - a.totalPower;
+            }
+            return a.id.localeCompare(b.id);
+        });
+
+        // 分页变量
+        let currentPage = 1;
+        const itemsPerPage = 10;
+        let filteredMechas = [...mechas];
+
+        // 初始化星空背景
+        function setupSpaceBackground() {
+            const container = document.getElementById('space-bg');
+            if (!container) return;
+            
+            // 保存蓝色星球图片
+            const bluePlanet = container.querySelector('img');
+            
+            // 清除除了蓝色星球以外的元素
+            container.innerHTML = '';
+            
+            // 如果之前存在蓝色星球，则重新添加
+            if (bluePlanet) {
+                container.appendChild(bluePlanet);
+            }
+
+            // 添加星星
+            for (let i = 0; i < 200; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.top = `${Math.random() * 100}%`;
+
+                // 不同大小的星星
+                const size = Math.random() * 3 + 1;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+
+                // 不同亮度的星星
+                star.style.opacity = Math.random() * 0.7 + 0.3;
+
+                container.appendChild(star);
+            }
+
+            // 添加流星
+            for (let i = 0; i < 5; i++) {
+                createShootingStar(container);
+            }
+        }
+
+        // 创建流星效果
+        function createShootingStar(container) {
+            const shootingStar = document.createElement('div');
+            shootingStar.className = 'shooting-star';
+
+            // 随机位置和角度
+            const startX = Math.random() * 100;
+            const startY = Math.random() * 100;
+            const angle = Math.random() * 60 - 30; // -30到30度
+
+            shootingStar.style.left = `${startX}%`;
+            shootingStar.style.top = `${startY}%`;
+            shootingStar.style.width = `${Math.random() * 150 + 50}px`;
+            shootingStar.style.transform = `rotate(${angle}deg)`;
+
+            // 随机延迟和持续时间
+            const delay = Math.random() * 15;
+            shootingStar.style.animationDelay = `${delay}s`;
+
+            container.appendChild(shootingStar);
+
+            // 动画结束后重新创建流星
+            setTimeout(() => {
+                if (container.contains(shootingStar)) {
+                    container.removeChild(shootingStar);
+                    createShootingStar(container);
+                }
+            }, (delay + 3) * 1000); // 3秒是动画时长
+        }
+        
+        // 获取武器样式类
+        function getWeaponColorClass(weapon_colour) {
+            switch(weapon_colour) {
+                case '#FF1493': return 'weapon-pink';
+                case '#E6E8FA': return 'weapon-light-blue';
+                case '#FF4500': return 'weapon-orange-red';
+                case '#FFD700': return 'weapon-gold';
+                case '#66FF66': return 'weapon-green';
+                case '#BF40BF': return 'weapon-purple';
+                default: return '';
+            }
+        }
+
+        // 渲染机体列表
+        function renderMechaList() {
+            const tableBody = document.getElementById('mecha-table-body');
+            tableBody.innerHTML = '';
+            
+            const start = (currentPage - 1) * itemsPerPage;
+            const end = Math.min(start + itemsPerPage, filteredMechas.length);
+            
+            for (let i = start; i < end; i++) {
+                const mecha = filteredMechas[i];
+                const row = document.createElement('tr');
+                row.className = `mecha-row ${mecha.team === 'blue' ? 'hover:bg-blue-50 dark:hover:bg-blue-900/20' : 'hover:bg-red-50 dark:hover:bg-red-900/20'}`;
+                
+                // 机体图片列
+                const imgCell = document.createElement('td');
+                imgCell.className = 'py-3 px-4 w-24';
+                imgCell.innerHTML = `
+                    <div class="flex justify-center overflow-hidden">
+                        <img src="${mecha.imgUrl}" alt="${mecha.type}" class="mecha-img-compact h-16 w-auto object-contain">
+                    </div>
+                `;
+                
+                // 名称列
+                const nameCell = document.createElement('td');
+                nameCell.className = 'py-3 px-4 text-center font-bold text-primary';
+                nameCell.textContent = mecha.type;
+                
+                // 阵营列
+                const teamCell = document.createElement('td');
+                teamCell.className = 'py-3 px-4 text-center';
+                teamCell.innerHTML = `
+                    <span class="px-2 py-1 rounded text-white inline-block ${mecha.team === 'blue' ? 'bg-blue-800' : 'bg-red-900'}">
+                        ${mecha.team === 'blue' ? '友方' : '敵方'}
+                    </span>
+                `;
+                
+                // 移动类型列
+                const moveTypeCell = document.createElement('td');
+                moveTypeCell.className = 'py-3 px-4 text-center';
+                moveTypeCell.innerHTML = `
+                    <span class="font-semibold text-yellow-500">${mecha.moveType}</span>
+                `;
+                
+                // 命中值列
+                const hitCell = document.createElement('td');
+                hitCell.className = 'py-3 px-4';
+                hitCell.innerHTML = `
+                    <div class="flex flex-col items-center">
+                        <div class="stat-bar w-full bg-gray-200 dark:bg-gray-700 mb-1">
+                            <div class="stat-value bg-pink-500" style="width: ${mecha.hit * 20}%"></div>
+                        </div>
+                        <span class="text-xs">${mecha.hit}</span>
+                    </div>
+                `;
+                
+                // 回避值列
+                const dodgeCell = document.createElement('td');
+                dodgeCell.className = 'py-3 px-4';
+                dodgeCell.innerHTML = `
+                    <div class="flex flex-col items-center">
+                        <div class="stat-bar w-full bg-gray-200 dark:bg-gray-700 mb-1">
+                            <div class="stat-value bg-cyan-500" style="width: ${mecha.dodge * 20}%"></div>
+                        </div>
+                        <span class="text-xs">${mecha.dodge}</span>
+                    </div>
+                `;
+                
+                // 能力合计列
+                const totalCell = document.createElement('td');
+                totalCell.className = 'py-3 px-4 text-center font-bold';
+                totalCell.innerHTML = `
+                    <span class="text-xl ${mecha.totalPower >= 8 ? 'text-yellow-500' : 'text-gray-600 dark:text-gray-400'}">${mecha.totalPower}</span>
+                `;
+                
+                // 武器类型列
+                const weaponCell = document.createElement('td');
+                weaponCell.className = `py-3 px-4 text-center font-semibold ${getWeaponColorClass(mecha.weapon_colour)}`;
+                weaponCell.textContent = mecha.weaponText;
+                
+                // 添加所有列到行
+                row.appendChild(imgCell);
+                row.appendChild(nameCell);
+                row.appendChild(teamCell);
+                row.appendChild(moveTypeCell);
+                row.appendChild(hitCell);
+                row.appendChild(dodgeCell);
+                row.appendChild(totalCell);
+                row.appendChild(weaponCell);
+                
+                // 添加行到表格
+                tableBody.appendChild(row);
+            }
+            
+            // 更新显示信息
+            updatePagination();
+        }
+
+        // 更新分页信息
+        function updatePagination() {
+            const showingInfo = document.getElementById('showing-info');
+            const start = (currentPage - 1) * itemsPerPage + 1;
+            const end = Math.min(start + itemsPerPage - 1, filteredMechas.length);
+            showingInfo.textContent = `顯示 ${start}-${end} 共 ${filteredMechas.length} 項`;
+            
+            // 更新分页按钮
+            const prevBtn = document.getElementById('prev-page');
+            const nextBtn = document.getElementById('next-page');
+            prevBtn.disabled = currentPage === 1;
+            nextBtn.disabled = currentPage === Math.ceil(filteredMechas.length / itemsPerPage);
+            
+            // 更新页码
+            const pageNumbers = document.getElementById('page-numbers');
+            pageNumbers.innerHTML = '';
+            
+            const totalPages = Math.ceil(filteredMechas.length / itemsPerPage);
+            
+            // 显示页码
+            for (let i = 1; i <= totalPages; i++) {
+                if (
+                    i === 1 || // 第一页
+                    i === totalPages || // 最后一页
+                    (i >= currentPage - 1 && i <= currentPage + 1) // 当前页附近
+                ) {
+                    const pageBtn = document.createElement('button');
+                    pageBtn.className = `w-8 h-8 rounded-full flex items-center justify-center ${i === currentPage ? 'bg-primary text-white' : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'}`;
+                    pageBtn.textContent = i;
+                    pageBtn.addEventListener('click', () => {
+                        currentPage = i;
+                        renderMechaList();
+                    });
+                    pageNumbers.appendChild(pageBtn);
+                } else if (
+                    (i === 2 && currentPage > 3) || // 第一页之后显示省略号
+                    (i === totalPages - 1 && currentPage < totalPages - 2) // 最后一页之前显示省略号
+                ) {
+                    const ellipsis = document.createElement('span');
+                    ellipsis.className = 'w-8 h-8 flex items-center justify-center text-gray-600 dark:text-gray-300';
+                    ellipsis.textContent = '...';
+                    pageNumbers.appendChild(ellipsis);
+                }
+            }
+        }
+        
+        // 筛选函数
+        function filterMechas() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            const teamFilter = document.getElementById('team-filter').value;
+            const typeFilter = document.getElementById('type-filter').value;
+            
+            filteredMechas = mechas.filter(mecha => {
+                // 搜索条件
+                const matchesSearch = searchTerm === '' || 
+                                     mecha.type.toLowerCase().includes(searchTerm) || 
+                                     mecha.id.toLowerCase().includes(searchTerm);
+                
+                // 阵营条件
+                const matchesTeam = teamFilter === 'all' || mecha.team === teamFilter;
+                
+                // 移动类型条件
+                const matchesType = typeFilter === 'all' || mecha.moveType === typeFilter;
+                
+                return matchesSearch && matchesTeam && matchesType;
+            });
+            
+            currentPage = 1; // 重置到第一页
+            renderMechaList();
+        }
+        
+        // 添加事件监听器
+        function setupEventListeners() {
+            // 搜索和筛选
+            document.getElementById('search-input').addEventListener('input', filterMechas);
+            document.getElementById('team-filter').addEventListener('change', filterMechas);
+            document.getElementById('type-filter').addEventListener('change', filterMechas);
+            
+            // 分页按钮
+            document.getElementById('prev-page').addEventListener('click', () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    renderMechaList();
+                }
+            });
+            
+            document.getElementById('next-page').addEventListener('click', () => {
+                if (currentPage < Math.ceil(filteredMechas.length / itemsPerPage)) {
+                    currentPage++;
+                    renderMechaList();
+                }
+            });
+        }
+        
+        // 页面加载时初始化
+        window.addEventListener('load', function() {
+            setupSpaceBackground();
+            setupEventListeners();
+            renderMechaList();
+        });
+    </script>
+</body>
+</html>
