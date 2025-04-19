@@ -113,6 +113,15 @@
         .mecha-card:hover .mecha-img {
             transform: scale(1.05);
         }
+        
+        .mecha-row {
+            transition: all 0.3s ease;
+        }
+        
+        .mecha-row:hover {
+            transform: translateY(-5px);
+            background-color: rgba(93, 92, 222, 0.1);
+        }
 
         .gradient-text {
             background: linear-gradient(to right, #5D5CDE, #FF69B4);
@@ -176,6 +185,38 @@
             .feature-video {
                 max-width: min(100%, 240px); /* 小屏幕最大宽度 */
             }
+        }
+        
+        /* 机体列表样式 */
+        .mecha-list-container {
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .mecha-list-header {
+            font-weight: bold;
+            background-color: #5D5CDE;
+            color: white;
+        }
+        
+        .mecha-img-compact {
+            transition: transform 0.3s ease;
+        }
+        
+        .mecha-row:hover .mecha-img-compact {
+            transform: scale(1.1);
+        }
+        
+        .stat-bar {
+            height: 6px;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .stat-value {
+            height: 100%;
+            border-radius: 3px;
         }
     </style>
 </head>
@@ -380,7 +421,7 @@
         </div>
     </section>
 
-    <!-- 机体介绍 -->
+    <!-- 机体介绍 - 改为列表形式 -->
     <section id="mechas" class="py-16 md:py-24 relative">
         <div class="container mx-auto px-6">
             <h2 class="text-3xl md:text-4xl font-bold text-center mb-16 gradient-text">機體介紹</h2>
@@ -396,470 +437,402 @@
                     </button>
                 </div>
             </div>
-            
-            <!-- 蓝方机体 -->
-            <div id="blue-team" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Nu高達 -->
-                <div class="mecha-card bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg border-l-4 border-blue-500">
-                    <div class="relative p-4">
-                        <div class="h-56 flex items-center justify-center">
-                            <img src="./images/unit/nu_gundam.png" alt="Nu高達" class="mecha-img h-full object-contain transition duration-300">
-                        </div>
-                        <div class="absolute top-4 right-4 bg-blue-500 text-white text-xs px-2 py-1 rounded-full">
-                            友方
-                        </div>
-                        <div class="p-4">
-                            <h3 class="text-xl font-bold mb-2 text-primary">Nu高達</h3>
-                            <div class="grid grid-cols-2 gap-2 mb-3">
-                                <div class="text-sm">
-                                    <span class="text-pink-500 font-semibold">命中值:</span>
-                                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-1">
-                                        <div class="bg-pink-500 rounded-full h-2" style="width: 80%"></div>
-                                    </div>
-                                    <span class="text-xs text-right block mt-1">4</span>
-                                </div>
-                                <div class="text-sm">
-                                    <span class="text-cyan-500 font-semibold">迴避值:</span>
-                                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-1">
-                                        <div class="bg-cyan-500 rounded-full h-2" style="width: 80%"></div>
-                                    </div>
-                                    <span class="text-xs text-right block mt-1">4</span>
-                                </div>
-                            </div>
-                            <div class="flex justify-between mb-2">
-                                <p class="text-sm text-gray-600 dark:text-gray-400">移動類型: <span class="font-semibold text-yellow-500">皇后型</span></p>
-                                <div class="px-2 py-0.5 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-xs rounded-full">
-                                    高機動
-                                </div>
-                            </div>
-                            <p class="text-sm text-purple-500">武器類型: <span class="font-semibold">光束步槍</span></p>
-                        </div>
-                    </div>
-                </div>
 
-                <!-- 賽巴斯塔 -->
-                <div class="mecha-card bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg border-l-4 border-blue-500">
-                    <div class="relative p-4">
-                        <div class="h-56 flex items-center justify-center">
-                            <img src="./images/unit/cybuster.png" alt="賽巴斯塔" class="mecha-img h-full object-contain transition duration-300">
-                        </div>
-                        <div class="absolute top-4 right-4 bg-blue-500 text-white text-xs px-2 py-1 rounded-full">
-                            友方
-                        </div>
-                        <div class="p-4">
-                            <h3 class="text-xl font-bold mb-2 text-primary">賽巴斯塔</h3>
-                            <div class="grid grid-cols-2 gap-2 mb-3">
-                                <div class="text-sm">
-                                    <span class="text-pink-500 font-semibold">命中值:</span>
-                                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-1">
-                                        <div class="bg-pink-500 rounded-full h-2" style="width: 60%"></div>
+            <!-- 友方机体列表 -->
+            <div id="blue-team" class="mecha-list-container bg-white dark:bg-gray-800 overflow-x-auto">
+                <table class="w-full min-w-full table-auto">
+                    <thead>
+                        <tr class="mecha-list-header bg-blue-600">
+                            <th class="py-3 px-4 text-left">機體</th>
+                            <th class="py-3 px-4">名稱</th>
+                            <th class="py-3 px-4">命中值</th>
+                            <th class="py-3 px-4">迴避值</th>
+                            <th class="py-3 px-4">移動類型</th>
+                            <th class="py-3 px-4">武器類型</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                        <!-- Nu高達 -->
+                        <tr class="mecha-row hover:bg-blue-50 dark:hover:bg-blue-900/20">
+                            <td class="py-3 px-4 w-24">
+                                <div class="flex justify-center overflow-hidden">
+                                    <img src="./images/unit/nu_gundam.png" alt="Nu高達" class="mecha-img-compact h-16 w-auto object-contain">
+                                </div>
+                            </td>
+                            <td class="py-3 px-4 text-center font-bold text-primary">Nu高達</td>
+                            <td class="py-3 px-4">
+                                <div class="flex flex-col items-center">
+                                    <div class="stat-bar w-full bg-gray-200 dark:bg-gray-700 mb-1">
+                                        <div class="stat-value bg-pink-500" style="width: 80%"></div>
                                     </div>
-                                    <span class="text-xs text-right block mt-1">3</span>
+                                    <span class="text-xs">4</span>
                                 </div>
-                                <div class="text-sm">
-                                    <span class="text-cyan-500 font-semibold">迴避值:</span>
-                                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-1">
-                                        <div class="bg-cyan-500 rounded-full h-2" style="width: 100%"></div>
+                            </td>
+                            <td class="py-3 px-4">
+                                <div class="flex flex-col items-center">
+                                    <div class="stat-bar w-full bg-gray-200 dark:bg-gray-700 mb-1">
+                                        <div class="stat-value bg-cyan-500" style="width: 80%"></div>
                                     </div>
-                                    <span class="text-xs text-right block mt-1">5</span>
+                                    <span class="text-xs">4</span>
                                 </div>
-                            </div>
-                            <div class="flex justify-between mb-2">
-                                <p class="text-sm text-gray-600 dark:text-gray-400">移動類型: <span class="font-semibold text-yellow-500">城堡型</span></p>
-                                <div class="px-2 py-0.5 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 text-xs rounded-full">
-                                    高迴避
+                            </td>
+                            <td class="py-3 px-4 text-center">
+                                <span class="font-semibold text-yellow-500">皇后型</span>
+                            </td>
+                            <td class="py-3 px-4 text-center text-purple-600 dark:text-purple-400 font-semibold">光束步槍</td>
+                        </tr>
+                        
+                        <!-- 賽巴斯塔 -->
+                        <tr class="mecha-row hover:bg-blue-50 dark:hover:bg-blue-900/20">
+                            <td class="py-3 px-4 w-24">
+                                <div class="flex justify-center overflow-hidden">
+                                    <img src="./images/unit/cybuster.png" alt="賽巴斯塔" class="mecha-img-compact h-16 w-auto object-contain">
                                 </div>
-                            </div>
-                            <p class="text-sm text-purple-500">武器類型: <span class="font-semibold">宇宙新星</span></p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 神高達 -->
-                <div class="mecha-card bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg border-l-4 border-blue-500">
-                    <div class="relative p-4">
-                        <div class="h-56 flex items-center justify-center">
-                            <img src="./images/unit/god_gundam.png" alt="神高達" class="mecha-img h-full object-contain transition duration-300">
-                        </div>
-                        <div class="absolute top-4 right-4 bg-blue-500 text-white text-xs px-2 py-1 rounded-full">
-                            友方
-                        </div>
-                        <div class="p-4">
-                            <h3 class="text-xl font-bold mb-2 text-primary">神高達</h3>
-                            <div class="grid grid-cols-2 gap-2 mb-3">
-                                <div class="text-sm">
-                                    <span class="text-pink-500 font-semibold">命中值:</span>
-                                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-1">
-                                        <div class="bg-pink-500 rounded-full h-2" style="width: 80%"></div>
+                            </td>
+                            <td class="py-3 px-4 text-center font-bold text-primary">賽巴斯塔</td>
+                            <td class="py-3 px-4">
+                                <div class="flex flex-col items-center">
+                                    <div class="stat-bar w-full bg-gray-200 dark:bg-gray-700 mb-1">
+                                        <div class="stat-value bg-pink-500" style="width: 60%"></div>
                                     </div>
-                                    <span class="text-xs text-right block mt-1">4</span>
+                                    <span class="text-xs">3</span>
                                 </div>
-                                <div class="text-sm">
-                                    <span class="text-cyan-500 font-semibold">迴避值:</span>
-                                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-1">
-                                        <div class="bg-cyan-500 rounded-full h-2" style="width: 60%"></div>
+                            </td>
+                            <td class="py-3 px-4">
+                                <div class="flex flex-col items-center">
+                                    <div class="stat-bar w-full bg-gray-200 dark:bg-gray-700 mb-1">
+                                        <div class="stat-value bg-cyan-500" style="width: 100%"></div>
                                     </div>
-                                    <span class="text-xs text-right block mt-1">3</span>
+                                    <span class="text-xs">5</span>
                                 </div>
-                            </div>
-                            <div class="flex justify-between mb-2">
-                                <p class="text-sm text-gray-600 dark:text-gray-400">移動類型: <span class="font-semibold text-yellow-500">騎士型</span></p>
-                                <div class="px-2 py-0.5 bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 text-xs rounded-full">
-                                    近戰型
+                            </td>
+                            <td class="py-3 px-4 text-center">
+                                <span class="font-semibold text-yellow-500">城堡型</span>
+                            </td>
+                            <td class="py-3 px-4 text-center text-purple-600 dark:text-purple-400 font-semibold">宇宙新星</td>
+                        </tr>
+                        
+                        <!-- 神高達 -->
+                        <tr class="mecha-row hover:bg-blue-50 dark:hover:bg-blue-900/20">
+                            <td class="py-3 px-4 w-24">
+                                <div class="flex justify-center overflow-hidden">
+                                    <img src="./images/unit/god_gundam.png" alt="神高達" class="mecha-img-compact h-16 w-auto object-contain">
                                 </div>
-                            </div>
-                            <p class="text-sm text-purple-500">武器類型: <span class="font-semibold">石破天驚拳</span></p>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- 鐵甲萬能俠 -->
-                <div class="mecha-card bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg border-l-4 border-blue-500">
-                    <div class="relative p-4">
-                        <div class="h-56 flex items-center justify-center">
-                            <img src="./images/unit/mazinger_z.png" alt="鐵甲萬能俠" class="mecha-img h-full object-contain transition duration-300">
-                        </div>
-                        <div class="absolute top-4 right-4 bg-blue-500 text-white text-xs px-2 py-1 rounded-full">
-                            友方
-                        </div>
-                        <div class="p-4">
-                            <h3 class="text-xl font-bold mb-2 text-primary">鐵甲萬能俠</h3>
-                            <div class="grid grid-cols-2 gap-2 mb-3">
-                                <div class="text-sm">
-                                    <span class="text-pink-500 font-semibold">命中值:</span>
-                                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-1">
-                                        <div class="bg-pink-500 rounded-full h-2" style="width: 80%"></div>
+                            </td>
+                            <td class="py-3 px-4 text-center font-bold text-primary">神高達</td>
+                            <td class="py-3 px-4">
+                                <div class="flex flex-col items-center">
+                                    <div class="stat-bar w-full bg-gray-200 dark:bg-gray-700 mb-1">
+                                        <div class="stat-value bg-pink-500" style="width: 80%"></div>
                                     </div>
-                                    <span class="text-xs text-right block mt-1">4</span>
+                                    <span class="text-xs">4</span>
                                 </div>
-                                <div class="text-sm">
-                                    <span class="text-cyan-500 font-semibold">迴避值:</span>
-                                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-1">
-                                        <div class="bg-cyan-500 rounded-full h-2" style="width: 40%"></div>
+                            </td>
+                            <td class="py-3 px-4">
+                                <div class="flex flex-col items-center">
+                                    <div class="stat-bar w-full bg-gray-200 dark:bg-gray-700 mb-1">
+                                        <div class="stat-value bg-cyan-500" style="width: 60%"></div>
                                     </div>
-                                    <span class="text-xs text-right block mt-1">2</span>
+                                    <span class="text-xs">3</span>
                                 </div>
-                            </div>
-                            <div class="flex justify-between mb-2">
-                                <p class="text-sm text-gray-600 dark:text-gray-400">移動類型: <span class="font-semibold text-yellow-500">主教型</span></p>
-                                <div class="px-2 py-0.5 bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 text-xs rounded-full">
-                                    火力型
+                            </td>
+                            <td class="py-3 px-4 text-center">
+                                <span class="font-semibold text-yellow-500">騎士型</span>
+                            </td>
+                            <td class="py-3 px-4 text-center text-purple-600 dark:text-purple-400 font-semibold">石破天驚拳</td>
+                        </tr>
+                        
+                        <!-- 鐵甲萬能俠 -->
+                        <tr class="mecha-row hover:bg-blue-50 dark:hover:bg-blue-900/20">
+                            <td class="py-3 px-4 w-24">
+                                <div class="flex justify-center overflow-hidden">
+                                    <img src="./images/unit/mazinger_z.png" alt="鐵甲萬能俠" class="mecha-img-compact h-16 w-auto object-contain">
                                 </div>
-                            </div>
-                            <p class="text-sm text-purple-500">武器類型: <span class="font-semibold">高熱火焰</span></p>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- 飛翼零式高達 -->
-                <div class="mecha-card bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg border-l-4 border-blue-500">
-                    <div class="relative p-4">
-                        <div class="h-56 flex items-center justify-center">
-                            <img src="./images/unit/wing_zero_gundam.png" alt="飛翼零式高達" class="mecha-img h-full object-contain transition duration-300">
-                        </div>
-                        <div class="absolute top-4 right-4 bg-blue-500 text-white text-xs px-2 py-1 rounded-full">
-                            友方
-                        </div>
-                        <div class="p-4">
-                            <h3 class="text-xl font-bold mb-2 text-primary">飛翼零式高達</h3>
-                            <div class="grid grid-cols-2 gap-2 mb-3">
-                                <div class="text-sm">
-                                    <span class="text-pink-500 font-semibold">命中值:</span>
-                                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-1">
-                                        <div class="bg-pink-500 rounded-full h-2" style="width: 100%"></div>
+                            </td>
+                            <td class="py-3 px-4 text-center font-bold text-primary">鐵甲萬能俠</td>
+                            <td class="py-3 px-4">
+                                <div class="flex flex-col items-center">
+                                    <div class="stat-bar w-full bg-gray-200 dark:bg-gray-700 mb-1">
+                                        <div class="stat-value bg-pink-500" style="width: 80%"></div>
                                     </div>
-                                    <span class="text-xs text-right block mt-1">5</span>
+                                    <span class="text-xs">4</span>
                                 </div>
-                                <div class="text-sm">
-                                    <span class="text-cyan-500 font-semibold">迴避值:</span>
-                                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-1">
-                                        <div class="bg-cyan-500 rounded-full h-2" style="width: 60%"></div>
+                            </td>
+                            <td class="py-3 px-4">
+                                <div class="flex flex-col items-center">
+                                    <div class="stat-bar w-full bg-gray-200 dark:bg-gray-700 mb-1">
+                                        <div class="stat-value bg-cyan-500" style="width: 40%"></div>
                                     </div>
-                                    <span class="text-xs text-right block mt-1">3</span>
+                                    <span class="text-xs">2</span>
                                 </div>
-                            </div>
-                            <div class="flex justify-between mb-2">
-                                <p class="text-sm text-gray-600 dark:text-gray-400">移動類型: <span class="font-semibold text-yellow-500">騎士型</span></p>
-                                <div class="px-2 py-0.5 bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 text-xs rounded-full">
-                                    精準射擊
+                            </td>
+                            <td class="py-3 px-4 text-center">
+                                <span class="font-semibold text-yellow-500">主教型</span>
+                            </td>
+                            <td class="py-3 px-4 text-center text-purple-600 dark:text-purple-400 font-semibold">高熱火焰</td>
+                        </tr>
+                        
+                        <!-- 飛翼零式高達 -->
+                        <tr class="mecha-row hover:bg-blue-50 dark:hover:bg-blue-900/20">
+                            <td class="py-3 px-4 w-24">
+                                <div class="flex justify-center overflow-hidden">
+                                    <img src="./images/unit/wing_zero_gundam.png" alt="飛翼零式高達" class="mecha-img-compact h-16 w-auto object-contain">
                                 </div>
-                            </div>
-                            <p class="text-sm text-purple-500">武器類型: <span class="font-semibold">光束步槍</span></p>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- 閃光高達(S) -->
-                <div class="mecha-card bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg border-l-4 border-blue-500">
-                    <div class="relative p-4">
-                        <div class="h-56 flex items-center justify-center">
-                            <img src="./images/unit/shinning_gundam_s.png" alt="閃光高達(S)" class="mecha-img h-full object-contain transition duration-300">
-                        </div>
-                        <div class="absolute top-4 right-4 bg-blue-500 text-white text-xs px-2 py-1 rounded-full">
-                            友方
-                        </div>
-                        <div class="p-4">
-                            <h3 class="text-xl font-bold mb-2 text-primary">閃光高達(S)</h3>
-                            <div class="grid grid-cols-2 gap-2 mb-3">
-                                <div class="text-sm">
-                                    <span class="text-pink-500 font-semibold">命中值:</span>
-                                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-1">
-                                        <div class="bg-pink-500 rounded-full h-2" style="width: 100%"></div>
+                            </td>
+                            <td class="py-3 px-4 text-center font-bold text-primary">飛翼零式高達</td>
+                            <td class="py-3 px-4">
+                                <div class="flex flex-col items-center">
+                                    <div class="stat-bar w-full bg-gray-200 dark:bg-gray-700 mb-1">
+                                        <div class="stat-value bg-pink-500" style="width: 100%"></div>
                                     </div>
-                                    <span class="text-xs text-right block mt-1">5</span>
+                                    <span class="text-xs">5</span>
                                 </div>
-                                <div class="text-sm">
-                                    <span class="text-cyan-500 font-semibold">迴避值:</span>
-                                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-1">
-                                        <div class="bg-cyan-500 rounded-full h-2" style="width: 60%"></div>
+                            </td>
+                            <td class="py-3 px-4">
+                                <div class="flex flex-col items-center">
+                                    <div class="stat-bar w-full bg-gray-200 dark:bg-gray-700 mb-1">
+                                        <div class="stat-value bg-cyan-500" style="width: 60%"></div>
                                     </div>
-                                    <span class="text-xs text-right block mt-1">3</span>
+                                    <span class="text-xs">3</span>
                                 </div>
-                            </div>
-                            <div class="flex justify-between mb-2">
-                                <p class="text-sm text-gray-600 dark:text-gray-400">移動類型: <span class="font-semibold text-yellow-500">騎士型</span></p>
-                                <div class="px-2 py-0.5 bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 text-xs rounded-full">
-                                    超級模式
+                            </td>
+                            <td class="py-3 px-4 text-center">
+                                <span class="font-semibold text-yellow-500">騎士型</span>
+                            </td>
+                            <td class="py-3 px-4 text-center text-purple-600 dark:text-purple-400 font-semibold">光束步槍</td>
+                        </tr>
+                        
+                        <!-- 閃光高達(S) -->
+                        <tr class="mecha-row hover:bg-blue-50 dark:hover:bg-blue-900/20">
+                            <td class="py-3 px-4 w-24">
+                                <div class="flex justify-center overflow-hidden">
+                                    <img src="./images/unit/shinning_gundam_s.png" alt="閃光高達(S)" class="mecha-img-compact h-16 w-auto object-contain">
                                 </div>
-                            </div>
-                            <p class="text-sm text-purple-500">武器類型: <span class="font-semibold">光束劍</span></p>
-                        </div>
-                    </div>
-                </div>
+                            </td>
+                            <td class="py-3 px-4 text-center font-bold text-primary">閃光高達(S)</td>
+                            <td class="py-3 px-4">
+                                <div class="flex flex-col items-center">
+                                    <div class="stat-bar w-full bg-gray-200 dark:bg-gray-700 mb-1">
+                                        <div class="stat-value bg-pink-500" style="width: 100%"></div>
+                                    </div>
+                                    <span class="text-xs">5</span>
+                                </div>
+                            </td>
+                            <td class="py-3 px-4">
+                                <div class="flex flex-col items-center">
+                                    <div class="stat-bar w-full bg-gray-200 dark:bg-gray-700 mb-1">
+                                        <div class="stat-value bg-cyan-500" style="width: 60%"></div>
+                                    </div>
+                                    <span class="text-xs">3</span>
+                                </div>
+                            </td>
+                            <td class="py-3 px-4 text-center">
+                                <span class="font-semibold text-yellow-500">騎士型</span>
+                            </td>
+                            <td class="py-3 px-4 text-center text-purple-600 dark:text-purple-400 font-semibold">光束劍</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
             
-            <!-- 红方机体 (初始隐藏) -->
-            <div id="red-team" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 hidden">
-                <!-- 沙薩比 -->
-                <div class="mecha-card bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg border-l-4 border-red-500">
-                    <div class="relative p-4">
-                        <div class="h-56 flex items-center justify-center">
-                            <img src="./images/unit/sazabi.png" alt="沙薩比" class="mecha-img h-full object-contain transition duration-300">
-                        </div>
-                        <div class="absolute top-4 right-4 bg-red-500 text-white text-xs px-2 py-1 rounded-full">
-                            敵方
-                        </div>
-                        <div class="p-4">
-                            <h3 class="text-xl font-bold mb-2 text-primary">沙薩比</h3>
-                            <div class="grid grid-cols-2 gap-2 mb-3">
-                                <div class="text-sm">
-                                    <span class="text-pink-500 font-semibold">命中值:</span>
-                                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-1">
-                                        <div class="bg-pink-500 rounded-full h-2" style="width: 80%"></div>
+            <!-- 敌方机体列表 (初始隐藏) -->
+            <div id="red-team" class="mecha-list-container bg-white dark:bg-gray-800 overflow-x-auto hidden">
+                <table class="w-full min-w-full table-auto">
+                    <thead>
+                        <tr class="mecha-list-header bg-red-600">
+                            <th class="py-3 px-4 text-left">機體</th>
+                            <th class="py-3 px-4">名稱</th>
+                            <th class="py-3 px-4">命中值</th>
+                            <th class="py-3 px-4">迴避值</th>
+                            <th class="py-3 px-4">移動類型</th>
+                            <th class="py-3 px-4">武器類型</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                        <!-- 沙薩比 -->
+                        <tr class="mecha-row hover:bg-red-50 dark:hover:bg-red-900/20">
+                            <td class="py-3 px-4 w-24">
+                                <div class="flex justify-center overflow-hidden">
+                                    <img src="./images/unit/sazabi.png" alt="沙薩比" class="mecha-img-compact h-16 w-auto object-contain">
+                                </div>
+                            </td>
+                            <td class="py-3 px-4 text-center font-bold text-primary">沙薩比</td>
+                            <td class="py-3 px-4">
+                                <div class="flex flex-col items-center">
+                                    <div class="stat-bar w-full bg-gray-200 dark:bg-gray-700 mb-1">
+                                        <div class="stat-value bg-pink-500" style="width: 80%"></div>
                                     </div>
-                                    <span class="text-xs text-right block mt-1">4</span>
+                                    <span class="text-xs">4</span>
                                 </div>
-                                <div class="text-sm">
-                                    <span class="text-cyan-500 font-semibold">迴避值:</span>
-                                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-1">
-                                        <div class="bg-cyan-500 rounded-full h-2" style="width: 80%"></div>
+                            </td>
+                            <td class="py-3 px-4">
+                                <div class="flex flex-col items-center">
+                                    <div class="stat-bar w-full bg-gray-200 dark:bg-gray-700 mb-1">
+                                        <div class="stat-value bg-cyan-500" style="width: 80%"></div>
                                     </div>
-                                    <span class="text-xs text-right block mt-1">4</span>
+                                    <span class="text-xs">4</span>
                                 </div>
-                            </div>
-                            <div class="flex justify-between mb-2">
-                                <p class="text-sm text-gray-600 dark:text-gray-400">移動類型: <span class="font-semibold text-yellow-500">皇后型</span></p>
-                                <div class="px-2 py-0.5 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-xs rounded-full">
-                                    高機動
+                            </td>
+                            <td class="py-3 px-4 text-center">
+                                <span class="font-semibold text-yellow-500">皇后型</span>
+                            </td>
+                            <td class="py-3 px-4 text-center text-purple-600 dark:text-purple-400 font-semibold">光束劍</td>
+                        </tr>
+                        
+                        <!-- 多魯基斯Ⅲ -->
+                        <tr class="mecha-row hover:bg-red-50 dark:hover:bg-red-900/20">
+                            <td class="py-3 px-4 w-24">
+                                <div class="flex justify-center overflow-hidden">
+                                    <img src="./images/unit/tallgeese_Ⅲ.png" alt="多魯基斯Ⅲ" class="mecha-img-compact h-16 w-auto object-contain">
                                 </div>
-                            </div>
-                            <p class="text-sm text-purple-500">武器類型: <span class="font-semibold">光束劍</span></p>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- 多魯基斯Ⅲ -->
-                <div class="mecha-card bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg border-l-4 border-red-500">
-                    <div class="relative p-4">
-                        <div class="h-56 flex items-center justify-center">
-                            <img src="./images/unit/tallgeese_Ⅲ.png" alt="多魯基斯Ⅲ" class="mecha-img h-full object-contain transition duration-300">
-                        </div>
-                        <div class="absolute top-4 right-4 bg-red-500 text-white text-xs px-2 py-1 rounded-full">
-                            敵方
-                        </div>
-                        <div class="p-4">
-                            <h3 class="text-xl font-bold mb-2 text-primary">多魯基斯Ⅲ</h3>
-                            <div class="grid grid-cols-2 gap-2 mb-3">
-                                <div class="text-sm">
-                                    <span class="text-pink-500 font-semibold">命中值:</span>
-                                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-1">
-                                        <div class="bg-pink-500 rounded-full h-2" style="width: 60%"></div>
+                            </td>
+                            <td class="py-3 px-4 text-center font-bold text-primary">多魯基斯Ⅲ</td>
+                            <td class="py-3 px-4">
+                                <div class="flex flex-col items-center">
+                                    <div class="stat-bar w-full bg-gray-200 dark:bg-gray-700 mb-1">
+                                        <div class="stat-value bg-pink-500" style="width: 60%"></div>
                                     </div>
-                                    <span class="text-xs text-right block mt-1">3</span>
+                                    <span class="text-xs">3</span>
                                 </div>
-                                <div class="text-sm">
-                                    <span class="text-cyan-500 font-semibold">迴避值:</span>
-                                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-1">
-                                        <div class="bg-cyan-500 rounded-full h-2" style="width: 100%"></div>
+                            </td>
+                            <td class="py-3 px-4">
+                                <div class="flex flex-col items-center">
+                                    <div class="stat-bar w-full bg-gray-200 dark:bg-gray-700 mb-1">
+                                        <div class="stat-value bg-cyan-500" style="width: 100%"></div>
                                     </div>
-                                    <span class="text-xs text-right block mt-1">5</span>
+                                    <span class="text-xs">5</span>
                                 </div>
-                            </div>
-                            <div class="flex justify-between mb-2">
-                                <p class="text-sm text-gray-600 dark:text-gray-400">移動類型: <span class="font-semibold text-yellow-500">騎士型</span></p>
-                                <div class="px-2 py-0.5 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 text-xs rounded-full">
-                                    高迴避
+                            </td>
+                            <td class="py-3 px-4 text-center">
+                                <span class="font-semibold text-yellow-500">騎士型</span>
+                            </td>
+                            <td class="py-3 px-4 text-center text-purple-600 dark:text-purple-400 font-semibold">光束步槍</td>
+                        </tr>
+                        
+                        <!-- 基爾基爾鋼III -->
+                        <tr class="mecha-row hover:bg-red-50 dark:hover:bg-red-900/20">
+                            <td class="py-3 px-4 w-24">
+                                <div class="flex justify-center overflow-hidden">
+                                    <img src="./images/unit/gilgilgun_III.png" alt="基爾基爾鋼III" class="mecha-img-compact h-16 w-auto object-contain">
                                 </div>
-                            </div>
-                            <p class="text-sm text-purple-500">武器類型: <span class="font-semibold">光束步槍</span></p>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- 基爾基爾鋼III -->
-                <div class="mecha-card bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg border-l-4 border-red-500">
-                    <div class="relative p-4">
-                        <div class="h-56 flex items-center justify-center">
-                            <img src="./images/unit/gilgilgun_III.png" alt="基爾基爾鋼III" class="mecha-img h-full object-contain transition duration-300">
-                        </div>
-                        <div class="absolute top-4 right-4 bg-red-500 text-white text-xs px-2 py-1 rounded-full">
-                            敵方
-                        </div>
-                        <div class="p-4">
-                            <h3 class="text-xl font-bold mb-2 text-primary">基爾基爾鋼III</h3>
-                            <div class="grid grid-cols-2 gap-2 mb-3">
-                                <div class="text-sm">
-                                    <span class="text-pink-500 font-semibold">命中值:</span>
-                                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-1">
-                                        <div class="bg-pink-500 rounded-full h-2" style="width: 80%"></div>
+                            </td>
+                            <td class="py-3 px-4 text-center font-bold text-primary">基爾基爾鋼III</td>
+                            <td class="py-3 px-4">
+                                <div class="flex flex-col items-center">
+                                    <div class="stat-bar w-full bg-gray-200 dark:bg-gray-700 mb-1">
+                                        <div class="stat-value bg-pink-500" style="width: 80%"></div>
                                     </div>
-                                    <span class="text-xs text-right block mt-1">4</span>
+                                    <span class="text-xs">4</span>
                                 </div>
-                                <div class="text-sm">
-                                    <span class="text-cyan-500 font-semibold">迴避值:</span>
-                                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-1">
-                                        <div class="bg-cyan-500 rounded-full h-2" style="width: 80%"></div>
+                            </td>
+                            <td class="py-3 px-4">
+                                <div class="flex flex-col items-center">
+                                    <div class="stat-bar w-full bg-gray-200 dark:bg-gray-700 mb-1">
+                                        <div class="stat-value bg-cyan-500" style="width: 80%"></div>
                                     </div>
-                                    <span class="text-xs text-right block mt-1">4</span>
+                                    <span class="text-xs">4</span>
                                 </div>
-                            </div>
-                            <div class="flex justify-between mb-2">
-                                <p class="text-sm text-gray-600 dark:text-gray-400">移動類型: <span class="font-semibold text-yellow-500">皇后型</span></p>
-                                <div class="px-2 py-0.5 bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 text-xs rounded-full">
-                                    毀滅性
+                            </td>
+                            <td class="py-3 px-4 text-center">
+                                <span class="font-semibold text-yellow-500">皇后型</span>
+                            </td>
+                            <td class="py-3 px-4 text-center text-purple-600 dark:text-purple-400 font-semibold">毀滅雷電</td>
+                        </tr>
+                        
+                        <!-- 魔鬼高達 -->
+                        <tr class="mecha-row hover:bg-red-50 dark:hover:bg-red-900/20">
+                            <td class="py-3 px-4 w-24">
+                                <div class="flex justify-center overflow-hidden">
+                                    <img src="./images/unit/devil_gundam.png" alt="魔鬼高達" class="mecha-img-compact h-16 w-auto object-contain">
                                 </div>
-                            </div>
-                            <p class="text-sm text-purple-500">武器類型: <span class="font-semibold">毀滅雷電</span></p>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- 魔鬼高達 -->
-                <div class="mecha-card bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg border-l-4 border-red-500">
-                    <div class="relative p-4">
-                        <div class="h-56 flex items-center justify-center">
-                            <img src="./images/unit/devil_gundam.png" alt="魔鬼高達" class="mecha-img h-full object-contain transition duration-300">
-                        </div>
-                        <div class="absolute top-4 right-4 bg-red-500 text-white text-xs px-2 py-1 rounded-full">
-                            敵方
-                        </div>
-                        <div class="p-4">
-                            <h3 class="text-xl font-bold mb-2 text-primary">魔鬼高達</h3>
-                            <div class="grid grid-cols-2 gap-2 mb-3">
-                                <div class="text-sm">
-                                    <span class="text-pink-500 font-semibold">命中值:</span>
-                                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-1">
-                                        <div class="bg-pink-500 rounded-full h-2" style="width: 80%"></div>
+                            </td>
+                            <td class="py-3 px-4 text-center font-bold text-primary">魔鬼高達</td>
+                            <td class="py-3 px-4">
+                                <div class="flex flex-col items-center">
+                                    <div class="stat-bar w-full bg-gray-200 dark:bg-gray-700 mb-1">
+                                        <div class="stat-value bg-pink-500" style="width: 80%"></div>
                                     </div>
-                                    <span class="text-xs text-right block mt-1">4</span>
+                                    <span class="text-xs">4</span>
                                 </div>
-                                <div class="text-sm">
-                                    <span class="text-cyan-500 font-semibold">迴避值:</span>
-                                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-1">
-                                        <div class="bg-cyan-500 rounded-full h-2" style="width: 80%"></div>
+                            </td>
+                            <td class="py-3 px-4">
+                                <div class="flex flex-col items-center">
+                                    <div class="stat-bar w-full bg-gray-200 dark:bg-gray-700 mb-1">
+                                        <div class="stat-value bg-cyan-500" style="width: 80%"></div>
                                     </div>
-                                    <span class="text-xs text-right block mt-1">4</span>
+                                    <span class="text-xs">4</span>
                                 </div>
-                            </div>
-                            <div class="flex justify-between mb-2">
-                                <p class="text-sm text-gray-600 dark:text-gray-400">移動類型: <span class="font-semibold text-yellow-500">國王型</span></p>
-                                <div class="px-2 py-0.5 bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 text-xs rounded-full">
-                                    最終BOSS
+                            </td>
+                            <td class="py-3 px-4 text-center">
+                                <span class="font-semibold text-yellow-500">國王型</span>
+                            </td>
+                            <td class="py-3 px-4 text-center text-purple-600 dark:text-purple-400 font-semibold">光束步槍</td>
+                        </tr>
+                        
+                        <!-- 盟主高達 -->
+                        <tr class="mecha-row hover:bg-red-50 dark:hover:bg-red-900/20">
+                            <td class="py-3 px-4 w-24">
+                                <div class="flex justify-center overflow-hidden">
+                                    <img src="./images/unit/master_gundam.png" alt="盟主高達" class="mecha-img-compact h-16 w-auto object-contain">
                                 </div>
-                            </div>
-                            <p class="text-sm text-purple-500">武器類型: <span class="font-semibold">光束步槍</span></p>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- 盟主高達 -->
-                <div class="mecha-card bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg border-l-4 border-red-500">
-                    <div class="relative p-4">
-                        <div class="h-56 flex items-center justify-center">
-                            <img src="./images/unit/master_gundam.png" alt="盟主高達" class="mecha-img h-full object-contain transition duration-300">
-                        </div>
-                        <div class="absolute top-4 right-4 bg-red-500 text-white text-xs px-2 py-1 rounded-full">
-                            敵方
-                        </div>
-                        <div class="p-4">
-                            <h3 class="text-xl font-bold mb-2 text-primary">盟主高達</h3>
-                            <div class="grid grid-cols-2 gap-2 mb-3">
-                                <div class="text-sm">
-                                    <span class="text-pink-500 font-semibold">命中值:</span>
-                                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-1">
-                                        <div class="bg-pink-500 rounded-full h-2" style="width: 80%"></div>
+                            </td>
+                            <td class="py-3 px-4 text-center font-bold text-primary">盟主高達</td>
+                            <td class="py-3 px-4">
+                                <div class="flex flex-col items-center">
+                                    <div class="stat-bar w-full bg-gray-200 dark:bg-gray-700 mb-1">
+                                        <div class="stat-value bg-pink-500" style="width: 80%"></div>
                                     </div>
-                                    <span class="text-xs text-right block mt-1">4</span>
+                                    <span class="text-xs">4</span>
                                 </div>
-                                <div class="text-sm">
-                                    <span class="text-cyan-500 font-semibold">迴避值:</span>
-                                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-1">
-                                        <div class="bg-cyan-500 rounded-full h-2" style="width: 80%"></div>
+                            </td>
+                            <td class="py-3 px-4">
+                                <div class="flex flex-col items-center">
+                                    <div class="stat-bar w-full bg-gray-200 dark:bg-gray-700 mb-1">
+                                        <div class="stat-value bg-cyan-500" style="width: 80%"></div>
                                     </div>
-                                    <span class="text-xs text-right block mt-1">4</span>
+                                    <span class="text-xs">4</span>
                                 </div>
-                            </div>
-                            <div class="flex justify-between mb-2">
-                                <p class="text-sm text-gray-600 dark:text-gray-400">移動類型: <span class="font-semibold text-yellow-500">皇后型</span></p>
-                                <div class="px-2 py-0.5 bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 text-xs rounded-full">
-                                    武術大師
-                                </div>
-                            </div>
-                            <p class="text-sm text-purple-500">武器類型: <span class="font-semibold">石破天驚拳</span></p>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- 魔鬼高達 第三型態 -->
-                <div class="mecha-card bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg border-l-4 border-red-500">
-                    <div class="relative p-4">
-                        <div class="h-56 flex items-center justify-center">
-                            <img src="./images/unit/devil_gundam_iii.png" alt="魔鬼高達 第三型態" class="mecha-img h-full object-contain transition duration-300">
-                        </div>
-                        <div class="absolute top-4 right-4 bg-red-500 text-white text-xs px-2 py-1 rounded-full">
-                            敵方
-                        </div>
-                        <div class="absolute top-4 left-4 bg-yellow-500 text-white text-xs px-2 py-1 rounded-full">
-                            最終型態
-                        </div>
-                        <div class="p-4">
-                            <h3 class="text-xl font-bold mb-2 text-primary">魔鬼高達 第三型態</h3>
-                            <div class="grid grid-cols-2 gap-2 mb-3">
-                                <div class="text-sm">
-                                    <span class="text-pink-500 font-semibold">命中值:</span>
-                                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-1">
-                                        <div class="bg-pink-500 rounded-full h-2" style="width: 100%"></div>
+                            </td>
+                            <td class="py-3 px-4 text-center">
+                                <span class="font-semibold text-yellow-500">皇后型</span>
+                            </td>
+                            <td class="py-3 px-4 text-center text-purple-600 dark:text-purple-400 font-semibold">石破天驚拳</td>
+                        </tr>
+                        
+                        <!-- 魔鬼高達 第三型態 -->
+                        <tr class="mecha-row hover:bg-red-50 dark:hover:bg-red-900/20">
+                            <td class="py-3 px-4 w-24">
+                                <div class="flex justify-center overflow-hidden relative">
+                                    <img src="./images/unit/devil_gundam_iii.png" alt="魔鬼高達 第三型態" class="mecha-img-compact h-16 w-auto object-contain">
+                                    <div class="absolute -top-1 -left-1 bg-yellow-500 text-white text-xs px-1 rounded-sm">
+                                        最終型態
                                     </div>
-                                    <span class="text-xs text-right block mt-1">5</span>
                                 </div>
-                                <div class="text-sm">
-                                    <span class="text-cyan-500 font-semibold">迴避值:</span>
-                                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-1">
-                                        <div class="bg-cyan-500 rounded-full h-2" style="width: 80%"></div>
+                            </td>
+                            <td class="py-3 px-4 text-center font-bold text-primary">魔鬼高達 III</td>
+                            <td class="py-3 px-4">
+                                <div class="flex flex-col items-center">
+                                    <div class="stat-bar w-full bg-gray-200 dark:bg-gray-700 mb-1">
+                                        <div class="stat-value bg-pink-500" style="width: 100%"></div>
                                     </div>
-                                    <span class="text-xs text-right block mt-1">4</span>
+                                    <span class="text-xs">5</span>
                                 </div>
-                            </div>
-                            <div class="flex justify-between mb-2">
-                                <p class="text-sm text-gray-600 dark:text-gray-400">移動類型: <span class="font-semibold text-yellow-500">皇后型</span></p>
-                                <div class="px-2 py-0.5 bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 text-xs rounded-full">
-                                    DG細胞
+                            </td>
+                            <td class="py-3 px-4">
+                                <div class="flex flex-col items-center">
+                                    <div class="stat-bar w-full bg-gray-200 dark:bg-gray-700 mb-1">
+                                        <div class="stat-value bg-cyan-500" style="width: 80%"></div>
+                                    </div>
+                                    <span class="text-xs">4</span>
                                 </div>
-                            </div>
-                            <p class="text-sm text-purple-500">武器類型: <span class="font-semibold">宇宙新星</span></p>
-                        </div>
-                    </div>
-                </div>
+                            </td>
+                            <td class="py-3 px-4 text-center">
+                                <span class="font-semibold text-yellow-500">皇后型</span>
+                            </td>
+                            <td class="py-3 px-4 text-center text-purple-600 dark:text-purple-400 font-semibold">宇宙新星</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </section>
@@ -1270,11 +1243,7 @@
             carousel.addEventListener('mouseleave', () => {
                 autoplayInterval = setInterval(nextSlide, 8000);
             });
-            
-            // 音频功能已移除
         }
-        
-        // 音频功能已移除
 
         // 平滑滚动
         function setupSmoothScroll() {
