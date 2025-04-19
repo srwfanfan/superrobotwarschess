@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>超級機械人大戰Chess - 官方介紹</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        // 检测暗黑模式
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+        }
+        
+        // 监听系统暗黑模式变化
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            if (event.matches) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        });
+
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#5D5CDE',
+                        'primary-dark': '#4A49B0',
+                        'space-blue': '#000428',
+                        'space-navy': '#004e92'
+                    },
+                    animation: {
+                        'float': 'float 3s ease-in-out infinite',
+                        'pulse-glow': 'pulseGlow 2s infinite'
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' }
+                        },
+                        pulseGlow: {
+                            '0%, 100%': { 
+                                opacity: 1,
+                                filter: 'drop-shadow(0 0 10px rgba(93, 92, 222, 0.5))'
+                            },
+                            '50%': { 
+                                opacity: 0.8,
+                                filter: 'drop-shadow(0 0 20px rgba(93, 92, 222, 0.8))'
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* 星空背景样式 */
+        .space-bg {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            overflow: hidden;
+            background: linear-gradient(135deg, #000428, #004e92);
+        }
+
+        .star {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            background: white;
+            border-radius: 50%;
+        }
+
+        .shooting-star {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 50%, rgba(255,255,255,0) 100%);
+            opacity: 0;
+            transform-origin: right center;
+            animation: shoot 3s ease-out infinite;
+        }
+
+        @keyframes shoot {
+            0% {
+                opacity: 0;
+                transform: translateX(0) rotate(0deg);
+            }
+            15% {
+                opacity: 1;
+            }
+            30% {
+                opacity: 0;
+                transform: translateX(-200px) rotate(0deg);
+            }
+            100% {
+                opacity: 0;
+                transform: translateX(-200px) rotate(0deg);
+            }
+        }
+
+        /* 特殊效果样式 */
+        .mecha-card {
+            transition: all 0.3s ease;
+            perspective: 1000px;
+        }
+
+        .mecha-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .mecha-card:hover .mecha-img {
+            transform: scale(1.05);
+        }
+
+        .gradient-text {
+            background: linear-gradient(to right, #5D5CDE, #FF69B4);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        /* 战斗效果 */
+        .battle-effect {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .laser {
+            position: absolute;
+            height: 3px;
+            background: linear-gradient(90deg, rgba(255,20,147,0.5) 0%, rgba(255,20,147,1) 50%, rgba(255,20,147,0.5) 100%);
+            transform-origin: center left;
+            box-shadow: 0 0 10px #FF1493, 0 0 20px #FF1493;
+            animation: laser-pulse 0.5s ease-out;
+        }
+
+        @keyframes laser-pulse {
+            0% { opacity: 0.7; }
+            20% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white min-h-screen overflow-x-hidden">
+    <!-- 星空背景 -->
+    <div class="space-bg" id="space-bg"></div>
+
+    <!-- 导航栏 -->
+    <nav class="relative z-10 py-4 px-6 backdrop-blur-md bg-white/10 dark:bg-black/20">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="flex items-center">
+                <div class="text-xl font-bold text-white">超級機械人大戰Chess</div>
+            </div>
+            <div class="hidden md:flex space-x-6">
+                <a href="#about" class="text-white hover:text-primary transition">關於遊戲</a>
+                <a href="#features" class="text-white hover:text-primary transition">遊戲特色</a>
+                <a href="#mechas" class="text-white hover:text-primary transition">機體介紹</a>
+                <a href="#screenshots" class="text-white hover:text-primary transition">遊戲畫面</a>
+            </div>
+            <div>
+                <a href="#play" class="px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded-full transition">開始遊戲</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 英雄区域 -->
+    <header class="relative py-16 md:py-32 overflow-hidden">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col md:flex-row items-center">
+                <div class="md:w-1/2 text-center md:text-left mb-10 md:mb-0">
+                    <div class="animate-float">
+                        <h1 class="text-4xl md:text-6xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">超級機械人大戰Chess</h1>
+                        <p class="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-8">機器人與象棋的完美結合</p>
+                    </div>
+                    <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
+                        <a href="#play" class="px-8 py-4 bg-gradient-to-r from-primary to-purple-600 text-white rounded-full font-bold text-lg hover:opacity-90 transition transform hover:scale-105 shadow-lg">
+                            開始遊戲
+                        </a>
+                        <a href="#features" class="px-8 py-4 bg-white dark:bg-gray-800 border border-primary text-primary dark:text-primary rounded-full font-bold text-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition transform hover:scale-105 shadow-lg">
+                            了解更多
+                        </a>
+                    </div>
+                </div>
+                <div class="md:w-1/2">
+                    <div class="relative animate-float">
+                        <img src="https://i.imgur.com/uUhvX3b.png" alt="Nu高達" class="max-w-full h-auto md:max-w-md mx-auto animate-pulse-glow">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 关于游戏 -->
+    <section id="about" class="py-16 md:py-24 relative">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 gradient-text">關於遊戲</h2>
+            <div class="grid md:grid-cols-2 gap-8 items-center">
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
+                    <h3 class="text-2xl font-bold mb-4 text-primary">遊戲背景</h3>
+                    <p class="mb-4 text-gray-700 dark:text-gray-300">《超級機械人大戰Chess》是一款融合了國際象棋規則與機器人戰鬥元素的策略遊戲。在基爾基爾鋼與闘神·諾亞事件後的和平時代，部分機械人選擇離開星球，前往宇宙建立新的生活空間。然而，宇宙中資源的有限性使得宇宙居民與地球產生矛盾，宇宙聯合軍宣布獨立並發動侵略戰爭。</p>
+                    <p class="text-gray-700 dark:text-gray-300">面對同胞間的自相殘殺，英雄們再次集結，誓要阻止這場戰爭。然而，在這場衝突背後，似乎隱藏著更大的陰謀...</p>
+                </div>
+                <div class="relative overflow-hidden rounded-xl shadow-lg">
+                    <img src="https://i.imgur.com/90O9E1o.png" alt="沙薩比" class="w-full h-auto transform hover:scale-105 transition duration-500">
+                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4 text-white">
+                        <h4 class="font-bold text-lg">機體戰鬥系統</h4>
+                        <p class="text-sm">不僅是象棋，更是精彩的機體對戰！</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 游戏特色 -->
+    <section id="features" class="py-16 md:py-24 bg-gray-50 dark:bg-gray-800">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-16 gradient-text">遊戲特色</h2>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-white dark:bg-gray-700 p-6 rounded-xl shadow-lg transform transition hover:-translate-y-2">
+                    <div class="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mb-6 mx-auto">
+                        <i class="fas fa-chess text-primary text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-center mb-4">國際象棋玩法</h3>
+                    <p class="text-center text-gray-600 dark:text-gray-300">基於經典國際象棋規則，融入機器人元素，每個棋子都是一台擁有特殊能力的機體。</p>
+                </div>
+                <div class="bg-white dark:bg-gray-700 p-6 rounded-xl shadow-lg transform transition hover:-translate-y-2">
+                    <div class="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mb-6 mx-auto">
+                        <i class="fas fa-robot text-primary text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-center mb-4">機體系統</h3>
+                    <p class="text-center text-gray-600 dark:text-gray-300">每台機體擁有獨特的命中與迴避值，以及專屬武器系統，影響戰鬥結果。</p>
+                </div>
+                <div class="bg-white dark:bg-gray-700 p-6 rounded-xl shadow-lg transform transition hover:-translate-y-2">
+                    <div class="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mb-6 mx-auto">
+                        <i class="fas fa-crosshairs text-primary text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-center mb-4">射擊戰鬥系統</h3>
+                    <p class="text-center text-gray-600 dark:text-gray-300">當棋子相遇時，進入獨特的射擊戰鬥模式，考驗玩家的反應與戰術。</p>
+                </div>
+                <div class="bg-white dark:bg-gray-700 p-6 rounded-xl shadow-lg transform transition hover:-translate-y-2">
+                    <div class="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mb-6 mx-auto">
+                        <i class="fas fa-book text-primary text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-center mb-4">劇情模式</h3>
+                    <p class="text-center text-gray-600 dark:text-gray-300">體驗精彩的故事劇情，跟隨多位經典機體進行一場跨越宇宙的冒險。</p>
+                </div>
+                <div class="bg-white dark:bg-gray-700 p-6 rounded-xl shadow-lg transform transition hover:-translate-y-2">
+                    <div class="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mb-6 mx-auto">
+                        <i class="fas fa-level-up-alt text-primary text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-center mb-4">機體進化</h3>
+                    <p class="text-center text-gray-600 dark:text-gray-300">隨著劇情推進，解鎖進階機體，如Full Armor高達、神聖高達等。</p>
+                </div>
+                <div class="bg-white dark:bg-gray-700 p-6 rounded-xl shadow-lg transform transition hover:-translate-y-2">
+                    <div class="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mb-6 mx-auto">
+                        <i class="fas fa-music text-primary text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-center mb-4">專屬BGM</h3>
+                    <p class="text-center text-gray-600 dark:text-gray-300">每台機體擁有專屬戰鬥BGM，在戰鬥時重現動畫中的熱血場景。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 机体介绍 -->
+    <section id="mechas" class="py-16 md:py-24 relative">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-16 gradient-text">機體介紹</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Nu高達 -->
+                <div class="mecha-card bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg">
+                    <div class="relative p-4">
+                        <div class="h-56 flex items-center justify-center">
+                            <img src="https://i.imgur.com/uUhvX3b.png" alt="Nu高達" class="mecha-img h-full object-contain transition duration-300">
+                        </div>
+                        <div class="p-4">
+                            <h3 class="text-xl font-bold mb-2 text-primary">Nu高達</h3>
+                            <div class="grid grid-cols-2 gap-2 mb-3">
+                                <div class="text-sm">
+                                    <span class="text-pink-500 font-semibold">命中值:</span>
+                                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-1">
+                                        <div class="bg-pink-500 rounded-full h-2" style="width: 80%"></div>
+                                    </div>
+                                </div>
+                                <div class="text-sm">
+                                    <span class="text-cyan-500 font-semibold">迴避值:</span>
+                                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-1">
+                                        <div class="bg-cyan-500 rounded-full h-2" style="width: 80%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">移動類型: 皇后型</p>
+                            <p class="text-sm text-purple-500">武器類型: 光束步槍</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 沙薩比 -->
+                <div class="mecha-card bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg">
+                    <div class="relative p-4">
+                        <div class="h-56 flex items-center justify-center">
+                            <img src="https://i.imgur.com/90O9E1o.png" alt="沙薩比" class="mecha-img h-full object-contain transition duration-300">
+                        </div>
+                        <div class="p-4">
+                            <h3 class="text-xl font-bold mb-2 text-primary">沙薩比</h3>
+                            <div class="grid grid-cols-2 gap-2 mb-3">
+                                <div class="text-sm">
+                                    <span class="text-pink-500 font-semibold">命中值:</span>
+                                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-1">
+                                        <div class="bg-pink-500 rounded-full h-2" style="width: 80%"></div>
+                                    </div>
+                                </div>
+                                <div class="text-sm">
+                                    <span class="text-cyan-500 font-semibold">迴避值:</span>
+                                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-1">
+                                        <div class="bg-cyan-500 rounded-full h-2" style="width: 80%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">移動類型: 皇后型</p>
+                            <p class="text-sm text-purple-500">武器類型: 光束劍</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 光明高達 -->
+                <div class="mecha-card bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg">
+                    <div class="relative p-4">
+                        <div class="h-56 flex items-center justify-center">
+                            <img src="https://i.imgur.com/XDTCVGw.png" alt="光明高達" class="mecha-img h-full object-contain transition duration-300">
+                        </div>
+                        <div class="p-4">
+                            <h3 class="text-xl font-bold mb-2 text-primary">光明高達</h3>
+                            <div class="grid grid-cols-2 gap-2 mb-3">
+                                <div class="text-sm">
+                                    <span class="text-pink-500 font-semibold">命中值:</span>
+                                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-1">
+                                        <div class="bg-pink-500 rounded-full h-2" style="width: 70%"></div>
+                                    </div>
+                                </div>
+                                <div class="text-sm">
+                                    <span class="text-cyan-500 font-semibold">迴避值:</span>
+                                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-1">
+                                        <div class="bg-cyan-500 rounded-full h-2" style="width: 90%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">移動類型: 皇后型</p>
+                            <p class="text-sm text-purple-500">武器類型: 光束劍</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 魔神Z -->
+                <div class="mecha-card bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg">
+                    <div class="relative p-4">
+                        <div class="h-56 flex items-center justify-center">
+                            <img src="https://i.imgur.com/5JHn8hq.png" alt="魔神Z" class="mecha-img h-full object-contain transition duration-300">
+                        </div>
+                        <div class="p-4">
+                            <h3 class="text-xl font-bold mb-2 text-primary">魔神Z</h3>
+                            <div class="grid grid-cols-2 gap-2 mb-3">
+                                <div class="text-sm">
+                                    <span class="text-pink-500 font-semibold">命中值:</span>
+                                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-1">
+                                        <div class="bg-pink-500 rounded-full h-2" style="width: 90%"></div>
+                                    </div>
+                                </div>
+                                <div class="text-sm">
+                                    <span class="text-cyan-500 font-semibold">迴避值:</span>
+                                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-1">
+                                        <div class="bg-cyan-500 rounded-full h-2" style="width: 60%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">移動類型: 城堡型</p>
+                            <p class="text-sm text-purple-500">武器類型: 高熱火焰</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 神鬼高達 -->
+                <div class="mecha-card bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg">
+                    <div class="relative p-4">
+                        <div class="h-56 flex items-center justify-center">
+                            <img src="https://i.imgur.com/Hkdno3n.png" alt="神鬼高達" class="mecha-img h-full object-contain transition duration-300">
+                        </div>
+                        <div class="p-4">
+                            <h3 class="text-xl font-bold mb-2 text-primary">神鬼高達</h3>
+                            <div class="grid grid-cols-2 gap-2 mb-3">
+                                <div class="text-sm">
+                                    <span class="text-pink-500 font-semibold">命中值:</span>
+                                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-1">
+                                        <div class="bg-pink-500 rounded-full h-2" style="width: 80%"></div>
+                                    </div>
+                                </div>
+                                <div class="text-sm">
+                                    <span class="text-cyan-500 font-semibold">迴避值:</span>
+                                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-1">
+                                        <div class="bg-cyan-500 rounded-full h-2" style="width: 70%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">移動類型: 國王型</p>
+                            <p class="text-sm text-purple-500">武器類型: 石破天驚拳</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cybuster -->
+                <div class="mecha-card bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg">
+                    <div class="relative p-4">
+                        <div class="h-56 flex items-center justify-center">
+                            <img src="https://i.imgur.com/bexXvnR.png" alt="Cybuster" class="mecha-img h-full object-contain transition duration-300">
+                        </div>
+                        <div class="p-4">
+                            <h3 class="text-xl font-bold mb-2 text-primary">Cybuster</h3>
+                            <div class="grid grid-cols-2 gap-2 mb-3">
+                                <div class="text-sm">
+                                    <span class="text-pink-500 font-semibold">命中值:</span>
+                                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-1">
+                                        <div class="bg-pink-500 rounded-full h-2" style="width: 70%"></div>
+                                    </div>
+                                </div>
+                                <div class="text-sm">
+                                    <span class="text-cyan-500 font-semibold">迴避值:</span>
+                                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-1">
+                                        <div class="bg-cyan-500 rounded-full h-2" style="width: 100%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">移動類型: 騎士型</p>
+                            <p class="text-sm text-purple-500">武器類型: 宇宙新星</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 游戏截图 -->
+    <section id="screenshots" class="py-16 md:py-24 bg-gray-50 dark:bg-gray-800">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-16 gradient-text">遊戲畫面</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- 棋盘画面 -->
+                <div class="overflow-hidden rounded-xl shadow-lg bg-white dark:bg-gray-700 group relative h-64">
+                    <div class="absolute inset-0 bg-gradient-to-b from-black/0 to-black/70 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
+                        <div class="p-4 text-white">
+                            <h3 class="font-bold text-lg">棋盤戰場</h3>
+                            <p class="text-sm">象棋棋盤為戰場，機體需要在此移動並占據有利位置。</p>
+                        </div>
+                    </div>
+                    <div class="w-full h-full">
+                        <img src="https://i.imgur.com/po1uZL5.png" alt="棋盤戰場" class="w-full h-full object-cover transform group-hover:scale-110 transition duration-500">
+                    </div>
+                </div>
+
+                <!-- 战斗系统 -->
+                <div class="overflow-hidden rounded-xl shadow-lg bg-white dark:bg-gray-700 group relative h-64">
+                    <div class="absolute inset-0 bg-gradient-to-b from-black/0 to-black/70 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
+                        <div class="p-4 text-white">
+                            <h3 class="font-bold text-lg">射擊戰鬥系統</h3>
+                            <p class="text-sm">當棋子相遇時，進入緊張刺激的射擊戰鬥模式。</p>
+                        </div>
+                    </div>
+                    <div class="w-full h-full">
+                        <div class="w-full h-full bg-gray-900 flex items-center justify-center relative">
+                            <img src="https://i.imgur.com/uUhvX3b.png" alt="射擊戰鬥" class="h-1/2 object-contain">
+                            <img src="https://i.imgur.com/90O9E1o.png" alt="射擊戰鬥" class="h-1/2 object-contain absolute right-10">
+                            <div class="battle-effect">
+                                <div class="laser" style="top: 50%; left: 30%; width: 40%; transform: rotate(10deg);"></div>
+                                <div class="laser" style="top: 60%; left: 35%; width: 35%; transform: rotate(-5deg); animation-delay: 0.2s;"></div>
+                                <div class="laser" style="top: 40%; left: 32%; width: 45%; transform: rotate(5deg); animation-delay: 0.4s;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 剧情模式 -->
+                <div class="overflow-hidden rounded-xl shadow-lg bg-white dark:bg-gray-700 group relative h-64">
+                    <div class="absolute inset-0 bg-gradient-to-b from-black/0 to-black/70 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
+                        <div class="p-4 text-white">
+                            <h3 class="font-bold text-lg">劇情模式</h3>
+                            <p class="text-sm">體驗充滿轉折的故事劇情，拯救地球與宇宙的和平。</p>
+                        </div>
+                    </div>
+                    <div class="w-full h-full bg-gradient-to-b from-space-blue to-space-navy p-6 flex flex-col justify-center">
+                        <div class="bg-black/30 p-4 rounded-lg">
+                            <h4 class="text-white font-bold mb-2">序章</h4>
+                            <p class="text-gray-200 text-sm">在基爾基爾鋼與闘神·諾亞事件後的和平時代，原星球上的超級機械人們逐漸重建家園...</p>
+                        </div>
+                        <div class="mt-auto mx-auto">
+                            <button class="px-4 py-1 bg-white/20 text-white text-sm rounded hover:bg-white/30 transition">繼續</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 开始游戏部分 -->
+    <section id="play" class="py-16 md:py-24 relative overflow-hidden">
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="max-w-4xl mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-2xl overflow-hidden">
+                <div class="p-8 md:p-12">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-8 text-center gradient-text">加入戰場!</h2>
+                    <p class="text-gray-600 dark:text-gray-300 text-lg text-center mb-10">
+                        是時候展現你的戰術才華，指揮機體戰勝敵人，揭露隱藏在戰爭背後的陰謀！
+                    </p>
+                    <div class="flex flex-col md:flex-row justify-center space-y-4 md:space-y-0 md:space-x-6">
+                        <a href="#play" class="px-8 py-4 bg-gradient-to-r from-primary to-purple-600 text-white rounded-full font-bold text-lg hover:opacity-90 transition transform hover:scale-105 shadow-lg text-center">
+                            開始遊戲
+                        </a>
+                        <a href="#" class="px-8 py-4 bg-gradient-to-r from-pink-500 to-red-500 text-white rounded-full font-bold text-lg hover:opacity-90 transition transform hover:scale-105 shadow-lg text-center">
+                            觀看教學
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 背景效果 -->
+        <div class="absolute inset-0 z-0 opacity-20">
+            <div class="absolute w-64 h-64 rounded-full bg-primary/40 blur-3xl -top-32 -left-32"></div>
+            <div class="absolute w-96 h-96 rounded-full bg-purple-500/30 blur-3xl -bottom-48 -right-48"></div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="py-8 bg-gray-900 text-white">
+        <div class="container mx-auto px-6 text-center">
+            <p class="text-gray-400 text-sm">感謝遊玩超級機械人大戰Chess</p>
+        </div>
+    </footer>
+
+    <script>
+        // 初始化星空背景
+        function setupSpaceBackground() {
+            const container = document.getElementById('space-bg');
+            if (!container) return;
+
+            // 清除现有星星
+            container.innerHTML = '';
+
+            // 添加星星
+            for (let i = 0; i < 200; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.top = `${Math.random() * 100}%`;
+
+                // 不同大小的星星
+                const size = Math.random() * 3 + 1;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+
+                // 不同亮度的星星
+                star.style.opacity = Math.random() * 0.7 + 0.3;
+
+                container.appendChild(star);
+            }
+
+            // 添加流星
+            for (let i = 0; i < 5; i++) {
+                createShootingStar(container);
+            }
+        }
+
+        // 创建流星效果
+        function createShootingStar(container) {
+            const shootingStar = document.createElement('div');
+            shootingStar.className = 'shooting-star';
+
+            // 随机位置和角度
+            const startX = Math.random() * 100;
+            const startY = Math.random() * 100;
+            const angle = Math.random() * 60 - 30; // -30到30度
+
+            shootingStar.style.left = `${startX}%`;
+            shootingStar.style.top = `${startY}%`;
+            shootingStar.style.width = `${Math.random() * 150 + 50}px`;
+            shootingStar.style.transform = `rotate(${angle}deg)`;
+
+            // 随机延迟和持续时间
+            const delay = Math.random() * 15;
+            shootingStar.style.animationDelay = `${delay}s`;
+
+            container.appendChild(shootingStar);
+
+            // 动画结束后重新创建流星
+            setTimeout(() => {
+                if (container.contains(shootingStar)) {
+                    container.removeChild(shootingStar);
+                    createShootingStar(container);
+                }
+            }, (delay + 3) * 1000); // 3秒是动画时长
+        }
+
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const target = document.querySelector(targetId);
+                if (target) {
+                    window.scrollTo({
+                        top: target.offsetTop,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // 页面加载时初始化
+        window.addEventListener('load', function() {
+            setupSpaceBackground();
+        });
+
+        // 滚动事件处理
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('nav');
+            if (window.scrollY > 100) {
+                header.classList.add('backdrop-blur-md', 'bg-white/10', 'dark:bg-black/20', 'shadow-md');
+            } else {
+                header.classList.remove('shadow-md');
+            }
+        });
+    </script>
+</body>
+</html>
