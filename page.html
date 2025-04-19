@@ -429,10 +429,10 @@
             <!-- 分类标签 -->
             <div class="flex justify-center mb-10">
                 <div class="inline-flex rounded-md shadow-sm" role="group">
-                    <button type="button" id="blue-team-btn" class="px-4 py-2 text-sm font-medium bg-blue-600 text-white rounded-l-lg border border-blue-600 hover:bg-blue-700 focus:z-10 focus:bg-blue-700 focus:outline-none">
+                    <button type="button" id="blue-team-btn" class="px-4 py-2 text-sm font-medium bg-blue-800 text-white rounded-l-lg border border-blue-800 hover:bg-blue-900 focus:z-10 focus:bg-blue-900 focus:outline-none">
                         友方機體
                     </button>
-                    <button type="button" id="red-team-btn" class="px-4 py-2 text-sm font-medium bg-gray-600 text-white rounded-r-lg border border-gray-600 hover:bg-red-600 focus:z-10 focus:bg-red-600 focus:outline-none">
+                    <button type="button" id="red-team-btn" class="px-4 py-2 text-sm font-medium bg-gray-600 text-white rounded-r-lg border border-gray-600 hover:bg-red-900 focus:z-10 focus:bg-red-900 focus:outline-none">
                         敵方機體
                     </button>
                 </div>
@@ -442,7 +442,7 @@
             <div id="blue-team" class="mecha-list-container bg-white dark:bg-gray-800 overflow-x-auto">
                 <table class="w-full min-w-full table-auto">
                     <thead>
-                        <tr class="mecha-list-header bg-blue-600">
+                        <tr class="mecha-list-header bg-blue-800">
                             <th class="py-3 px-4 text-left">機體</th>
                             <th class="py-3 px-4">名稱</th>
                             <th class="py-3 px-4">命中值</th>
@@ -639,7 +639,7 @@
             <div id="red-team" class="mecha-list-container bg-white dark:bg-gray-800 overflow-x-auto hidden">
                 <table class="w-full min-w-full table-auto">
                     <thead>
-                        <tr class="mecha-list-header bg-red-600">
+                        <tr class="mecha-list-header bg-red-900">
                             <th class="py-3 px-4 text-left">機體</th>
                             <th class="py-3 px-4">名稱</th>
                             <th class="py-3 px-4">命中值</th>
@@ -802,11 +802,8 @@
                         <!-- 魔鬼高達 第三型態 -->
                         <tr class="mecha-row hover:bg-red-50 dark:hover:bg-red-900/20">
                             <td class="py-3 px-4 w-24">
-                                <div class="flex justify-center overflow-hidden relative">
+                                <div class="flex justify-center overflow-hidden">
                                     <img src="./images/unit/devil_gundam_iii.png" alt="魔鬼高達 第三型態" class="mecha-img-compact h-16 w-auto object-contain">
-                                    <div class="absolute -top-1 -left-1 bg-yellow-500 text-white text-xs px-1 rounded-sm">
-                                        最終型態
-                                    </div>
                                 </div>
                             </td>
                             <td class="py-3 px-4 text-center font-bold text-primary">魔鬼高達 III</td>
@@ -1276,10 +1273,10 @@
             
             blueTeamBtn.addEventListener('click', function() {
                 // 切换按钮样式
-                blueTeamBtn.classList.add('bg-blue-600');
+                blueTeamBtn.classList.add('bg-blue-800');
                 blueTeamBtn.classList.remove('bg-gray-600');
                 redTeamBtn.classList.add('bg-gray-600');
-                redTeamBtn.classList.remove('bg-red-600');
+                redTeamBtn.classList.remove('bg-red-900');
                 
                 // 显示蓝队，隐藏红队
                 blueTeam.classList.remove('hidden');
@@ -1288,10 +1285,10 @@
             
             redTeamBtn.addEventListener('click', function() {
                 // 切换按钮样式
-                redTeamBtn.classList.add('bg-red-600');
+                redTeamBtn.classList.add('bg-red-900');
                 redTeamBtn.classList.remove('bg-gray-600');
                 blueTeamBtn.classList.add('bg-gray-600');
-                blueTeamBtn.classList.remove('bg-blue-600');
+                blueTeamBtn.classList.remove('bg-blue-800');
                 
                 // 显示红队，隐藏蓝队
                 redTeam.classList.remove('hidden');
