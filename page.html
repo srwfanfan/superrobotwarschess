@@ -164,6 +164,7 @@
                 <a href="#about" class="text-white hover:text-primary transition">關於遊戲</a>
                 <a href="#features" class="text-white hover:text-primary transition">遊戲特色</a>
                 <a href="#mechas" class="text-white hover:text-primary transition">機體介紹</a>
+                <a href="#levels" class="text-white hover:text-primary transition">關卡介紹</a>
                 <a href="#screenshots" class="text-white hover:text-primary transition">遊戲畫面</a>
             </div>
             <div>
@@ -447,6 +448,137 @@
         </div>
     </section>
 
+    <!-- 关卡介绍 -->
+    <section id="levels" class="py-16 md:py-24 relative">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-16 gradient-text">關卡介紹</h2>
+            
+            <!-- 关卡轮播 -->
+            <div class="relative" id="levelCarousel">
+                <!-- 轮播控制按钮 -->
+                <div class="absolute -left-4 md:-left-12 top-1/2 -translate-y-1/2 z-10">
+                    <button id="prevLevel" class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-gray-800/80 text-white hover:bg-primary flex items-center justify-center transition transform hover:scale-110 focus:outline-none">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                </div>
+                <div class="absolute -right-4 md:-right-12 top-1/2 -translate-y-1/2 z-10">
+                    <button id="nextLevel" class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-gray-800/80 text-white hover:bg-primary flex items-center justify-center transition transform hover:scale-110 focus:outline-none">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+                
+                <!-- 关卡内容区域 -->
+                <div class="overflow-hidden">
+                    <div id="levelSlides" class="flex transition-transform duration-500 ease-in-out">
+                        <!-- 第一话 -->
+                        <div class="min-w-full px-2">
+                            <div class="bg-gray-800/80 backdrop-blur-sm rounded-2xl overflow-hidden shadow-2xl transform hover:scale-[1.01] transition duration-300">
+                                <div class="relative h-64 md:h-80 overflow-hidden">
+                                    <img src="./images/cover/cover01.png" alt="第一話：宇宙聯合軍" class="w-full h-full object-cover">
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end p-6">
+                                        <div class="flex items-center mb-2">
+                                            <div class="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white font-bold mr-4">1</div>
+                                            <div>
+                                                <h3 class="text-2xl md:text-3xl font-bold text-white">第一話</h3>
+                                                <p class="text-lg text-gray-300">宇宙聯合軍</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="p-6">
+                                    <p class="text-gray-300 mb-4">宇宙聯合軍將軍沙撒比在宣戰的第二天便帶領部隊進行大氣層突入，英雄們迅速出擊，與宇宙聯合軍展開交戰。他們試圖避免不必要的傷亡，同時尋找停戰方法。突然，一個從未見過的機影出了在他們面前…</p>
+                                    <div class="flex space-x-4">
+                                        <button class="level-audio-btn px-4 py-2 bg-primary/20 hover:bg-primary/40 text-primary rounded-full text-sm transition flex items-center" data-bgm="./audio/SRWCBGM_Map01.mp3">
+                                            <i class="fas fa-play mr-2"></i> 播放背景音樂
+                                        </button>
+                                        <button class="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-full text-sm transition flex items-center">
+                                            <i class="fas fa-chess-board mr-2"></i> 查看戰場
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 第二话 -->
+                        <div class="min-w-full px-2">
+                            <div class="bg-gray-800/80 backdrop-blur-sm rounded-2xl overflow-hidden shadow-2xl transform hover:scale-[1.01] transition duration-300">
+                                <div class="relative h-64 md:h-80 overflow-hidden">
+                                    <img src="./images/cover/cover02.png" alt="第二話：突擊！托爾吉斯Ⅲ！" class="w-full h-full object-cover">
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end p-6">
+                                        <div class="flex items-center mb-2">
+                                            <div class="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white font-bold mr-4">2</div>
+                                            <div>
+                                                <h3 class="text-2xl md:text-3xl font-bold text-white">第二話</h3>
+                                                <p class="text-lg text-gray-300">突擊！托爾吉斯Ⅲ！</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="p-6">
+                                    <p class="text-gray-300 mb-4">英雄們與沙撒比的部隊交戰，雙方陷入膠著狀態。飛翼零式改的加入，憑藉其強大的火力和機動性，壓制了宇宙聯合軍的先頭部隊，讓英雄們幾乎取得壓倒性的優勢。然而，就在此時，宇宙聯合軍的王牌托爾吉斯Ⅲ突然出現在戰場上。</p>
+                                    <div class="flex space-x-4">
+                                        <button class="level-audio-btn px-4 py-2 bg-primary/20 hover:bg-primary/40 text-primary rounded-full text-sm transition flex items-center" data-bgm="./audio/SRWCBGM_Map01.mp3">
+                                            <i class="fas fa-play mr-2"></i> 播放背景音樂
+                                        </button>
+                                        <button class="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-full text-sm transition flex items-center">
+                                            <i class="fas fa-chess-board mr-2"></i> 查看戰場
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 第三话 -->
+                        <div class="min-w-full px-2">
+                            <div class="bg-gray-800/80 backdrop-blur-sm rounded-2xl overflow-hidden shadow-2xl transform hover:scale-[1.01] transition duration-300">
+                                <div class="relative h-64 md:h-80 overflow-hidden">
+                                    <img src="./images/cover/cover03.png" alt="第三話：復仇的基爾基爾鋼" class="w-full h-full object-cover">
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end p-6">
+                                        <div class="flex items-center mb-2">
+                                            <div class="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white font-bold mr-4">3</div>
+                                            <div>
+                                                <h3 class="text-2xl md:text-3xl font-bold text-white">第三話</h3>
+                                                <p class="text-lg text-gray-300">復仇的基爾基爾鋼</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="p-6">
+                                    <p class="text-gray-300 mb-4">英雄們與沙撒比及托爾吉斯III的激戰持續了許久，戰場陷入膠著，雙方都無法分出勝負。就在這時，一個熟悉而令人恐懼的身影突然出現----基爾基爾鋼！這個曾經帶來無數災厄的敵人居然再次復活，更令人震驚的是，基爾基爾鋼的數量竟然成倍增加。</p>
+                                    <div class="flex space-x-4">
+                                        <button class="level-audio-btn px-4 py-2 bg-primary/20 hover:bg-primary/40 text-primary rounded-full text-sm transition flex items-center" data-bgm="./audio/SRWCBGM_Map01.mp3">
+                                            <i class="fas fa-play mr-2"></i> 播放背景音樂
+                                        </button>
+                                        <button class="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-full text-sm transition flex items-center">
+                                            <i class="fas fa-chess-board mr-2"></i> 查看戰場
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 更多关卡... -->
+                        <!-- 可以继续添加第4-8关的信息，格式类似 -->
+                    </div>
+                </div>
+                
+                <!-- 关卡指示器 -->
+                <div class="flex justify-center mt-8">
+                    <div class="flex space-x-2">
+                        <button class="level-indicator w-10 h-2 rounded-full bg-primary opacity-100 transition" data-index="0"></button>
+                        <button class="level-indicator w-10 h-2 rounded-full bg-gray-600 opacity-60 hover:opacity-80 transition" data-index="1"></button>
+                        <button class="level-indicator w-10 h-2 rounded-full bg-gray-600 opacity-60 hover:opacity-80 transition" data-index="2"></button>
+                        <button class="level-indicator w-10 h-2 rounded-full bg-gray-600 opacity-60 hover:opacity-80 transition" data-index="3"></button>
+                        <button class="level-indicator w-2 h-2 rounded-full bg-gray-600 opacity-60 hover:opacity-80 transition">•</button>
+                        <button class="level-indicator w-2 h-2 rounded-full bg-gray-600 opacity-60 hover:opacity-80 transition">•</button>
+                        <button class="level-indicator w-2 h-2 rounded-full bg-gray-600 opacity-60 hover:opacity-80 transition">•</button>
+                        <button class="level-indicator w-10 h-2 rounded-full bg-gray-600 opacity-60 hover:opacity-80 transition" data-index="7"></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- 游戏截图 -->
     <section id="screenshots" class="py-16 md:py-24 bg-gray-50 dark:bg-gray-800">
         <div class="container mx-auto px-6">
@@ -613,27 +745,164 @@
             }, (delay + 3) * 1000); // 3秒是动画时长
         }
 
-        // 平滑滚动
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
+        // 关卡轮播功能
+        function setupLevelCarousel() {
+            const carousel = document.getElementById('levelCarousel');
+            if (!carousel) return;
+            
+            const slides = document.getElementById('levelSlides');
+            const prevBtn = document.getElementById('prevLevel');
+            const nextBtn = document.getElementById('nextLevel');
+            const indicators = document.querySelectorAll('.level-indicator');
+            
+            let currentIndex = 0;
+            const slideCount = 3; // 目前只展示了三个关卡
+            
+            // 更新轮播位置
+            function updateCarousel() {
+                slides.style.transform = `translateX(-${currentIndex * 100}%)`;
                 
-                const targetId = this.getAttribute('href');
-                if (targetId === '#') return;
-                
-                const target = document.querySelector(targetId);
-                if (target) {
-                    window.scrollTo({
-                        top: target.offsetTop,
-                        behavior: 'smooth'
-                    });
+                // 更新指示器状态
+                indicators.forEach((indicator, index) => {
+                    if (index < 8) { // 只处理有效的指示器
+                        if (index === currentIndex) {
+                            indicator.classList.add('bg-primary');
+                            indicator.classList.remove('bg-gray-600');
+                            indicator.style.opacity = '1';
+                        } else {
+                            indicator.classList.remove('bg-primary');
+                            indicator.classList.add('bg-gray-600');
+                            indicator.style.opacity = '0.6';
+                        }
+                    }
+                });
+            }
+            
+            // 切换到下一张
+            function nextSlide() {
+                currentIndex = (currentIndex + 1) % slideCount;
+                updateCarousel();
+            }
+            
+            // 切换到上一张
+            function prevSlide() {
+                currentIndex = (currentIndex - 1 + slideCount) % slideCount;
+                updateCarousel();
+            }
+            
+            // 绑定按钮事件
+            if (prevBtn) prevBtn.addEventListener('click', prevSlide);
+            if (nextBtn) nextBtn.addEventListener('click', nextSlide);
+            
+            // 绑定指示器事件
+            indicators.forEach((indicator, index) => {
+                if (indicator.dataset.index) {
+                    const slideIndex = parseInt(indicator.dataset.index);
+                    if (!isNaN(slideIndex) && slideIndex < slideCount) {
+                        indicator.addEventListener('click', () => {
+                            currentIndex = slideIndex;
+                            updateCarousel();
+                        });
+                    }
                 }
             });
-        });
+            
+            // 设置自动轮播
+            let autoplayInterval = setInterval(nextSlide, 8000);
+            
+            // 鼠标悬停时暂停轮播
+            carousel.addEventListener('mouseenter', () => {
+                clearInterval(autoplayInterval);
+            });
+            
+            // 鼠标离开时恢复轮播
+            carousel.addEventListener('mouseleave', () => {
+                autoplayInterval = setInterval(nextSlide, 8000);
+            });
+            
+            // 初始化音频播放功能
+            setupAudioButtons();
+        }
+        
+        // 音频播放功能
+        function setupAudioButtons() {
+            const audioButtons = document.querySelectorAll('.level-audio-btn');
+            let currentAudio = null;
+            
+            audioButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const bgmUrl = this.getAttribute('data-bgm');
+                    
+                    if (!bgmUrl) return;
+                    
+                    // 如果已经有在播放的音频，先停止
+                    if (currentAudio) {
+                        currentAudio.pause();
+                        currentAudio = null;
+                        
+                        // 重置所有按钮
+                        audioButtons.forEach(btn => {
+                            btn.innerHTML = '<i class="fas fa-play mr-2"></i> 播放背景音樂';
+                            btn.classList.remove('bg-primary/40');
+                            btn.classList.add('bg-primary/20');
+                        });
+                        
+                        // 如果点击的是当前播放的按钮，则仅停止播放
+                        if (this.classList.contains('playing')) {
+                            this.classList.remove('playing');
+                            return;
+                        }
+                    }
+                    
+                    // 创建新的音频
+                    currentAudio = new Audio(bgmUrl);
+                    currentAudio.volume = 0.5;
+                    currentAudio.loop = true;
+                    currentAudio.play();
+                    
+                    // 更新按钮状态
+                    this.innerHTML = '<i class="fas fa-pause mr-2"></i> 暫停背景音樂';
+                    this.classList.add('playing', 'bg-primary/40');
+                    this.classList.remove('bg-primary/20');
+                    
+                    // 音频播放完毕时
+                    currentAudio.addEventListener('ended', function() {
+                        if (button.classList.contains('playing')) {
+                            button.innerHTML = '<i class="fas fa-play mr-2"></i> 播放背景音樂';
+                            button.classList.remove('playing', 'bg-primary/40');
+                            button.classList.add('bg-primary/20');
+                        }
+                        currentAudio = null;
+                    });
+                });
+            });
+        }
+
+        // 平滑滚动
+        function setupSmoothScroll() {
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('href');
+                    if (targetId === '#') return;
+                    
+                    const target = document.querySelector(targetId);
+                    if (target) {
+                        window.scrollTo({
+                            top: target.offsetTop,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        }
 
         // 页面加载时初始化
         window.addEventListener('load', function() {
             setupSpaceBackground();
+            setupLevelCarousel();
+            setupSmoothScroll();
         });
 
         // 滚动事件处理
