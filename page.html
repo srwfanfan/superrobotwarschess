@@ -175,7 +175,15 @@
 
     <!-- 英雄区域 -->
     <header class="relative py-16 md:py-32 overflow-hidden">
-        <div class="container mx-auto px-6">
+        <!-- 背景装饰机体 -->
+        <div class="absolute -right-16 -top-10 opacity-10 rotate-12 w-64 h-64 z-0">
+            <img src="./images/unit/wing_zero_gundam.png" alt="背景装饰" class="w-full h-full object-contain">
+        </div>
+        <div class="absolute -left-20 bottom-0 opacity-10 -rotate-12 w-80 h-80 z-0">
+            <img src="./images/unit/zz_gundam.png" alt="背景装饰" class="w-full h-full object-contain">
+        </div>
+        
+        <div class="container mx-auto px-6 relative z-10">
             <div class="flex flex-col md:flex-row items-center">
                 <div class="md:w-1/2 text-center md:text-left mb-10 md:mb-0">
                     <div class="animate-float">
@@ -191,28 +199,54 @@
                         </a>
                     </div>
                 </div>
-                <div class="md:w-1/2">
-                    <div class="relative animate-float">
-                        <img src="https://i.imgur.com/uUhvX3b.png" alt="Nu高達" class="max-w-full h-auto md:max-w-md mx-auto animate-pulse-glow">
+                <div class="md:w-1/2 relative">
+                    <!-- 主要机体展示 -->
+                    <div class="relative z-20 animate-float">
+                        <img src="./images/unit/nu_gundam.png" alt="Nu高達" class="max-w-full h-auto md:max-w-md mx-auto animate-pulse-glow">
+                    </div>
+                    
+                    <!-- 辅助机体装饰 -->
+                    <div class="absolute -bottom-5 -right-10 w-32 h-32 opacity-70 z-10 transform rotate-12">
+                        <img src="./images/unit/god_gundam.png" alt="神高達" class="w-full h-full object-contain">
+                    </div>
+                    <div class="absolute -top-5 -left-5 w-36 h-36 opacity-70 z-10 transform -rotate-12">
+                        <img src="./images/unit/mazinger_z.png" alt="鐵甲萬能俠" class="w-full h-full object-contain">
                     </div>
                 </div>
             </div>
         </div>
+        
+        <!-- 悬浮战斗效果 -->
+        <div class="absolute bottom-0 right-0 w-full h-20 overflow-hidden">
+            <div class="absolute w-full h-full bg-gradient-to-t from-white/5 to-transparent"></div>
+            <div class="battle-line"></div>
+        </div>
     </header>
 
     <!-- 关于游戏 -->
-    <section id="about" class="py-16 md:py-24 relative">
-        <div class="container mx-auto px-6">
+    <section id="about" class="py-16 md:py-24 relative overflow-hidden">
+        <!-- 背景装饰机体 -->
+        <div class="absolute right-0 top-10 opacity-5 w-72 h-72 z-0 transform rotate-12">
+            <img src="./images/unit/death_army.png" alt="背景装饰" class="w-full h-full object-contain">
+        </div>
+        <div class="absolute -left-10 bottom-10 opacity-5 w-96 h-96 z-0 transform -rotate-6">
+            <img src="./images/unit/zaku_ii.png" alt="背景装饰" class="w-full h-full object-contain">
+        </div>
+        
+        <div class="container mx-auto px-6 relative z-10">
             <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 gradient-text">關於遊戲</h2>
             <div class="grid md:grid-cols-2 gap-8 items-center">
-                <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
-                    <h3 class="text-2xl font-bold mb-4 text-primary">遊戲背景</h3>
-                    <p class="mb-4 text-gray-700 dark:text-gray-300">《超級機械人大戰Chess》是一款融合了國際象棋規則與機器人戰鬥元素的策略遊戲。在基爾基爾鋼與闘神·諾亞事件後的和平時代，部分機械人選擇離開星球，前往宇宙建立新的生活空間。然而，宇宙中資源的有限性使得宇宙居民與地球產生矛盾，宇宙聯合軍宣布獨立並發動侵略戰爭。</p>
-                    <p class="text-gray-700 dark:text-gray-300">面對同胞間的自相殘殺，英雄們再次集結，誓要阻止這場戰爭。然而，在這場衝突背後，似乎隱藏著更大的陰謀...</p>
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg relative overflow-hidden">
+                    <div class="absolute -right-16 -bottom-16 opacity-5 w-56 h-56 transform rotate-12 pointer-events-none">
+                        <img src="./images/unit/gilgilgun_I.png" alt="背景装饰" class="w-full h-full object-contain">
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4 text-primary relative z-10">遊戲背景</h3>
+                    <p class="mb-4 text-gray-700 dark:text-gray-300 relative z-10">《超級機械人大戰Chess》是一款融合了國際象棋規則與機器人戰鬥元素的策略遊戲。在基爾基爾鋼與闘神·諾亞事件後的和平時代，部分機械人選擇離開星球，前往宇宙建立新的生活空間。然而，宇宙中資源的有限性使得宇宙居民與地球產生矛盾，宇宙聯合軍宣布獨立並發動侵略戰爭。</p>
+                    <p class="text-gray-700 dark:text-gray-300 relative z-10">面對同胞間的自相殘殺，英雄們再次集結，誓要阻止這場戰爭。然而，在這場衝突背後，似乎隱藏著更大的陰謀...</p>
                 </div>
-                <div class="relative overflow-hidden rounded-xl shadow-lg">
-                    <img src="https://i.imgur.com/90O9E1o.png" alt="沙薩比" class="w-full h-auto transform hover:scale-105 transition duration-500">
-                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4 text-white">
+                <div class="relative overflow-hidden rounded-xl shadow-lg group">
+                    <img src="./images/unit/sazabi.png" alt="沙薩比" class="w-full h-auto transform group-hover:scale-105 transition duration-500 bg-gradient-to-b from-gray-800 to-gray-900 p-6">
+                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4 text-white">
                         <h4 class="font-bold text-lg">機體戰鬥系統</h4>
                         <p class="text-sm">不僅是象棋，更是精彩的機體對戰！</p>
                     </div>
@@ -222,51 +256,82 @@
     </section>
 
     <!-- 游戏特色 -->
-    <section id="features" class="py-16 md:py-24 bg-gray-50 dark:bg-gray-800">
-        <div class="container mx-auto px-6">
+    <section id="features" class="py-16 md:py-24 bg-gray-50 dark:bg-gray-800 relative overflow-hidden">
+        <!-- 背景装饰机体 -->
+        <div class="absolute -left-20 top-20 opacity-5 w-64 h-64 z-0 transform rotate-12">
+            <img src="./images/unit/great_mazinger.png" alt="背景装饰" class="w-full h-full object-contain">
+        </div>
+        <div class="absolute right-0 bottom-0 opacity-5 w-80 h-80 z-0 transform -rotate-12">
+            <img src="./images/unit/gundam_mk_ii.png" alt="背景装饰" class="w-full h-full object-contain">
+        </div>
+        
+        <div class="container mx-auto px-6 relative z-10">
             <h2 class="text-3xl md:text-4xl font-bold text-center mb-16 gradient-text">遊戲特色</h2>
             <div class="grid md:grid-cols-3 gap-8">
-                <div class="bg-white dark:bg-gray-700 p-6 rounded-xl shadow-lg transform transition hover:-translate-y-2">
+                <div class="bg-white dark:bg-gray-700 p-6 rounded-xl shadow-lg transform transition hover:-translate-y-2 relative overflow-hidden">
+                    <div class="absolute -right-8 -bottom-8 opacity-10 w-32 h-32">
+                        <img src="./images/unit/ra_cailum.png" alt="國際象棋玩法" class="w-full h-full object-contain">
+                    </div>
                     <div class="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mb-6 mx-auto">
                         <i class="fas fa-chess text-primary text-2xl"></i>
                     </div>
                     <h3 class="text-xl font-bold text-center mb-4">國際象棋玩法</h3>
-                    <p class="text-center text-gray-600 dark:text-gray-300">基於經典國際象棋規則，融入機器人元素，每個棋子都是一台擁有特殊能力的機體。</p>
+                    <p class="text-center text-gray-600 dark:text-gray-300 relative z-10">基於經典國際象棋規則，融入機器人元素，每個棋子都是一台擁有特殊能力的機體。</p>
                 </div>
-                <div class="bg-white dark:bg-gray-700 p-6 rounded-xl shadow-lg transform transition hover:-translate-y-2">
+                
+                <div class="bg-white dark:bg-gray-700 p-6 rounded-xl shadow-lg transform transition hover:-translate-y-2 relative overflow-hidden">
+                    <div class="absolute -right-8 -bottom-8 opacity-10 w-32 h-32">
+                        <img src="./images/unit/zeta_gundam.png" alt="機體系統" class="w-full h-full object-contain">
+                    </div>
                     <div class="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mb-6 mx-auto">
                         <i class="fas fa-robot text-primary text-2xl"></i>
                     </div>
                     <h3 class="text-xl font-bold text-center mb-4">機體系統</h3>
-                    <p class="text-center text-gray-600 dark:text-gray-300">每台機體擁有獨特的命中與迴避值，以及專屬武器系統，影響戰鬥結果。</p>
+                    <p class="text-center text-gray-600 dark:text-gray-300 relative z-10">每台機體擁有獨特的命中與迴避值，以及專屬武器系統，影響戰鬥結果。</p>
                 </div>
-                <div class="bg-white dark:bg-gray-700 p-6 rounded-xl shadow-lg transform transition hover:-translate-y-2">
+                
+                <div class="bg-white dark:bg-gray-700 p-6 rounded-xl shadow-lg transform transition hover:-translate-y-2 relative overflow-hidden">
+                    <div class="absolute -right-8 -bottom-8 opacity-10 w-32 h-32">
+                        <img src="./images/unit/nu_gundam.png" alt="射擊戰鬥系統" class="w-full h-full object-contain">
+                    </div>
                     <div class="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mb-6 mx-auto">
                         <i class="fas fa-crosshairs text-primary text-2xl"></i>
                     </div>
                     <h3 class="text-xl font-bold text-center mb-4">射擊戰鬥系統</h3>
-                    <p class="text-center text-gray-600 dark:text-gray-300">當棋子相遇時，進入獨特的射擊戰鬥模式，考驗玩家的反應與戰術。</p>
+                    <p class="text-center text-gray-600 dark:text-gray-300 relative z-10">當棋子相遇時，進入獨特的射擊戰鬥模式，考驗玩家的反應與戰術。</p>
                 </div>
-                <div class="bg-white dark:bg-gray-700 p-6 rounded-xl shadow-lg transform transition hover:-translate-y-2">
+                
+                <div class="bg-white dark:bg-gray-700 p-6 rounded-xl shadow-lg transform transition hover:-translate-y-2 relative overflow-hidden">
+                    <div class="absolute -right-8 -bottom-8 opacity-10 w-32 h-32">
+                        <img src="./images/unit/sazabi.png" alt="劇情模式" class="w-full h-full object-contain">
+                    </div>
                     <div class="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mb-6 mx-auto">
                         <i class="fas fa-book text-primary text-2xl"></i>
                     </div>
                     <h3 class="text-xl font-bold text-center mb-4">劇情模式</h3>
-                    <p class="text-center text-gray-600 dark:text-gray-300">體驗精彩的故事劇情，跟隨多位經典機體進行一場跨越宇宙的冒險。</p>
+                    <p class="text-center text-gray-600 dark:text-gray-300 relative z-10">體驗精彩的故事劇情，跟隨多位經典機體進行一場跨越宇宙的冒險。</p>
                 </div>
-                <div class="bg-white dark:bg-gray-700 p-6 rounded-xl shadow-lg transform transition hover:-translate-y-2">
+                
+                <div class="bg-white dark:bg-gray-700 p-6 rounded-xl shadow-lg transform transition hover:-translate-y-2 relative overflow-hidden">
+                    <div class="absolute -right-8 -bottom-8 opacity-10 w-32 h-32">
+                        <img src="./images/unit/god_gundam2.png" alt="機體進化" class="w-full h-full object-contain">
+                    </div>
                     <div class="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mb-6 mx-auto">
                         <i class="fas fa-level-up-alt text-primary text-2xl"></i>
                     </div>
                     <h3 class="text-xl font-bold text-center mb-4">機體進化</h3>
-                    <p class="text-center text-gray-600 dark:text-gray-300">隨著劇情推進，解鎖進階機體，如Full Armor高達、神聖高達等。</p>
+                    <p class="text-center text-gray-600 dark:text-gray-300 relative z-10">隨著劇情推進，解鎖進階機體，如Full Armor高達、神聖高達等。</p>
                 </div>
-                <div class="bg-white dark:bg-gray-700 p-6 rounded-xl shadow-lg transform transition hover:-translate-y-2">
+                
+                <div class="bg-white dark:bg-gray-700 p-6 rounded-xl shadow-lg transform transition hover:-translate-y-2 relative overflow-hidden">
+                    <div class="absolute -right-8 -bottom-8 opacity-10 w-32 h-32">
+                        <img src="./images/unit/mazinger_z.png" alt="專屬BGM" class="w-full h-full object-contain">
+                    </div>
                     <div class="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mb-6 mx-auto">
                         <i class="fas fa-music text-primary text-2xl"></i>
                     </div>
                     <h3 class="text-xl font-bold text-center mb-4">專屬BGM</h3>
-                    <p class="text-center text-gray-600 dark:text-gray-300">每台機體擁有專屬戰鬥BGM，在戰鬥時重現動畫中的熱血場景。</p>
+                    <p class="text-center text-gray-600 dark:text-gray-300 relative z-10">每台機體擁有專屬戰鬥BGM，在戰鬥時重現動畫中的熱血場景。</p>
                 </div>
             </div>
         </div>
@@ -757,8 +822,16 @@
     </section>
 
     <!-- 关卡介绍 -->
-    <section id="levels" class="py-16 md:py-24 relative">
-        <div class="container mx-auto px-6">
+    <section id="levels" class="py-16 md:py-24 relative overflow-hidden">
+        <!-- 背景装饰机体 -->
+        <div class="absolute right-0 top-32 opacity-5 w-80 h-80 z-0 transform rotate-12">
+            <img src="./images/unit/tallgeese_Ⅲ.png" alt="背景装饰" class="w-full h-full object-contain">
+        </div>
+        <div class="absolute -left-10 bottom-20 opacity-5 w-96 h-96 z-0 transform -rotate-6">
+            <img src="./images/unit/gilgilgun_III.png" alt="背景装饰" class="w-full h-full object-contain">
+        </div>
+        
+        <div class="container mx-auto px-6 relative z-10">
             <h2 class="text-3xl md:text-4xl font-bold text-center mb-16 gradient-text">關卡介紹</h2>
             
             <!-- 关卡轮播 -->
@@ -783,6 +856,9 @@
                             <div class="bg-gray-800/80 backdrop-blur-sm rounded-2xl overflow-hidden shadow-2xl transform hover:scale-[1.01] transition duration-300">
                                 <div class="relative h-64 md:h-80 overflow-hidden">
                                     <img src="./images/cover/cover01.png" alt="第一話：宇宙聯合軍" class="w-full h-full object-cover">
+                                    <div class="absolute top-0 right-0 w-36 h-36 opacity-40 transform rotate-12 z-10">
+                                        <img src="./images/unit/sazabi.png" alt="沙薩比" class="w-full h-full object-contain">
+                                    </div>
                                     <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end p-6">
                                         <div class="flex items-center mb-2">
                                             <div class="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white font-bold mr-4">1</div>
@@ -794,6 +870,20 @@
                                     </div>
                                 </div>
                                 <div class="p-6">
+                                    <div class="flex items-center mb-3">
+                                        <div class="flex space-x-1 mr-3">
+                                            <div class="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center text-xs text-white">
+                                                <i class="fas fa-robot"></i>
+                                            </div>
+                                            <div class="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center text-xs text-white">
+                                                <i class="fas fa-robot"></i>
+                                            </div>
+                                            <div class="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center text-xs text-white">
+                                                <i class="fas fa-robot"></i>
+                                            </div>
+                                        </div>
+                                        <div class="text-xs text-gray-400">推薦機體: <span class="text-blue-400">Nu高達, 飛翼零式高達, 賽巴斯塔</span></div>
+                                    </div>
                                     <p class="text-gray-300 mb-4">宇宙聯合軍將軍沙撒比在宣戰的第二天便帶領部隊進行大氣層突入，英雄們迅速出擊，與宇宙聯合軍展開交戰。他們試圖避免不必要的傷亡，同時尋找停戰方法。突然，一個從未見過的機影出了在他們面前…</p>
                                     <div class="flex">
                                         <button class="px-4 py-2 bg-primary/20 hover:bg-primary/30 text-white rounded-full text-sm transition flex items-center">
@@ -809,6 +899,9 @@
                             <div class="bg-gray-800/80 backdrop-blur-sm rounded-2xl overflow-hidden shadow-2xl transform hover:scale-[1.01] transition duration-300">
                                 <div class="relative h-64 md:h-80 overflow-hidden">
                                     <img src="./images/cover/cover02.png" alt="第二話：突擊！托爾吉斯Ⅲ！" class="w-full h-full object-cover">
+                                    <div class="absolute top-0 right-0 w-36 h-36 opacity-40 transform rotate-12 z-10">
+                                        <img src="./images/unit/tallgeese_Ⅲ.png" alt="多魯基斯Ⅲ" class="w-full h-full object-contain">
+                                    </div>
                                     <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end p-6">
                                         <div class="flex items-center mb-2">
                                             <div class="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white font-bold mr-4">2</div>
@@ -820,6 +913,23 @@
                                     </div>
                                 </div>
                                 <div class="p-6">
+                                    <div class="flex items-center mb-3">
+                                        <div class="flex space-x-1 mr-3">
+                                            <div class="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center text-xs text-white">
+                                                <i class="fas fa-robot"></i>
+                                            </div>
+                                            <div class="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center text-xs text-white">
+                                                <i class="fas fa-robot"></i>
+                                            </div>
+                                            <div class="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center text-xs text-white">
+                                                <i class="fas fa-robot"></i>
+                                            </div>
+                                            <div class="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center text-xs text-white">
+                                                <i class="fas fa-robot"></i>
+                                            </div>
+                                        </div>
+                                        <div class="text-xs text-gray-400">推薦機體: <span class="text-blue-400">閃光高達, 神高達, Z高達, 鐵甲萬能俠</span></div>
+                                    </div>
                                     <p class="text-gray-300 mb-4">英雄們與沙撒比的部隊交戰，雙方陷入膠著狀態。飛翼零式改的加入，憑藉其強大的火力和機動性，壓制了宇宙聯合軍的先頭部隊，讓英雄們幾乎取得壓倒性的優勢。然而，就在此時，宇宙聯合軍的王牌托爾吉斯Ⅲ突然出現在戰場上。</p>
                                     <div class="flex">
                                         <button class="px-4 py-2 bg-primary/20 hover:bg-primary/30 text-white rounded-full text-sm transition flex items-center">
@@ -835,6 +945,9 @@
                             <div class="bg-gray-800/80 backdrop-blur-sm rounded-2xl overflow-hidden shadow-2xl transform hover:scale-[1.01] transition duration-300">
                                 <div class="relative h-64 md:h-80 overflow-hidden">
                                     <img src="./images/cover/cover03.png" alt="第三話：復仇的基爾基爾鋼" class="w-full h-full object-cover">
+                                    <div class="absolute top-0 right-0 w-36 h-36 opacity-40 transform rotate-12 z-10">
+                                        <img src="./images/unit/gilgilgun_III.png" alt="基爾基爾鋼III" class="w-full h-full object-contain">
+                                    </div>
                                     <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end p-6">
                                         <div class="flex items-center mb-2">
                                             <div class="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white font-bold mr-4">3</div>
@@ -846,6 +959,14 @@
                                     </div>
                                 </div>
                                 <div class="p-6">
+                                    <div class="flex items-center mb-3">
+                                        <div class="flex space-x-1 mr-3">
+                                            <div class="w-5 h-5 rounded-full bg-yellow-500 flex items-center justify-center text-xs text-white">
+                                                <i class="fas fa-exclamation"></i>
+                                            </div>
+                                        </div>
+                                        <div class="text-xs text-yellow-400">難度提升: <span class="text-white">基爾基爾鋼系列機體具有毀滅性武器系統</span></div>
+                                    </div>
                                     <p class="text-gray-300 mb-4">英雄們與沙撒比及托爾吉斯III的激戰持續了許久，戰場陷入膠著，雙方都無法分出勝負。就在這時，一個熟悉而令人恐懼的身影突然出現----基爾基爾鋼！這個曾經帶來無數災厄的敵人居然再次復活，更令人震驚的是，基爾基爾鋼的數量竟然成倍增加。</p>
                                     <div class="flex">
                                         <button class="px-4 py-2 bg-primary/20 hover:bg-primary/30 text-white rounded-full text-sm transition flex items-center">
@@ -879,8 +1000,16 @@
     </section>
 
     <!-- 游戏截图 -->
-    <section id="screenshots" class="py-16 md:py-24 bg-gray-50 dark:bg-gray-800">
-        <div class="container mx-auto px-6">
+    <section id="screenshots" class="py-16 md:py-24 bg-gray-50 dark:bg-gray-800 relative overflow-hidden">
+        <!-- 背景装饰机体 -->
+        <div class="absolute right-10 top-40 opacity-5 w-80 h-80 z-0 transform rotate-12">
+            <img src="./images/unit/getter_robot.png" alt="背景装饰" class="w-full h-full object-contain">
+        </div>
+        <div class="absolute -left-20 bottom-10 opacity-5 w-96 h-96 z-0 transform -rotate-6">
+            <img src="./images/unit/guncannon.png" alt="背景装饰" class="w-full h-full object-contain">
+        </div>
+        
+        <div class="container mx-auto px-6 relative z-10">
             <h2 class="text-3xl md:text-4xl font-bold text-center mb-16 gradient-text">遊戲畫面</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <!-- 棋盘画面 -->
@@ -894,6 +1023,10 @@
                     <div class="w-full h-full">
                         <img src="https://i.imgur.com/po1uZL5.png" alt="棋盤戰場" class="w-full h-full object-cover transform group-hover:scale-110 transition duration-500">
                     </div>
+                    <!-- 棋盘角落装饰机体 -->
+                    <div class="absolute -bottom-2 -right-2 w-20 h-20 opacity-60 rotate-12 pointer-events-none z-10">
+                        <img src="./images/unit/hyaku_shiki.png" alt="百式" class="w-full h-full object-contain drop-shadow-lg">
+                    </div>
                 </div>
 
                 <!-- 战斗系统 -->
@@ -906,8 +1039,8 @@
                     </div>
                     <div class="w-full h-full">
                         <div class="w-full h-full bg-gray-900 flex items-center justify-center relative">
-                            <img src="https://i.imgur.com/uUhvX3b.png" alt="射擊戰鬥" class="h-1/2 object-contain">
-                            <img src="https://i.imgur.com/90O9E1o.png" alt="射擊戰鬥" class="h-1/2 object-contain absolute right-10">
+                            <img src="./images/unit/nu_gundam.png" alt="Nu高達" class="h-1/2 object-contain transform -translate-x-10">
+                            <img src="./images/unit/sazabi.png" alt="沙薩比" class="h-1/2 object-contain absolute right-10">
                             <div class="battle-effect">
                                 <div class="laser" style="top: 50%; left: 30%; width: 40%; transform: rotate(10deg);"></div>
                                 <div class="laser" style="top: 60%; left: 35%; width: 35%; transform: rotate(-5deg); animation-delay: 0.2s;"></div>
@@ -933,6 +1066,142 @@
                         <div class="mt-auto mx-auto">
                             <button class="px-4 py-1 bg-white/20 text-white text-sm rounded hover:bg-white/30 transition">繼續</button>
                         </div>
+                        
+                        <!-- 剧情模式装饰机体 -->
+                        <div class="absolute top-3 right-3 w-16 h-16 opacity-60 transform rotate-12 pointer-events-none">
+                            <img src="./images/unit/g_sky.png" alt="G-SKY" class="w-full h-full object-contain drop-shadow-lg">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 机体选择 -->
+                <div class="overflow-hidden rounded-xl shadow-lg bg-white dark:bg-gray-700 group relative h-64">
+                    <div class="absolute inset-0 bg-gradient-to-b from-black/0 to-black/70 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
+                        <div class="p-4 text-white">
+                            <h3 class="font-bold text-lg">機體選擇</h3>
+                            <p class="text-sm">選擇適合的機體組合，應對不同戰場的挑戰。</p>
+                        </div>
+                    </div>
+                    <div class="w-full h-full bg-gradient-to-r from-blue-900/60 to-purple-900/60 p-6">
+                        <h4 class="text-white font-bold mb-3 text-center text-lg">選擇你的機體</h4>
+                        <div class="grid grid-cols-3 gap-2">
+                            <div class="bg-white/10 rounded p-1 text-center relative selected">
+                                <img src="./images/unit/god_gundam.png" alt="神高達" class="h-16 object-contain mx-auto">
+                                <div class="absolute top-0 right-0 w-4 h-4 bg-green-500 rounded-full border-2 border-white"></div>
+                                <p class="text-white text-xs">神高達</p>
+                            </div>
+                            <div class="bg-white/10 rounded p-1 text-center">
+                                <img src="./images/unit/gundam.png" alt="高達" class="h-16 object-contain mx-auto">
+                                <p class="text-white text-xs">高達</p>
+                            </div>
+                            <div class="bg-white/10 rounded p-1 text-center">
+                                <img src="./images/unit/zeta_gundam.png" alt="Z高達" class="h-16 object-contain mx-auto">
+                                <p class="text-white text-xs">Z高達</p>
+                            </div>
+                        </div>
+                        <div class="mt-3 text-center">
+                            <button class="px-6 py-1 bg-primary/60 hover:bg-primary/80 text-white text-sm rounded transition">確認</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 战斗结果 -->
+                <div class="overflow-hidden rounded-xl shadow-lg bg-white dark:bg-gray-700 group relative h-64">
+                    <div class="absolute inset-0 bg-gradient-to-b from-black/0 to-black/70 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
+                        <div class="p-4 text-white">
+                            <h3 class="font-bold text-lg">戰鬥結果</h3>
+                            <p class="text-sm">戰鬥的結果將決定棋子的勝負，影響整體戰局。</p>
+                        </div>
+                    </div>
+                    <div class="w-full h-full bg-black/80 flex flex-col items-center justify-center p-6 relative">
+                        <div class="absolute inset-0 overflow-hidden opacity-30">
+                            <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(93,92,222,0.8),transparent_70%)]"></div>
+                        </div>
+                        <div class="z-10 text-center">
+                            <div class="text-3xl font-bold text-yellow-400 mb-2 animate-pulse">勝 利 !</div>
+                            <div class="flex items-center justify-center space-x-4">
+                                <div class="text-center">
+                                    <img src="./images/unit/wing_zero_gundam.png" alt="飛翼零式高達" class="h-20 object-contain mx-auto mb-1">
+                                    <p class="text-white text-sm">飛翼零式高達</p>
+                                </div>
+                                <div class="text-4xl text-white">></div>
+                                <div class="text-center opacity-50">
+                                    <img src="./images/unit/taurus.png" alt="陶拉斯(白)" class="h-20 object-contain mx-auto mb-1">
+                                    <p class="text-white text-sm">陶拉斯(白)</p>
+                                </div>
+                            </div>
+                            <p class="text-green-400 text-sm mt-2">獲得 450 經驗值</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 策略视图 -->
+                <div class="overflow-hidden rounded-xl shadow-lg bg-white dark:bg-gray-700 group relative h-64">
+                    <div class="absolute inset-0 bg-gradient-to-b from-black/0 to-black/70 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
+                        <div class="p-4 text-white">
+                            <h3 class="font-bold text-lg">策略視圖</h3>
+                            <p class="text-sm">切換到策略視圖，掌握戰場全局以制定完美戰術。</p>
+                        </div>
+                    </div>
+                    <div class="w-full h-full bg-gray-900 p-4">
+                        <div class="grid grid-cols-8 grid-rows-8 h-full gap-0.5">
+                            <!-- 棋盘格子和棋子示意 -->
+                            <div class="bg-gray-800"></div>
+                            <div class="bg-gray-700"></div>
+                            <div class="bg-gray-800"></div>
+                            <div class="bg-gray-700 relative">
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <div class="w-3/4 h-3/4 rounded-full border-2 border-blue-400 flex items-center justify-center bg-blue-500/20">
+                                        <img src="./images/unit/gundam.png" alt="高達" class="w-full h-full object-contain p-0.5">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-gray-800"></div>
+                            <div class="bg-gray-700"></div>
+                            <div class="bg-gray-800"></div>
+                            <div class="bg-gray-700"></div>
+                            <!-- 第二行 -->
+                            <div class="bg-gray-700"></div>
+                            <div class="bg-gray-800"></div>
+                            <div class="bg-gray-700"></div>
+                            <div class="bg-gray-800"></div>
+                            <div class="bg-gray-700"></div>
+                            <div class="bg-gray-800"></div>
+                            <div class="bg-gray-700"></div>
+                            <div class="bg-gray-800 relative">
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <div class="w-3/4 h-3/4 rounded-full border-2 border-red-400 flex items-center justify-center bg-red-500/20">
+                                        <img src="./images/unit/zaku_ii.png" alt="扎古II" class="w-full h-full object-contain p-0.5">
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- 更多棋盘格子... -->
+                            <div class="bg-gray-800"></div>
+                            <div class="bg-gray-700"></div>
+                            <div class="bg-gray-800"></div>
+                            <div class="bg-gray-700"></div>
+                            <div class="bg-gray-800"></div>
+                            <div class="bg-gray-700"></div>
+                            <div class="bg-gray-800"></div>
+                            <div class="bg-gray-700"></div>
+                            <!-- 更多行... -->
+                            <div class="bg-gray-700"></div>
+                            <div class="bg-gray-800"></div>
+                            <div class="bg-gray-700 relative">
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <div class="w-3/4 h-3/4 rounded-full border-2 border-blue-400 flex items-center justify-center bg-blue-500/20">
+                                        <img src="./images/unit/fa_gundam.png" alt="FA高達" class="w-full h-full object-contain p-0.5">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-gray-800"></div>
+                            <div class="bg-gray-700"></div>
+                            <div class="bg-gray-800"></div>
+                            <div class="bg-gray-700"></div>
+                            <div class="bg-gray-800"></div>
+                            <!-- 更多内容... -->
+                            <div class="col-span-8 row-span-4"></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -941,24 +1210,73 @@
 
     <!-- 开始游戏部分 -->
     <section id="play" class="py-16 md:py-24 relative overflow-hidden">
+        <!-- 背景装饰机体 -->
+        <div class="absolute left-0 top-0 opacity-5 w-72 h-72 z-0 transform rotate-6">
+            <img src="./images/unit/gp03d_gundam.png" alt="背景装饰" class="w-full h-full object-contain">
+        </div>
+        <div class="absolute right-0 bottom-0 opacity-5 w-80 h-80 z-0 transform -rotate-12">
+            <img src="./images/unit/great_master_gundam.png" alt="背景装饰" class="w-full h-full object-contain">
+        </div>
+        
         <div class="container mx-auto px-6 relative z-10">
-            <div class="max-w-4xl mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-2xl overflow-hidden">
-                <div class="p-8 md:p-12">
+            <div class="max-w-4xl mx-auto bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-xl shadow-2xl overflow-hidden border border-white/20 relative">
+                <!-- 悬浮机体装饰 -->
+                <div class="absolute -top-10 -right-10 w-40 h-40 opacity-60 transform rotate-12 z-0 hidden md:block">
+                    <img src="./images/unit/god_gundam2.png" alt="神高達 風雲再起" class="w-full h-full object-contain drop-shadow-lg">
+                </div>
+                <div class="absolute -bottom-10 -left-10 w-40 h-40 opacity-60 transform -rotate-12 z-0 hidden md:block">
+                    <img src="./images/unit/new_getter_robot.png" alt="新三一萬能俠" class="w-full h-full object-contain drop-shadow-lg">
+                </div>
+                
+                <div class="p-8 md:p-12 relative z-10">
                     <h2 class="text-3xl md:text-4xl font-bold mb-8 text-center gradient-text">加入戰場!</h2>
                     <p class="text-gray-600 dark:text-gray-300 text-lg text-center mb-10">
                         是時候展現你的戰術才華，指揮機體戰勝敵人，揭露隱藏在戰爭背後的陰謀！
                     </p>
+                    
+                    <!-- 机体选择器 -->
+                    <div class="mb-10 max-w-lg mx-auto">
+                        <h3 class="text-xl font-bold text-center mb-4 text-primary">選擇您的主力機體</h3>
+                        <div class="grid grid-cols-3 gap-3">
+                            <div class="bg-gray-100 dark:bg-gray-700 rounded-lg p-2 text-center cursor-pointer transform hover:scale-105 transition border-2 border-primary">
+                                <img src="./images/unit/nu_gundam.png" alt="Nu高達" class="h-20 object-contain mx-auto">
+                                <p class="text-sm font-medium mt-1">Nu高達</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">均衡型</p>
+                            </div>
+                            <div class="bg-gray-100 dark:bg-gray-700 rounded-lg p-2 text-center cursor-pointer transform hover:scale-105 transition">
+                                <img src="./images/unit/wing_zero_gundam.png" alt="飛翼零式高達" class="h-20 object-contain mx-auto">
+                                <p class="text-sm font-medium mt-1">飛翼零式高達</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">高命中</p>
+                            </div>
+                            <div class="bg-gray-100 dark:bg-gray-700 rounded-lg p-2 text-center cursor-pointer transform hover:scale-105 transition">
+                                <img src="./images/unit/cybuster.png" alt="賽巴斯塔" class="h-20 object-contain mx-auto">
+                                <p class="text-sm font-medium mt-1">賽巴斯塔</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">高迴避</p>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <div class="flex flex-col md:flex-row justify-center space-y-4 md:space-y-0 md:space-x-6">
-                        <a href="#play" class="px-8 py-4 bg-gradient-to-r from-primary to-purple-600 text-white rounded-full font-bold text-lg hover:opacity-90 transition transform hover:scale-105 shadow-lg text-center">
-                            開始遊戲
+                        <a href="#play" class="px-8 py-4 bg-gradient-to-r from-primary to-purple-600 text-white rounded-full font-bold text-lg hover:opacity-90 transition transform hover:scale-105 shadow-lg text-center flex items-center justify-center">
+                            <i class="fas fa-rocket mr-2"></i> 開始遊戲
                         </a>
-                        <a href="#" class="px-8 py-4 bg-gradient-to-r from-pink-500 to-red-500 text-white rounded-full font-bold text-lg hover:opacity-90 transition transform hover:scale-105 shadow-lg text-center">
-                            觀看教學
+                        <a href="#" class="px-8 py-4 bg-gradient-to-r from-pink-500 to-red-500 text-white rounded-full font-bold text-lg hover:opacity-90 transition transform hover:scale-105 shadow-lg text-center flex items-center justify-center">
+                            <i class="fas fa-film mr-2"></i> 觀看教學
                         </a>
                     </div>
                 </div>
             </div>
+            
+            <!-- 额外信息 -->
+            <div class="mt-10 text-center">
+                <p class="text-gray-500 dark:text-gray-400 text-sm">Version 1.0.2 - 使用最新的機體資料和平衡性調整</p>
+                <div class="inline-flex items-center mt-2">
+                    <div class="h-3 w-3 bg-green-500 rounded-full mr-2 animate-pulse"></div>
+                    <p class="text-green-500 dark:text-green-400 text-sm">2,047 位玩家正在線上</p>
+                </div>
+            </div>
         </div>
+        
         <!-- 背景效果 -->
         <div class="absolute inset-0 z-0 opacity-20">
             <div class="absolute w-64 h-64 rounded-full bg-primary/40 blur-3xl -top-32 -left-32"></div>
